@@ -19,8 +19,8 @@ class Header extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: Colors.white,
-                  boxShadow: const [
-                    BoxShadow(color: Colors.grey, spreadRadius: 1),
+                  boxShadow: [
+                    BoxShadow(color: Colors.grey.shade200, spreadRadius: 1),
                   ],
                 ),
                 child:
@@ -38,8 +38,8 @@ class Header extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(color: Colors.grey, spreadRadius: 1),
+                    boxShadow: [
+                      BoxShadow(color: Colors.grey.shade200, spreadRadius: 1),
                     ],
                   ),
                   child: SvgPicture.asset("images/notification.svg",
