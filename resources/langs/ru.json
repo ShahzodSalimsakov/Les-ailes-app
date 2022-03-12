@@ -2,6 +2,18 @@
   "leftMenu": {
     "signIn": "Войти",
     "settings": "Настройки",
-    "aboutUs": "О нас"
+    "aboutUs": "О нас",
+    "writeUs": "Напишите нам",
+    "writeUsDesc": "Если у вас возникли проблемы с сервисом"
+  },
+  "main": {
+    "deliveryOrPickup": "Закажите доставку или заберите"
+  },
+  "deliveryOrPickup": {
+    "chooseType": "Выберите способ получения заказа",
+    "delivery": "Доставка",
+    "takeAway": "C cобой ",
+    "AtTheRestaurant": "В ресторане",
+    "toTheParkingLot": "На парковку"
   }
 }

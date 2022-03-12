@@ -1,5 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:les_ailes/routes/router.gr.dart';
 import 'package:niku/niku.dart' as n;
 
 class Header extends StatelessWidget {
@@ -10,7 +12,7 @@ class Header extends StatelessWidget {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -45,7 +47,9 @@ class Header extends StatelessWidget {
                   child: SvgPicture.asset("images/notification.svg",
                       width: 24, height: 24),
                 ),
-              )..onPressed = () {}
+              )..onPressed = () {
+                  context.router.push(const NotificationsPage());
+                }
             ],
           ),
         ),

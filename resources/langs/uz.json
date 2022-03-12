@@ -2,6 +2,18 @@
   "leftMenu": {
     "signIn": "Kirish",
     "settings": "Sozlamalar",
-    "aboutUs": "Biz haqimizda"
+    "aboutUs": "Biz haqimizda",
+    "writeUs": "Bizga yozing",
+    "writeUsDesc": "Xizmat bilan bog'liq muammolar mavjud bo'lsa"
+  },
+  "main": {
+    "deliveryOrPickup": "Buyurtma bering yoki olib keting"
+  },
+  "deliveryOrPickup": {
+    "chooseType": "Buyurtmani qanday qabul qilishni tanlang",
+    "delivery": "Yetkazish",
+    "takeAway": "Olib ketish",
+    "AtTheRestaurant": "Restaranda",
+    "toTheParkingLot": "To'xtash joyiga"
   }
 }

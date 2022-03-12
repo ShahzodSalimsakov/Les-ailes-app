@@ -2,6 +2,18 @@
   "leftMenu": {
     "signIn": "Sign in",
     "settings": "Settings",
-    "aboutUs": "About us"
+    "aboutUs": "About us",
+    "writeUs": "Write us",
+    "writeUsDesc": "If you have any service problems"
+  },
+  "main": {
+    "deliveryOrPickup": "Schedule delivery or pick up"
+  },
+  "deliveryOrPickup": {
+    "chooseType": "Choose how to receive order",
+    "delivery": "Delivery",
+    "takeAway": "Take away",
+    "AtTheRestaurant": "At the restaurant",
+    "toTheParkingLot": "To the parking lot"
   }
 }
