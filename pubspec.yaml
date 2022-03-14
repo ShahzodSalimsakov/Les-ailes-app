@@ -41,6 +41,10 @@ dependencies:
   url_launcher: ^6.0.20
   modal_bottom_sheet: ^2.0.1
   carousel_slider: ^4.0.0
+  isar: ^2.2.1
+  http: ^0.13.4
+  flutter_hooks: ^0.18.2+1
+  sticky_headers: ^0.2.0
 
 dev_dependencies:
   flutter_test:

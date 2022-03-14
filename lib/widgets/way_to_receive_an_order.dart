@@ -58,6 +58,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                       crossAxisCount: 2,
                       mainAxisSpacing: 15,
                       crossAxisSpacing: 15,
+                      childAspectRatio: (164 / 164),
                       children: [
                         GestureDetector(
                           onTap: () {},
