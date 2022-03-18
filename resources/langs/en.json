@@ -15,5 +15,22 @@
     "takeAway": "Take away",
     "AtTheRestaurant": "At the restaurant",
     "toTheParkingLot": "To the parking lot"
+  },
+  "signIn": {
+    "signIn": "Sign in",
+    "enterNumber": "Enter number phone",
+    "getConfirmationCode": "Get confirmation code",
+    "proceed": "Proceed"
+  },
+  "settings": {
+    "settings": "Settings",
+    "changeLang": "Change language",
+    "aboutUs": "About us",
+    "reportPoints": "Report points and promotions",
+    "pushNotify": "Push notifications, sms, email"
+  },
+  "about": {
+    "callCenter": "Call center",
+    "followUs:": "FOLLOW US:"
   }
 }

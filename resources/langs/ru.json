@@ -15,5 +15,22 @@
     "takeAway": "C cобой ",
     "AtTheRestaurant": "В ресторане",
     "toTheParkingLot": "На парковку"
+  },
+  "signIn": {
+    "signIn": "Войти",
+    "enterNumber": "Введите номер телефона",
+    "getConfirmationCode": "Получить код подтверждения",
+    "proceed": "Продолжить"
+  },
+  "settings": {
+    "settings": "Настройки",
+    "changeLang": "Изменить язык",
+    "aboutUs": "О нас",
+    "reportPoints": "Сообщать о баллах и акциях",
+    "pushNotify": "Пуш уведомления, смс, эл.почта"
+  },
+  "about": {
+    "callCenter": "Qo'ng'iroqlar markazi",
+    "followUs:": "ПОДПИСЫВАЙТЕСЬ НА НАС:"
   }
 }

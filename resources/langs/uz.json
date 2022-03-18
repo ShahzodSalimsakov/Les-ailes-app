@@ -15,5 +15,22 @@
     "takeAway": "Olib ketish",
     "AtTheRestaurant": "Restaranda",
     "toTheParkingLot": "To'xtash joyiga"
+  },
+  "signIn": {
+    "signIn": "Kirish",
+    "enterNumber": "Telefon raqamini kiriting",
+    "getConfirmationCode": "Tasdiqlash kodini olish",
+    "proceed": "Davom etish"
+  },
+  "settings": {
+    "settings": "Sozlamalar",
+    "changeLang": "Tilni o'zgartirish",
+    "aboutUs": "Biz haqimizda",
+    "reportPoints": "Ballar va aksiyalar haqida xabar berish",
+    "pushNotify": "Push-bildirishnomalar, sms, elektron pochta"
+  },
+  "about": {
+    "callCenter": "Call center",
+    "followUs:": "BIZNI KUZATIB BORING:"
   }
 }

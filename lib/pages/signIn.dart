@@ -1,15 +1,435 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class SignInPage extends StatelessWidget {
-  const SignInPage({Key? key}) : super(key: key);
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:timer_count_down/timer_count_down.dart';
+
+import '../models/user.dart';
+import '../utils/colors.dart';
+
+class SignInPage extends HookWidget {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
+
+  final TextEditingController controller = TextEditingController();
+  final TextEditingController nameFieldController = TextEditingController();
+  final initialCountry = 'UZ';
+  final number = PhoneNumber(isoCode: 'UZ');
+
+  SignInPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _isValid = useState<bool>(false);
+    final _isVerifyPage = useState<bool>(false);
+    final _isSendingPhone = useState<bool>(false);
+    final _isShowNameField = useState<bool>(false);
+    final phoneNumber = useState<String>('');
+    final otpCode = useState<String>('');
+    final otpToken = useState<String>('');
+    final _isFinishedTimer = useState<bool>(false);
+
+    Future<void> trySignIn() async {
+      _isSendingPhone.value = true;
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${otpToken.value}'
+      };
+      String? token = await FirebaseMessaging.instance.getToken();
+      var url = Uri.https('api.choparpizza.uz', '/api/auth_otp');
+      var formData = {'phone': phoneNumber.value, 'code': otpCode.value};
+      if (token != null) {
+        formData['token'] = token;
+      }
+      var response = await http.post(url,
+          headers: requestHeaders, body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        Codec<String, String> stringToBase64 = utf8.fuse(base64);
+        String decoded = stringToBase64.decode(json['result']);
+        // print(jsonDecode(decoded));
+        if (jsonDecode(decoded) == false) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content:
+                  const Text('Введённый код неверный или срок кода истёк')));
+        } else {
+          var result = jsonDecode(decoded);
+          // User authorizedUser = User.fromJson(result['user']);
+          // Box<User> transaction = Hive.box<User>('user');
+          // transaction.put('user', authorizedUser);
+          Navigator.of(context).pop();
+        }
+      }
+      _isSendingPhone.value = false;
+    }
+
+    Future<void> tryResendCode() async {
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json'
+      };
+      var url = Uri.https('api.choparpizza.uz', '/api/send_otp');
+      var formData = {'phone': phoneNumber.value};
+      if (_isShowNameField.value) {
+        formData['name'] = nameFieldController.text;
+      }
+      var response = await http.post(url,
+          headers: requestHeaders, body: jsonEncode(formData));
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        if (json['success'] != null) {
+          Codec<String, String> stringToBase64 = utf8.fuse(base64);
+          String decoded = stringToBase64.decode(json['success']);
+          otpToken.value = jsonDecode(decoded)['user_token'];
+        }
+        _isFinishedTimer.value = false;
+      }
+    }
+
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          child: const Text("Sign in page"),
-        ),
+        child: Center(
+            child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(
+                    padding: const EdgeInsets.all(30),
+                    child: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ))
+              ],
+            ),
+            SizedBox(
+                width: 217,
+                child: Text(
+                  tr("signIn.enterNumber"),
+                  style: const TextStyle(fontSize: 30),
+                  textAlign: TextAlign.center,
+                )),
+            const SizedBox(
+              height: 38,
+            ),
+            Text(
+              tr("signIn.getConfirmationCode"),
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+            Column(children: [
+              _isVerifyPage.value
+                  ? Form(
+                key: otpFormKey,
+                child: Container(
+                  height: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      Row(
+                        children: const [
+                          Text(
+                            'Отправили код на номер',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          )
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            phoneNumber.value,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 26),
+                          )
+                        ],
+                        mainAxisAlignment: MainAxisAlignment.center,
+                      ),
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Container(
+                          height: 80,
+                          margin:
+                          const EdgeInsets.symmetric(horizontal: 15),
+                          child: PinCodeTextField(
+                            controller: controller,
+                            enablePinAutofill: true,
+                            autoFocus: true,
+                            length: 4,
+                            onChanged: (String value) {},
+                            appContext: context,
+                            keyboardType: TextInputType.number,
+                            onCompleted: (String code) {
+                              otpCode.value = code;
+                              trySignIn();
+                            },
+                            pinTheme: PinTheme(
+                                borderRadius: BorderRadius.circular(25),
+                                fieldWidth: 55,
+                                shape: PinCodeFieldShape.box,
+                                inactiveColor: Colors.grey,
+                                activeColor: Colors.yellow.shade600,
+                                selectedColor: Colors.yellow.shade600),
+                          )),
+                      const Spacer(),
+                      _isFinishedTimer.value
+                          ? InkWell(
+                        child: Text(
+                          'Получить новый код',
+                          style: TextStyle(
+                              color: Colors.yellow.shade600,
+                              decoration: TextDecoration.underline),
+                        ),
+                        onTap: () {
+                          tryResendCode();
+                        },
+                      )
+                          : Countdown(
+                        // controller: _controller,
+                        seconds: 60,
+                        build: (_, double time) => Row(
+                          children: [
+                            Text(
+                              'Код не пришел\n получить новый код через ${time.ceil().toString()} сек.',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.grey),
+                            )
+                          ],
+                          mainAxisAlignment:
+                          MainAxisAlignment.center,
+                        ),
+                        interval:
+                        const Duration(milliseconds: 1000),
+                        onFinished: () {
+                          _isFinishedTimer.value = true;
+                        },
+                      ),
+                      Container(
+                          height: 60,
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 20.0),
+                          child: SizedBox(
+                            height: 50,
+                            width: 144,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_isSendingPhone.value) {
+                                  return;
+                                }
+                                if (otpCode.value.length == 4) {
+                                  trySignIn();
+                                }
+                              },
+                              child: Text(tr("signIn.signIn")),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    )),
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    AppColors.mainColor),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+              )
+                  : Form(
+                key: formKey,
+                child: Container(
+                  height: 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 40.0),
+                      Container(
+                        margin:
+                        const EdgeInsets.symmetric(horizontal: 30.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            border:
+                            Border.all(width: 1.0, color: Colors.grey),
+                            color: AppColors.grey),
+                        width: double.infinity,
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: InternationalPhoneNumberInput(
+                            onInputChanged: (PhoneNumber number) {
+                              phoneNumber.value = number.phoneNumber ?? '';
+                            },
+                            onInputValidated: (bool value) {
+                              _isValid.value = value;
+                            },
+                            countries: ['UZ'],
+                            selectorConfig: const SelectorConfig(
+                              selectorType:
+                              PhoneInputSelectorType.BOTTOM_SHEET,
+                              showFlags: false,
+                            ),
+                            ignoreBlank: false,
+                            autoValidateMode: AutovalidateMode.disabled,
+                            selectorTextStyle: const TextStyle(
+                                color: Colors.black, fontSize: 24.0),
+                            initialValue: number,
+                            formatInput: true,
+                            countrySelectorScrollControlled: false,
+                            keyboardType: TextInputType.number,
+                            inputBorder: InputBorder.none,
+                            hintText: '',
+                            errorMessage: 'Неверный номер',
+                            spaceBetweenSelectorAndTextField: 0,
+                            textStyle: const TextStyle(
+                                color: Colors.black, fontSize: 24.0),
+                            // inputDecoration: InputDecoration(border: ),
+                            onSaved: (PhoneNumber number) {},
+                          ),
+                        ),
+                      ),
+                      _isShowNameField.value
+                          ? Container(
+                        height: 300,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 20),
+                        child: TextFormField(
+                          controller: nameFieldController,
+                          validator: (String? val) {
+                            if (val == null || val.isEmpty) {
+                              return 'Укажите своё имя';
+                            }
+                          },
+                          decoration: InputDecoration(
+                              labelText: 'Ваше имя',
+                              floatingLabelStyle: TextStyle(
+                                  color: Colors.yellow.shade600),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(40),
+                                  borderSide: BorderSide(
+                                      width: 1,
+                                      color: Colors.yellow.shade600)),
+                              contentPadding:
+                              const EdgeInsets.only(left: 40),
+                              border: OutlineInputBorder(
+                                  borderRadius:
+                                  BorderRadius.circular(40))),
+                          keyboardType: TextInputType.name,
+                          textInputAction: TextInputAction.done,
+                        ),
+                      )
+                          : const SizedBox(),
+                      const Spacer(),
+                      Container(
+                          width: double.infinity,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 15.0, vertical: 20.0),
+                          child: SizedBox(
+                            height: 60,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_isSendingPhone.value) {
+                                  return;
+                                }
+                                if (formKey.currentState != null &&
+                                    formKey.currentState!.validate()) {
+                                  _isSendingPhone.value = true;
+                                  Map<String, String> requestHeaders = {
+                                    'Content-type': 'application/json',
+                                    'Accept': 'application/json'
+                                  };
+                                  var url = Uri.https(
+                                      'api.choparpizza.uz', '/api/keldi');
+                                  var response = await http.get(url,
+                                      headers: requestHeaders);
+                                  if (response.statusCode == 200) {
+                                    var json = jsonDecode(response.body);
+                                    Codec<String, String> stringToBase64 =
+                                    utf8.fuse(base64);
+                                    String decoded = stringToBase64
+                                        .decode(json['result']);
+
+                                    Map<String, String> requestHeaders = {
+                                      'Content-type': 'application/json',
+                                      'Accept': 'application/json'
+                                    };
+                                    url = Uri.https('api.choparpizza.uz',
+                                        '/api/send_otp');
+                                    var formData = {
+                                      'phone': phoneNumber.value
+                                    };
+                                    if (_isShowNameField.value) {
+                                      formData['name'] =
+                                          nameFieldController.text;
+                                    }
+                                    response = await http.post(url,
+                                        headers: requestHeaders,
+                                        body: jsonEncode(formData));
+                                    if (response.statusCode == 200) {
+                                      json = jsonDecode(response.body);
+                                      if (json['error'] != null) {
+                                        if (json['error'] ==
+                                            'name_field_is_required') {
+                                          _isShowNameField.value = true;
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                              content: Text(
+                                                  'Мы Вас не нашли в нашей системе. Просьба указать своё имя.')));
+                                        }
+                                      } else if (json['success'] != null) {
+                                        Codec<String, String>
+                                        stringToBase64 =
+                                        utf8.fuse(base64);
+                                        String decoded = stringToBase64
+                                            .decode(json['success']);
+                                        otpToken.value = jsonDecode(
+                                            decoded)['user_token'];
+                                        _isVerifyPage.value = true;
+                                      }
+                                    }
+                                  }
+                                  _isSendingPhone.value = false;
+                                }
+                              },
+                              child: Text(tr("signIn.proceed")),
+                              style: ButtonStyle(
+                                shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    )),
+                                backgroundColor:
+                                MaterialStateProperty.all<Color>(
+                                    AppColors.mainColor),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+              ),],)
+          ],
+        )),
       ),
     );
   }

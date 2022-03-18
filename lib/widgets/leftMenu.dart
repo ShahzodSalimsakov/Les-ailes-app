@@ -51,7 +51,7 @@ class _LeftMenuState extends State<LeftMenu> {
                   style: const TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onTap: () {
-                  context.router.push(const SignInPage());
+                  context.router.pushNamed("/signIn");
                 },
               ),
               ListTile(
@@ -62,7 +62,7 @@ class _LeftMenuState extends State<LeftMenu> {
                   style: const TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onTap: () {
-                  context.router.push(const SettingsPage());
+                  context.router.pushNamed("/settings");
                 },
               ),
               ListTile(
@@ -73,7 +73,7 @@ class _LeftMenuState extends State<LeftMenu> {
                   style: const TextStyle(color: Colors.black, fontSize: 20),
                 ),
                 onTap: () {
-                  context.router.push(const AboutUsPage());
+                  context.router.pushNamed("/about");
                 },
               ),
             ],
