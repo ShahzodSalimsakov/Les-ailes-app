@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:les_ailes/utils/colors.dart';
 
-import '../routes/router.gr.dart';
-
-enum BestTutorSite { ru, uz, en }
-
 class Lang {
   late String value;
   late String name;

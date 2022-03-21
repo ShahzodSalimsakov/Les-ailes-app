@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:les_ailes/utils/colors.dart';
@@ -26,6 +27,7 @@ class AboutUsPage extends StatelessWidget {
           child: Column(
             children: [
               Container(
+                margin: const EdgeInsets.only(bottom: 20),
                 height: 290,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -78,12 +80,14 @@ class AboutUsPage extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: (){
+                            onTap: () {
                               launch(
                                 'https://www.instagram.com/lesailesuz/',
                                 forceSafariVC: false,
                                 forceWebView: false,
-                                headers: <String, String>{'my_header_key': 'my_header_value'},
+                                headers: <String, String>{
+                                  'my_header_key': 'my_header_value'
+                                },
                               );
                             },
                             child: Container(
@@ -103,10 +107,12 @@ class AboutUsPage extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               launch(
-                                '',
+                                'https://www.facebook.com/choparpizza/',
                                 forceSafariVC: false,
                                 forceWebView: false,
-                                headers: <String, String>{'my_header_key': 'my_header_value'},
+                                headers: <String, String>{
+                                  'my_header_key': 'my_header_value'
+                                },
                               );
                             },
                             child: Container(
@@ -129,7 +135,9 @@ class AboutUsPage extends StatelessWidget {
                                 '',
                                 forceSafariVC: false,
                                 forceWebView: false,
-                                headers: <String, String>{'my_header_key': 'my_header_value'},
+                                headers: <String, String>{
+                                  'my_header_key': 'my_header_value'
+                                },
                               );
                             },
                             child: Container(
@@ -148,10 +156,96 @@ class AboutUsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
-              )
+              ),
+              GestureDetector(
+                onTap: () {
+                  context.router.pushNamed('/privacy');
+                },
+                child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(width: 1.0, color: AppColors.grey),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              // width: 180,
+                              child: Text(tr("about.privacy"),
+                                  style: const TextStyle(fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.arrow_forward_ios)
+                      ],
+                    )),
+              ),
+              GestureDetector(
+                onTap: () {
+                  context.router.pushNamed('/terms');
+                },
+                child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(width: 1.0, color: AppColors.grey),
+                        bottom: BorderSide(width: 1.0, color: AppColors.grey),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              // width: 180,
+                              child: Text(tr("about.terms"),
+                                  style: const TextStyle(fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.arrow_forward_ios)
+                      ],
+                    )),
+              ),
+              GestureDetector(
+                onTap: () {
+                  context.router.pushNamed('/franchise');
+                },
+                child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(width: 1.0, color: AppColors.grey),
+                        bottom: BorderSide(width: 1.0, color: AppColors.grey),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(
+                              // width: 180,
+                              child: Text(tr("about.franchise"),
+                                  style: const TextStyle(fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        const Icon(Icons.arrow_forward_ios)
+                      ],
+                    )),
+              ),
             ],
           ),
         ),

@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   )),
               GestureDetector(
                 onTap: () {
-                  context.router.push( ChangeLang());
+                  context.router.pushNamed("/changeLang");
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),

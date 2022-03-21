@@ -108,7 +108,7 @@ class _LeftMenuState extends State<LeftMenu> {
                               color: Colors.black, fontSize: 20),
                         ),
                         SizedBox(
-                          width: 140,
+                          width: 150,
                           child: Text(
                             tr("leftMenu.writeUsDesc"),
                             style: const TextStyle(

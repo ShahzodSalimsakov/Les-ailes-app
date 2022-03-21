@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -52,16 +53,22 @@ class ProductList extends HookWidget {
 
     Widget productImage(String? image) {
       if (image != null) {
-        return Image.network(
-          image,
-          width: 164.0,
-          height: 164.0,
-          // width: MediaQuery.of(context).size.width / 2.5,
+        return CachedNetworkImage(
+          imageUrl: image,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress, color: AppColors.mainColor),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
         );
+        // return Image.network(
+        //   image,
+        //   width: 164.0,
+        //   height: 164.0,
+        //   // width: MediaQuery.of(context).size.width / 2.5,
+        // );
       } else {
         return ClipOval(
           child: SvgPicture.network(
-            'https://choparpizza.uz/no_photo.svg',
+            'https://lesailes.uz/no_photo.svg',
             width: 175.0,
             height: 175.0,
           ),
