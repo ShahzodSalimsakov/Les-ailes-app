@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
@@ -42,7 +43,7 @@ class SignInPage extends HookWidget {
         'Authorization': 'Bearer ${otpToken.value}'
       };
       String? token = await FirebaseMessaging.instance.getToken();
-      var url = Uri.https('api.choparpizza.uz', '/api/auth_otp');
+      var url = Uri.https('api.lesailes.uz', '/api/auth_otp');
       var formData = {'phone': phoneNumber.value, 'code': otpCode.value};
       if (token != null) {
         formData['token'] = token;
@@ -60,9 +61,9 @@ class SignInPage extends HookWidget {
                   const Text('Введённый код неверный или срок кода истёк')));
         } else {
           var result = jsonDecode(decoded);
-          // User authorizedUser = User.fromJson(result['user']);
-          // Box<User> transaction = Hive.box<User>('user');
-          // transaction.put('user', authorizedUser);
+          User authorizedUser = User.fromJson(result['user']);
+          Box<User> transaction = Hive.box<User>('user');
+          transaction.put('user', authorizedUser);
           Navigator.of(context).pop();
         }
       }
@@ -74,7 +75,7 @@ class SignInPage extends HookWidget {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
-      var url = Uri.https('api.choparpizza.uz', '/api/send_otp');
+      var url = Uri.https('api.lesailes.uz', '/api/send_otp');
       var formData = {'phone': phoneNumber.value};
       if (_isShowNameField.value) {
         formData['name'] = nameFieldController.text;
