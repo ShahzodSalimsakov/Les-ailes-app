@@ -52,6 +52,8 @@ dependencies:
   timer_count_down: ^2.2.1
   flutter_switch: ^0.3.2
   cached_network_image: ^3.2.0
+  yandex_mapkit: ^2.0.2
+  hive: ^2.1.0
 
 dev_dependencies:
   flutter_test:

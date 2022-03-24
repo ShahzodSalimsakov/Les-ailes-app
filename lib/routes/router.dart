@@ -2,8 +2,10 @@ import 'package:auto_route/annotations.dart';
 import 'package:les_ailes/home_page.dart';
 import 'package:les_ailes/pages/aboutUs.dart';
 import 'package:les_ailes/pages/changeLang.dart';
+import 'package:les_ailes/pages/delivery.dart';
 import 'package:les_ailes/pages/franchise.dart';
 import 'package:les_ailes/pages/notifications.dart';
+import 'package:les_ailes/pages/pickup.dart';
 import 'package:les_ailes/pages/privacy.dart';
 import 'package:les_ailes/pages/settings.dart';
 import 'package:les_ailes/pages/signIn.dart';
@@ -29,6 +31,8 @@ import 'package:les_ailes/pages/terms.dart';
   AutoRoute(path: '/changeLang', name: 'changeLang', page: ChangeLang),
   AutoRoute(path: '/privacy', name: 'PrivacyPolicy', page: Privacy),
   AutoRoute(path: '/terms', name: 'Termsofuse', page: Terms),
-  AutoRoute(path: '/franchise', name: 'Franchise', page: Franchise)
+  AutoRoute(path: '/franchise', name: 'Franchise', page: Franchise),
+  AutoRoute(path: '/delivery', name: 'Delivery', page: DeliveryPage),
+  AutoRoute(path: '/pickup', name: 'Pickup', page: PickupPage)
 ])
 class $AppRouter {}

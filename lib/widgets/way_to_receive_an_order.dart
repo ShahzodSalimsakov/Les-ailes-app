@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,9 @@ class WayToReceiveAnOrder extends StatelessWidget {
                       childAspectRatio: (164 / 164),
                       children: [
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            context.router.pushNamed('/delivery');
+                          },
                           child: Container(
                             width: 164,
                             height: 164,
@@ -84,7 +87,9 @@ class WayToReceiveAnOrder extends StatelessWidget {
                           ),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () {
+                            context.router.pushNamed('/pickup');
+                          },
                           child: Container(
                             width: 164,
                             height: 164,
