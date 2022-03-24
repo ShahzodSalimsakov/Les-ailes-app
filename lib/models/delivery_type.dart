@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-// part 'delivery_type.g.dart';
+part 'delivery_type.g.dart';
 
 
 @HiveType(typeId: 6)
