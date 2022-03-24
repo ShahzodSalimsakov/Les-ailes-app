@@ -20,7 +20,8 @@
     "signIn": "Sign in",
     "enterNumber": "Enter number phone",
     "getConfirmationCode": "Get confirmation code",
-    "proceed": "Proceed"
+    "proceed": "Proceed",
+    "typeOtp": "Type code"
   },
   "settings": {
     "settings": "Settings",

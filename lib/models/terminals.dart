@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-// part 'terminals.g.dart';
+part 'terminals.g.dart';
 
 @HiveType(typeId: 3)
 class Terminals {

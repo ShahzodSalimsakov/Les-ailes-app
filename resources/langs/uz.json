@@ -20,7 +20,8 @@
     "signIn": "Kirish",
     "enterNumber": "Telefon raqamini kiriting",
     "getConfirmationCode": "Tasdiqlash kodini olish",
-    "proceed": "Davom etish"
+    "proceed": "Davom etish",
+    "typeOtp": "Kodni kiriting"
   },
   "settings": {
     "settings": "Sozlamalar",

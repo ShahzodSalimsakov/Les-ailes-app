@@ -20,7 +20,8 @@
     "signIn": "Войти",
     "enterNumber": "Введите номер телефона",
     "getConfirmationCode": "Получить код подтверждения",
-    "proceed": "Продолжить"
+    "proceed": "Продолжить",
+    "typeOtp": "Введите код"
   },
   "settings": {
     "settings": "Настройки",
