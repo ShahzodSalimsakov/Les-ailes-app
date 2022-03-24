@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'delivery_location_data.g.dart';
+// part 'delivery_location_data.g.dart';
 
 @HiveType(typeId: 4)
 class DeliveryLocationData {

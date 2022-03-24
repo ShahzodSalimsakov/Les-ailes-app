@@ -1,10 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/routes/router.gr.dart';
 import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:niku/niku.dart' as n;
+
+import 'models/user.dart';
 
 // void main() {
 //   runApp(const MyApp());
@@ -13,6 +17,11 @@ import 'package:niku/niku.dart' as n;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+
+  await Hive.initFlutter();
+  Hive.registerAdapter(UserAdapter());
+
+  await Hive.openBox<User>('user');
 
   runApp(
     EasyLocalization(

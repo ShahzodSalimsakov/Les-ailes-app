@@ -14,6 +14,7 @@ import 'package:auto_route/auto_route.dart' as _i12;
 import 'package:flutter/material.dart' as _i13;
 
 import '../home_page.dart' as _i1;
+import '../models/yandex_geo_data.dart' as _i14;
 import '../pages/aboutUs.dart' as _i4;
 import '../pages/changeLang.dart' as _i6;
 import '../pages/delivery.dart' as _i10;
@@ -72,8 +73,11 @@ class AppRouter extends _i12.RootStackRouter {
           routeData: routeData, child: const _i9.Franchise());
     },
     Delivery.name: (routeData) {
+      final args =
+          routeData.argsAs<DeliveryArgs>(orElse: () => const DeliveryArgs());
       return _i12.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i10.DeliveryPage());
+          routeData: routeData,
+          child: _i10.DeliveryPage(key: args.key, geoData: args.geoData));
     },
     Pickup.name: (routeData) {
       return _i12.MaterialPageX<dynamic>(
@@ -197,10 +201,25 @@ class Franchise extends _i12.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i10.DeliveryPage]
-class Delivery extends _i12.PageRouteInfo<void> {
-  const Delivery() : super(Delivery.name, path: '/delivery');
+class Delivery extends _i12.PageRouteInfo<DeliveryArgs> {
+  Delivery({_i13.Key? key, _i14.YandexGeoData? geoData})
+      : super(Delivery.name,
+            path: '/delivery', args: DeliveryArgs(key: key, geoData: geoData));
 
   static const String name = 'Delivery';
+}
+
+class DeliveryArgs {
+  const DeliveryArgs({this.key, this.geoData});
+
+  final _i13.Key? key;
+
+  final _i14.YandexGeoData? geoData;
+
+  @override
+  String toString() {
+    return 'DeliveryArgs{key: $key, geoData: $geoData}';
+  }
 }
 
 /// generated route for
