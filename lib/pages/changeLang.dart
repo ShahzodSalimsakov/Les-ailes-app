@@ -58,6 +58,7 @@ class ChangeLang extends HookWidget {
                               leading: Radio(
                                 value: supportedLanguages[index].value,
                                 groupValue: currentLanguage.value,
+                                fillColor: MaterialStateProperty.all(AppColors.green),
                                 onChanged: (value) async {
                                   currentLanguage.value = supportedLanguages[index].value;
                                   await context.setLocale(Locale(supportedLanguages[index].value));

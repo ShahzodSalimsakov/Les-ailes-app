@@ -71,6 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         padding: 2,
                         borderRadius: 30.0,
                         inactiveColor: Colors.grey.shade300,
+                        activeColor: AppColors.green,
                         onToggle: (val) {
                           setState(() {
                             status = val;
