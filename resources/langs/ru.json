@@ -4,7 +4,10 @@
     "settings": "Настройки",
     "aboutUs": "О нас",
     "writeUs": "Напишите нам",
-    "writeUsDesc": "Если у вас возникли проблемы с сервисом"
+    "writeUsDesc": "Если у вас возникли проблемы с сервисом",
+    "profilePage": "Профиль",
+    "myOrders": "Мои заказы",
+    "myAddresses": "Мои адреса"
   },
   "main": {
     "deliveryOrPickup": "Закажите доставку или заберите"
@@ -21,7 +24,8 @@
     "enterNumber": "Введите номер телефона",
     "getConfirmationCode": "Получить код подтверждения",
     "proceed": "Продолжить",
-    "typeOtp": "Введите код"
+    "typeOtp": "Введите код",
+    "logout": "Выйти"
   },
   "settings": {
     "settings": "Настройки",

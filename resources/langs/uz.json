@@ -4,7 +4,10 @@
     "settings": "Sozlamalar",
     "aboutUs": "Biz haqimizda",
     "writeUs": "Bizga yozing",
-    "writeUsDesc": "Xizmat bilan bog'liq muammolar mavjud bo'lsa"
+    "writeUsDesc": "Xizmat bilan bog'liq muammolar mavjud bo'lsa",
+    "profilePage": "Profil",
+    "myOrders": "Mening buyurtmalarim",
+    "myAddresses": "Mening manzillarim"
   },
   "main": {
     "deliveryOrPickup": "Buyurtma bering yoki olib keting"
@@ -21,7 +24,8 @@
     "enterNumber": "Telefon raqamini kiriting",
     "getConfirmationCode": "Tasdiqlash kodini olish",
     "proceed": "Davom etish",
-    "typeOtp": "Kodni kiriting"
+    "typeOtp": "Kodni kiriting",
+    "logout": "Chiqish"
   },
   "settings": {
     "settings": "Sozlamalar",
