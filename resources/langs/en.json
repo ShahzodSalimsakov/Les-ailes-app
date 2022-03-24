@@ -4,7 +4,10 @@
     "settings": "Settings",
     "aboutUs": "About us",
     "writeUs": "Write us",
-    "writeUsDesc": "If you have any service problems"
+    "writeUsDesc": "If you have any service problems",
+    "profilePage": "Profile",
+    "myOrders": "My orders",
+    "myAddresses": "My addresses"
   },
   "main": {
     "deliveryOrPickup": "Schedule delivery or pick up"
@@ -21,7 +24,8 @@
     "enterNumber": "Enter number phone",
     "getConfirmationCode": "Get confirmation code",
     "proceed": "Proceed",
-    "typeOtp": "Type code"
+    "typeOtp": "Type code",
+    "logout": "logout"
   },
   "settings": {
     "settings": "Settings",

@@ -176,7 +176,7 @@ class SignInPage extends HookWidget {
                                 trySignIn();
                               },
                               pinTheme: PinTheme(
-                                  // borderRadius: BorderRadius.circular(20),
+                                  borderRadius: BorderRadius.circular(20),
                                   fieldWidth: 60,
                                   fieldHeight: 70,
                                   shape: PinCodeFieldShape.box,
@@ -375,7 +375,7 @@ class SignInPage extends HookWidget {
                                       'Accept': 'application/json'
                                     };
                                     var url = Uri.https(
-                                        'api.choparpizza.uz', '/api/keldi');
+                                        'api.lesailes.uz', '/api/keldi');
                                     var response = await http.get(url,
                                         headers: requestHeaders);
                                     if (response.statusCode == 200) {
@@ -389,7 +389,7 @@ class SignInPage extends HookWidget {
                                         'Content-type': 'application/json',
                                         'Accept': 'application/json'
                                       };
-                                      url = Uri.https('api.choparpizza.uz',
+                                      url = Uri.https('api.lesailes.uz',
                                           '/api/send_otp');
                                       var formData = {
                                         'phone': phoneNumber.value
