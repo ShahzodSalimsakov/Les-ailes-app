@@ -81,7 +81,7 @@ class AppRouter extends _i12.RootStackRouter {
     },
     Pickup.name: (routeData) {
       return _i12.MaterialPageX<dynamic>(
-          routeData: routeData, child: const _i11.PickupPage());
+          routeData: routeData, child: _i11.PickupPage());
     }
   };
 
