@@ -483,6 +483,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  hashids2:
+    dependency: "direct main"
+    description:
+      name: hashids2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   hive:
     dependency: "direct main"
     description:
