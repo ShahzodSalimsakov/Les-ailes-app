@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,8 +9,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:niku/niku.dart' as n;
+import 'package:http/http.dart' as http;
 
 
+import '../models/basket.dart';
 import '../models/user.dart';
 import '../services/user_repository.dart';
 
@@ -31,6 +35,30 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
     )) {
       throw 'Could not launch $url';
     }
+  }
+
+  logout() async {
+
+    Box<User> transaction = Hive.box<User>('user');
+    User currentUser = transaction.get('user')!;
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${currentUser.userToken}'
+    };
+    var url =
+    Uri.https('api.lesailes.uz', '/api/logout');
+    var formData = {};
+    var response = await http.post(url,
+        headers: requestHeaders,
+        body: jsonEncode(formData));
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+    }
+    transaction.delete('user');
+    Box<Basket> basketBox = Hive.box<Basket>('basket');
+    basketBox.delete('basket');
+
   }
 
   @override
@@ -112,7 +140,9 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     ),
                   ],
                 ),
-                n.NikuButton.elevated(Text(tr('signIn.logout')))..bg = AppColors.mainColor..color = Colors.white,
+                SizedBox(width: double.infinity,child: n.NikuButton.elevated(Text(tr('signIn.logout')))..bg = AppColors.mainColor..color = Colors.white..mx = 20..rounded = 10..onPressed = () {
+                  logout();
+                }),
                 const Spacer(flex: 1),
                 GestureDetector(
                   onTap: () => setState(() {
