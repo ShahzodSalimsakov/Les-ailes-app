@@ -91,6 +91,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/profile");
                       },
                     ),
@@ -102,6 +103,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/my_orders");
                       },
                     ),
@@ -113,6 +115,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/my_addresses");
                       },
                     ),
@@ -124,6 +127,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/settings");
                       },
                     ),
@@ -135,6 +139,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/about");
                       },
                     ),
@@ -206,6 +211,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/signIn");
                       },
                     ),
@@ -217,6 +223,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/settings");
                       },
                     ),
@@ -228,6 +235,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                         style: const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
+                        Scaffold.of(context).openEndDrawer();
                         context.router.pushNamed("/about");
                       },
                     ),

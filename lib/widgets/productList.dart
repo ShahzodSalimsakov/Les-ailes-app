@@ -4,9 +4,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/widgets/productCard.dart';
 import 'package:sticky_headers/sticky_headers.dart';
+import '../models/basket.dart';
 import '../models/productSection.dart';
 
 class ProductList extends HookWidget {
@@ -56,7 +60,8 @@ class ProductList extends HookWidget {
         return CachedNetworkImage(
           imageUrl: image,
           progressIndicatorBuilder: (context, url, downloadProgress) =>
-              CircularProgressIndicator(value: downloadProgress.progress, color: AppColors.mainColor),
+              CircularProgressIndicator(
+                  value: downloadProgress.progress, color: AppColors.mainColor),
           errorWidget: (context, url, error) => const Icon(Icons.error),
         );
         // return Image.network(
@@ -116,59 +121,7 @@ class ProductList extends HookWidget {
                     mainAxisSpacing: 20),
                 itemBuilder: (context, indx) {
                   Items? product = products.value[index].items?[indx];
-                  String? image = product!.image;
-                  final formatCurrency = NumberFormat.currency(
-                      locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-                  String productPrice = '';
-
-                  productPrice = product.price;
-
-                  productPrice =
-                      formatCurrency.format(double.tryParse(productPrice));
-                  return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: AppColors.grey,
-                      ),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            productImage(image),
-                            const Spacer(
-                              flex: 1,
-                            ),
-                            Text(
-                              products.value[index].items?[indx].attributeData
-                                      ?.name?.chopar?.ru ??
-                                  '',
-                              style: const TextStyle(fontSize: 20),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Spacer(
-                              flex: 1,
-                            ),
-                            SizedBox(
-                              height: 50,
-                              width: 144,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(productPrice),
-                                style: ButtonStyle(
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  )),
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          AppColors.mainColor),
-                                ),
-                              ),
-                            )
-                          ]));
+                        return ProductCard(product!);
                 },
               ),
             );

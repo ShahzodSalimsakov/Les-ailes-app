@@ -8,6 +8,7 @@ import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:niku/niku.dart' as n;
 
+import 'models/basket.dart';
 import 'models/city.dart';
 import 'models/delivery_location_data.dart';
 import 'models/delivery_type.dart';
@@ -26,8 +27,7 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(CityAdapter());
-  Hive.registerAdapter(UserAdapter());
-  // Hive.registerAdapter(BasketAdapter());
+  Hive.registerAdapter(BasketAdapter());
   Hive.registerAdapter(TerminalsAdapter());
   Hive.registerAdapter(DeliveryLocationDataAdapter());
   Hive.registerAdapter(DeliveryTypeAdapter());
@@ -43,8 +43,9 @@ void main() async {
   // Hive.registerAdapter(HomeIsScrolledAdapter());
   // Hive.registerAdapter(HomeScrollPositionAdapter());
 
-  await Hive.openBox<User>('user');  await Hive.openBox<City>('currentCity');
-  // await Hive.openBox<Basket>('basket');
+  await Hive.openBox<User>('user');
+  await Hive.openBox<City>('currentCity');
+  await Hive.openBox<Basket>('basket');
   await Hive.openBox<Terminals>('currentTerminal');
   await Hive.openBox<DeliveryLocationData>('deliveryLocationData');
   await Hive.openBox<DeliveryType>('deliveryType');

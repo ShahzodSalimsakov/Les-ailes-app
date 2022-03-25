@@ -29,7 +29,6 @@ class Header extends StatelessWidget {
                     SvgPicture.asset("images/menu.svg", width: 24, height: 24),
               ))
                 ..onPressed = () {
-                  print("text");
                   Scaffold.of(context).openDrawer();
                 },
               SvgPicture.asset("images/logo.svg"),
