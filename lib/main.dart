@@ -8,6 +8,12 @@ import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:niku/niku.dart' as n;
 
+import 'models/basket.dart';
+import 'models/city.dart';
+import 'models/delivery_location_data.dart';
+import 'models/delivery_type.dart';
+import 'models/stock.dart';
+import 'models/terminals.dart';
 import 'models/user.dart';
 
 // void main() {
@@ -20,8 +26,38 @@ void main() async {
 
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(CityAdapter());
+  Hive.registerAdapter(BasketAdapter());
+  Hive.registerAdapter(TerminalsAdapter());
+  Hive.registerAdapter(DeliveryLocationDataAdapter());
+  Hive.registerAdapter(DeliveryTypeAdapter());
+  Hive.registerAdapter(DeliveryTypeEnumAdapter());
+  // Hive.registerAdapter(DeliveryTimeAdapter());
+  // Hive.registerAdapter(DeliveryTimeEnumAdapter());
+  // Hive.registerAdapter(DeliverLaterTimeAdapter());
+  // Hive.registerAdapter(PayTypeAdapter());
+  // Hive.registerAdapter(DeliveryNotesAdapter());
+  // Hive.registerAdapter(PayCashAdapter());
+  Hive.registerAdapter(StockAdapter());
+  // Hive.registerAdapter(AdditionalPhoneNumberAdapter());
+  // Hive.registerAdapter(HomeIsScrolledAdapter());
+  // Hive.registerAdapter(HomeScrollPositionAdapter());
 
   await Hive.openBox<User>('user');
+  await Hive.openBox<City>('currentCity');
+  await Hive.openBox<Basket>('basket');
+  await Hive.openBox<Terminals>('currentTerminal');
+  await Hive.openBox<DeliveryLocationData>('deliveryLocationData');
+  await Hive.openBox<DeliveryType>('deliveryType');
+  // await Hive.openBox<DeliveryTime>('deliveryTime');
+  // await Hive.openBox<DeliverLaterTime>('deliveryLaterTime');
+  // await Hive.openBox<PayType>('payType');
+  // await Hive.openBox<DeliveryNotes>('deliveryNotes');
+  // await Hive.openBox<PayCash>('payCash');
+  await Hive.openBox<Stock>('stock');
+  // await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
+  // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
+  // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 
   runApp(
     EasyLocalization(
