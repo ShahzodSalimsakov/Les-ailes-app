@@ -26,7 +26,6 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(CityAdapter());
-  Hive.registerAdapter(UserAdapter());
   // Hive.registerAdapter(BasketAdapter());
   Hive.registerAdapter(TerminalsAdapter());
   Hive.registerAdapter(DeliveryLocationDataAdapter());

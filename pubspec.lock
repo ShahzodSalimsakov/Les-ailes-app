@@ -190,6 +190,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  country_pickers:
+    dependency: transitive
+    description:
+      name: country_pickers
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   crypto:
     dependency: transitive
     description:
@@ -399,6 +406,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
+  form_builder_phone_field:
+    dependency: "direct main"
+    description:
+      name: form_builder_phone_field
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-beta.0"
+  form_builder_validators:
+    dependency: "direct main"
+    description:
+      name: form_builder_validators
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "7.7.0"
   frontend_server_client:
     dependency: transitive
     description:
@@ -728,6 +749,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  phone_number:
+    dependency: transitive
+    description:
+      name: phone_number
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.12.0+1"
   pin_code_fields:
     dependency: "direct main"
     description:
