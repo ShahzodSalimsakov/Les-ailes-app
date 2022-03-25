@@ -46,5 +46,13 @@
   },
   "basket": {
     "navigationBottomLabel": "Savat"
+  },
+  "save": "Saqlash",
+  "profile" : {
+    "profile": "Profil",
+    "name": "Ism",
+    "birthDay": "Tug'ilish",
+    "email": "Elektron pochta",
+    "phone": "Telefon"
   }
 }

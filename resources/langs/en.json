@@ -46,5 +46,13 @@
   },
   "basket": {
     "navigationBottomLabel": "Cart"
-  }
+  },
+  "profile" : {
+    "profile": "Profile",
+    "name": "Name",
+    "birthDay": "Date of Birth",
+    "email": "Email",
+    "phone": "Phone"
+  },
+  "save": "Save"
 }

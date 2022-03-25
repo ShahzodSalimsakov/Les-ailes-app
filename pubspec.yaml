@@ -57,6 +57,8 @@ dependencies:
   geolocator: ^8.2.0
   dart_date: ^1.1.1
   hashids2: ^2.0.0
+  form_builder_validators: ^7.7.0
+  form_builder_phone_field: ^1.0.0-beta.0
 
 dev_dependencies:
   flutter_test:
