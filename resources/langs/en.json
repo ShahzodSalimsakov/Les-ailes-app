@@ -47,7 +47,7 @@
   "basket": {
     "navigationBottomLabel": "Cart"
   },
-  "profile" : {
+  "profile": {
     "profile": "Profile",
     "name": "Name",
     "birthDay": "Date of Birth",
@@ -60,5 +60,17 @@
     "continue": "Continue",
     "specifyAddress": "Specify the address"
   },
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "cooking": "Cooking",
+  "cancelled": "Cancelled",
+  "accepted": "Accepted",
+  "not-accepted": "Not accepted",
+  "not-confirmed": "Not confirmed",
+  "awaiting-payment": "Awaiting payment",
+  "cooked": "Ready and waiting to be sent",
+  "delivering": "On the way",
+  "done": "Delivered",
+  "order": "Order",
+  "total": "Total",
+  "delivery-address": "Delivery address"
 }
