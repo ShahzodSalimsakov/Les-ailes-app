@@ -47,12 +47,24 @@
   "basket": {
     "navigationBottomLabel": "Корзина"
   },
-  "profile" : {
+  "profile": {
     "profile": "Профиль",
     "name": "Имя",
     "birthDay": "Дата рождения",
     "email": "Эл.почта",
     "phone": "Телефон"
   },
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "cooking": "Готовится",
+  "cancelled": "Отменён",
+  "accepted": "Принят",
+  "order": "Заказ",
+  "total": "Итого",
+  "not-accepted": "Не принят",
+  "not-confirmed": "Не подтверждён",
+  "awaiting-payment": "Ждём оплату",
+  "cooked": "Готов и ждёт отправки",
+  "delivering": "В пути",
+  "done": "Доставлен",
+  "delivery-address": "Адрес доставки"
 }

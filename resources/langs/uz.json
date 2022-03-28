@@ -48,11 +48,23 @@
     "navigationBottomLabel": "Savat"
   },
   "save": "Saqlash",
-  "profile" : {
+  "profile": {
     "profile": "Profil",
     "name": "Ism",
     "birthDay": "Tug'ilish",
     "email": "Elektron pochta",
     "phone": "Telefon"
-  }
+  },
+  "cooking": "Tayorlanmoqda",
+  "cancelled": "Bekor qilingan",
+  "accepted": "Qabul qilingan",
+  "order": "Buyurtma",
+  "total": "Jami",
+  "not-accepted": "Qabul qilinmagan",
+  "not-confirmed": "Tasdiqlanmagan",
+  "awaiting-payment": "To'lov kutilmoqda",
+  "cooked": "Tayyor va yuborilishi kutilmoqda",
+  "delivering": "Yo'lda",
+  "done": "Yetkazib berildi",
+  "delivery-address": "Yetkazib berish manzili"
 }
