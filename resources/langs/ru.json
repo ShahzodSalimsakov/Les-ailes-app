@@ -54,5 +54,11 @@
     "email": "Эл.почта",
     "phone": "Телефон"
   },
-  "save": "Сохранить"
+  "save": "Сохранить",
+  "deliveryBottomSheet": {
+    "addressNotDeliverable": "Адрес вне зоны доставки или филиалы закрыты",
+    "continue": "Продолжить",
+    "specifyAddress": "Уточните адрес"
+  },
+  "cancel": "Отменить"
 }

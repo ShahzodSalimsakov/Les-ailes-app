@@ -23,7 +23,7 @@ class City extends HiveObject {
   @HiveField(8)
   late int sort;
   @HiveField(9)
-  late String phone;
+  late String? phone;
 
   City(
       {required this.id,
@@ -35,7 +35,7 @@ class City extends HiveObject {
         required this.lon,
         required this.active,
         required this.sort,
-        required this.phone});
+        this.phone});
 
   City.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -47,21 +47,21 @@ class City extends HiveObject {
     lon = json['lon'];
     active = json['active'];
     sort = json['sort'];
-    phone = json['phone'];
+    phone = json['phone'] ?? '';
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['xml_id'] = this.xmlId;
-    data['name'] = this.name;
-    data['name_uz'] = this.nameUz;
-    data['map_zoom'] = this.mapZoom;
-    data['lat'] = this.lat;
-    data['lon'] = this.lon;
-    data['active'] = this.active;
-    data['sort'] = this.sort;
-    data['phone'] = this.phone;
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['id'] = id;
+    data['xml_id'] = xmlId;
+    data['name'] = name;
+    data['name_uz'] = nameUz;
+    data['map_zoom'] = mapZoom;
+    data['lat'] = lat;
+    data['lon'] = lon;
+    data['active'] = active;
+    data['sort'] = sort;
+    data['phone'] = phone;
     return data;
   }
 

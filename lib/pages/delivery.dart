@@ -1,246 +1,288 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
+import 'package:les_ailes/utils/colors.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
+import '../models/city.dart';
 import '../models/delivery_location_data.dart';
 import '../models/terminals.dart';
 import '../models/yandex_geo_data.dart';
+import '../widgets/delivery_bottom_sheet.dart';
 import '../widgets/delivery_modal_sheet.dart';
 
-class DeliveryPage extends StatefulWidget {
+class DeliveryPage extends HookWidget {
   final YandexGeoData? geoData;
-  const DeliveryPage({Key? key, this.geoData}) : super(key: key);
 
-  @override
-  State<DeliveryPage> createState() => _DeliveryPageState();
-}
+  DeliveryPage({Key? key, this.geoData}) : super(key: key);
 
-class _DeliveryPageState extends State<DeliveryPage> {
   late YandexMapController controller;
-  Placemark? _placemark;
+  final MapObjectId placemarkId = const MapObjectId('delivery_placemark');
+  final animation =
+      const MapAnimation(type: MapAnimationType.smooth, duration: 1.5);
 
-  bool isLookingLocation = false;
-
-  showBottomSheet(Point point) {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      backgroundColor: Colors.white,
-      builder: (context) => DeliveryModalSheet(currentPoint: point),
-    );
-  }
+  bool zoomGesturesEnabled = true;
 
   @override
   Widget build(BuildContext context) {
     Terminals? currentTerminal =
-    Hive.box<Terminals>('currentTerminal').get('currentTerminal');
-    final List<MapObject> mapObjects = [];
+        Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+    var mapObjects = useState<List<MapObject>>([]);
+    var isLookingLocation = useState<bool>(false);
+    var currentPoint = useState<Point?>(null);
 
-    // Future<void> lookForLocation() async {
-    //   setState(() {
-    //     isLookingLocation = true;
-    //   });
-    //
-    //   bool isLocationSet = true;
-    //
-    //   final Box<DeliveryLocationData> deliveryLocationBox =
-    //   Hive.box<DeliveryLocationData>('deliveryLocationData');
-    //   DeliveryLocationData? deliveryData = deliveryLocationBox.get('deliveryLocationData');
-    //
-    //   if (deliveryData == null) {
-    //     isLocationSet = false;
-    //   } else if (deliveryData.lat == null) {
-    //     isLocationSet = false;
-    //   }
-    //   var currentPosition;
-    //   if (!isLocationSet) {
-    //
-    //     bool serviceEnabled;
-    //     LocationPermission permission;
-    //
-    //     // Test if location services are enabled.
-    //     serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    //     if (!serviceEnabled) {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //           const SnackBar(content: Text('Недостаточно прав для получения локации')));
-    //       return;
-    //     }
-    //
-    //     permission = await Geolocator.checkPermission();
-    //     if (permission == LocationPermission.denied) {
-    //       permission = await Geolocator.requestPermission();
-    //       if (permission == LocationPermission.denied) {
-    //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-    //             content: Text('Недостаточно прав для получения локации')));
-    //         return;
-    //       }
-    //     }
-    //
-    //     if (permission == LocationPermission.deniedForever) {
-    //       ScaffoldMessenger.of(context).showSnackBar(
-    //           const SnackBar(content: Text('Недостаточно прав для получения локации')));
-    //       return;
-    //     }
-    //
-    //     currentPosition = await Geolocator.getCurrentPosition();
-    //
-    //   } else {
-    //     currentPosition = Position(longitude: deliveryData!.lon!, latitude: deliveryData!.lat!, timestamp: DateTime.now(), accuracy: 0, altitude: 0, heading: 0, speed: 0, speedAccuracy: 0);
-    //   }
-    //   if (_placemark != null) {
-    //     await controller.removePlacemark(_placemark!);
-    //   }
-    //
-    //   _placemark = Placemark(
-    //     point: Point(
-    //         latitude: currentPosition.latitude,
-    //         longitude: currentPosition.longitude),
-    //     // onTap: (Placemark self, Point point) =>
-    //     //     setCurrentTerminal(element),
-    //     style: PlacemarkStyle(
-    //         scale: 2,
-    //         opacity: 0.95,
-    //         iconName: 'assets/images/chosen_point.png'),
-    //   );
-    //   await controller.addPlacemark(_placemark!);
-    //   await controller.move(
-    //       point: Point(
-    //           latitude: currentPosition.latitude,
-    //           longitude: currentPosition.longitude),
-    //       animation: MapAnimation(smooth: true, duration: 1.5),
-    //       zoom: 17);
-    //   showBottomSheet(Point(
-    //       latitude: currentPosition.latitude,
-    //       longitude: currentPosition.longitude));
-    //   setState(() {
-    //     isLookingLocation = false;
-    //   });
-    // }
+    Future<void> lookForLocation() async {
+      isLookingLocation.value = true;
+
+      bool isLocationSet = true;
+
+      final Box<DeliveryLocationData> deliveryLocationBox =
+          Hive.box<DeliveryLocationData>('deliveryLocationData');
+      DeliveryLocationData? deliveryData =
+          deliveryLocationBox.get('deliveryLocationData');
+
+      if (deliveryData == null) {
+        isLocationSet = false;
+      } else if (deliveryData.lat == null) {
+        isLocationSet = false;
+      }
+      Position currentPosition;
+      if (!isLocationSet) {
+        bool serviceEnabled;
+        LocationPermission permission;
+
+        // Test if location services are enabled.
+        serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!serviceEnabled) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Недостаточно прав для получения локации')));
+          return;
+        }
+
+        permission = await Geolocator.checkPermission();
+        if (permission == LocationPermission.denied) {
+          permission = await Geolocator.requestPermission();
+          if (permission == LocationPermission.denied) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Недостаточно прав для получения локации')));
+            return;
+          }
+        }
+
+        if (permission == LocationPermission.deniedForever) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Недостаточно прав для получения локации')));
+          return;
+        }
+
+        currentPosition = await Geolocator.getCurrentPosition();
+      } else {
+        currentPosition = Position(
+            longitude: deliveryData!.lon!,
+            latitude: deliveryData!.lat!,
+            timestamp: DateTime.now(),
+            accuracy: 0,
+            altitude: 0,
+            heading: 0,
+            speed: 0,
+            speedAccuracy: 0);
+      }
+      var _placemark = Placemark(
+          mapId: placemarkId,
+          point: Point(
+              latitude: currentPosition.latitude,
+              longitude: currentPosition.longitude),
+          // onTap: (Placemark self, Point point) =>
+          //     setCurrentTerminal(element),
+          opacity: 0.7,
+          direction: 90,
+          icon: PlacemarkIcon.single(PlacemarkIconStyle(
+              image:
+                  BitmapDescriptor.fromAssetImage('images/location_picker.png'),
+              rotationType: RotationType.noRotation,
+              scale: 3,
+              anchor: Offset.fromDirection(1.1, 1))));
+      List<MapObject> mapsList = <MapObject>[];
+      mapsList.add(_placemark);
+      mapObjects.value = mapsList;
+      currentPoint.value = Point(
+          latitude: currentPosition.latitude,
+          longitude: currentPosition.longitude);
+      await controller.moveCamera(
+          CameraUpdate.newCameraPosition(CameraPosition(
+              target: Point(
+                  latitude: currentPosition.latitude,
+                  longitude: currentPosition.longitude),
+              zoom: 17)),
+          animation: animation);
+      // showBottomSheet(Point(
+      //     latitude: currentPosition.latitude,
+      //     longitude: currentPosition.longitude));
+      isLookingLocation.value = false;
+    }
+
+    void changeLocation (Point point) async {
+      var _placemark = Placemark(
+          mapId: placemarkId,
+          point: point,
+          // onTap: (Placemark self, Point point) =>
+          //     setCurrentTerminal(element),
+          opacity: 0.7,
+          direction: 90,
+          icon: PlacemarkIcon.single(PlacemarkIconStyle(
+              image:
+              BitmapDescriptor.fromAssetImage('images/location_picker.png'),
+              rotationType: RotationType.noRotation,
+              scale: 3,
+              anchor: Offset.fromDirection(1.1, 1))));
+      List<MapObject> mapsList = <MapObject>[];
+      mapsList.add(_placemark);
+      mapObjects.value = mapsList;
+      currentPoint.value = point;
+      await controller.moveCamera(
+          CameraUpdate.newCameraPosition(CameraPosition(
+              target: point,
+              zoom: 17)),
+          animation: animation);
+    }
 
     return Scaffold(
-      body: SafeArea(child: Container(
+      body: SafeArea(
+          child: Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Stack(fit: StackFit.loose, children: [
           /*Expanded(
             child: */
-          Container(
-              padding: EdgeInsets.all(8),
-              child: YandexMap(
-                mapObjects: mapObjects,
-                onMapCreated: (YandexMapController yandexMapController) async {
-                  setState(() {
-                    isLookingLocation = true;
-                  });
-                  controller = yandexMapController;
-                  // Box<City> box = Hive.box<City>('currentCity');
-                  // City? currentCity = box.get('currentCity');
-                  // await controller.toggleZoomGestures(enabled: true);
+          YandexMap(
+            mapObjects: mapObjects.value,
+            zoomGesturesEnabled: zoomGesturesEnabled,
+            onMapCreated: (YandexMapController yandexMapController) async {
+              controller = yandexMapController;
+              isLookingLocation.value = true;
+              Box<City> box = Hive.box<City>('currentCity');
+              City? currentCity = box.get('currentCity');
 
-                  // if (widget.geoData != null) {
-                  //   _placemark = Placemark(
-                  //     point: Point(
-                  //         latitude: double.parse(widget.geoData!.coordinates.lat),
-                  //         longitude:
-                  //         double.parse(widget.geoData!.coordinates.long)),
-                  //     // onTap: (Placemark self, Point point) =>
-                  //     //     setCurrentTerminal(element),
-                  //     style: PlacemarkStyle(
-                  //         scale: 2,
-                  //         opacity: 0.95,
-                  //         iconName: 'assets/images/chosen_point.png'),
-                  //   );
-                  //   await controller.addPlacemark(_placemark!);
-                  //   await controller.move(
-                  //       point: Point(
-                  //           latitude:
-                  //           double.parse(widget.geoData!.coordinates.lat),
-                  //           longitude:
-                  //           double.parse(widget.geoData!.coordinates.long)),
-                  //       animation: MapAnimation(smooth: true, duration: 1.5),
-                  //       zoom: 17);
-                  // } else {
-                  //   bool serviceEnabled;
-                  //   bool hasPermission = true;
-                  //   LocationPermission permission;
-                  //
-                  //   // Test if location services are enabled.
-                  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-                  //   if (!serviceEnabled) {
-                  //     hasPermission = true;
-                  //   }
-                  //
-                  //   permission = await Geolocator.checkPermission();
-                  //   if (permission == LocationPermission.denied) {
-                  //     permission = await Geolocator.requestPermission();
-                  //     if (permission == LocationPermission.denied) {
-                  //       hasPermission = false;
-                  //     }
-                  //   }
-                  //
-                  //   if (permission == LocationPermission.deniedForever) {
-                  //     hasPermission = false;
-                  //   }
-                  //
-                  //   if (hasPermission) {
-                  //     Position currentPosition =
-                  //     await Geolocator.getCurrentPosition();
-                  //     _placemark = Placemark(
-                  //       point: Point(
-                  //           latitude: currentPosition.latitude,
-                  //           longitude: currentPosition.longitude),
-                  //       // onTap: (Placemark self, Point point) =>
-                  //       //     setCurrentTerminal(element),
-                  //       style: PlacemarkStyle(
-                  //           scale: 2,
-                  //           opacity: 0.95,
-                  //           iconName: 'assets/images/chosen_point.png'),
-                  //     );
-                  //     await controller.addPlacemark(_placemark!);
-                  //     await controller.move(
-                  //         point: Point(
-                  //             latitude: currentPosition.latitude,
-                  //             longitude: currentPosition.longitude),
-                  //         animation: MapAnimation(smooth: true, duration: 1.5),
-                  //         zoom: 17);
-                  //     showBottomSheet(Point(
-                  //         latitude: currentPosition.latitude,
-                  //         longitude: currentPosition.longitude));
-                  //   } else {
-                  //     await controller.move(
-                  //         point: Point(
-                  //             latitude: double.parse(currentCity!.lat!),
-                  //             longitude: double.parse(currentCity!.lon!)),
-                  //         animation: MapAnimation(smooth: true, duration: 1.5),
-                  //         zoom: double.parse(currentCity.mapZoom));
-                  //   }
-                  // }
-                  setState(() {
-                    isLookingLocation = false;
-                  });
-                },
-                onMapTap: (point) async {
-                  // if (_placemark != null) {
-                  //   await controller.removePlacemark(_placemark!);
-                  // }
+              if (geoData != null) {
+                var _placemark = Placemark(
+                    mapId: placemarkId,
+                    point: Point(
+                        latitude: double.parse(geoData!.coordinates.lat),
+                        longitude: double.parse(geoData!.coordinates.long)),
+                    // onTap: (Placemark self, Point point) =>
+                    //     setCurrentTerminal(element),
+                    icon: PlacemarkIcon.single(PlacemarkIconStyle(
+                        image: BitmapDescriptor.fromAssetImage(
+                            'images/location_picker.png'),
+                        rotationType: RotationType.noRotation,
+                        scale: 3,
+                        anchor: Offset.fromDirection(1.1, 1))));
+                List<MapObject> mapsList = <MapObject>[];
+                mapsList.add(_placemark);
+                mapObjects.value = mapsList;
+                currentPoint.value = Point(
+                    latitude: double.parse(geoData!.coordinates.lat),
+                    longitude: double.parse(geoData!.coordinates.long));
+                await controller.moveCamera(
+                    CameraUpdate.newCameraPosition(CameraPosition(
+                        target: Point(
+                            latitude: double.parse(geoData!.coordinates.lat),
+                            longitude: double.parse(geoData!.coordinates.long)),
+                        zoom: 17)),
+                    animation: animation);
+              } else {
+                bool serviceEnabled;
+                bool hasPermission = true;
+                LocationPermission permission;
 
-                  // _placemark = Placemark(
-                  //   point: point,
-                  //   // onTap: (Placemark self, Point point) =>
-                  //   //     setCurrentTerminal(element),
-                  //   style: PlacemarkStyle(
-                  //       scale: 2,
-                  //       opacity: 0.95,
-                  //       iconName: 'assets/images/chosen_point.png'),
-                  // );
-                  // await controller.addPlacemark(_placemark!);
+                // Test if location services are enabled.
+                serviceEnabled = await Geolocator.isLocationServiceEnabled();
+                if (!serviceEnabled) {
+                  hasPermission = true;
+                }
+
+                permission = await Geolocator.checkPermission();
+                if (permission == LocationPermission.denied) {
+                  permission = await Geolocator.requestPermission();
+                  if (permission == LocationPermission.denied) {
+                    hasPermission = false;
+                  }
+                }
+
+                if (permission == LocationPermission.deniedForever) {
+                  hasPermission = false;
+                }
+
+                if (hasPermission) {
+                  Position currentPosition =
+                      await Geolocator.getCurrentPosition();
+                  var _placemark = Placemark(
+                      mapId: placemarkId,
+                      point: Point(
+                          latitude: currentPosition.latitude,
+                          longitude: currentPosition.longitude),
+                      // onTap: (Placemark self, Point point) =>
+                      //     setCurrentTerminal(element),
+                      opacity: 0.7,
+                      direction: 90,
+                      icon: PlacemarkIcon.single(PlacemarkIconStyle(
+                          image: BitmapDescriptor.fromAssetImage(
+                              'images/location_picker.png'),
+                          rotationType: RotationType.noRotation,
+                          scale: 3,
+                          anchor: Offset.fromDirection(1.1, 1))));
+                  List<MapObject> mapsList = <MapObject>[];
+                  mapsList.add(_placemark);
+                  mapObjects.value = mapsList;
+                  currentPoint.value = Point(
+                      latitude: currentPosition.latitude,
+                      longitude: currentPosition.longitude);
+                  await controller.moveCamera(
+                      CameraUpdate.newCameraPosition(CameraPosition(
+                          target: Point(
+                              latitude: currentPosition.latitude,
+                              longitude: currentPosition.longitude),
+                          zoom: 17)),
+                      animation: animation);
+                  // showBottomSheet(Point(
+                  //     latitude: currentPosition.latitude,
+                  //     longitude: currentPosition.longitude));
+                } else {
                   // await controller.move(
-                  //     point: point,
+                  //     point: Point(
+                  //         latitude: double.parse(currentCity!.lat!),
+                  //         longitude: double.parse(currentCity!.lon!)),
                   //     animation: MapAnimation(smooth: true, duration: 1.5),
-                  //     zoom: 17);
-                  showBottomSheet(point);
-                },
-              )) /*)*/,
+                  //     zoom: double.parse(currentCity.mapZoom));
+                }
+              }
+              isLookingLocation.value = false;
+            },
+            onMapTap: (point) async {
+              var _placemark = Placemark(
+                  mapId: placemarkId,
+                  point: point,
+                  opacity: 0.9,
+                  direction: 0,
+                  // onTap: (Placemark self, Point point) =>
+                  //     setCurrentTerminal(element),
+                  icon: PlacemarkIcon.single(PlacemarkIconStyle(
+                      image: BitmapDescriptor.fromAssetImage(
+                          'images/location_picker.png'),
+                      rotationType: RotationType.noRotation,
+                      scale: 3,
+                      anchor: Offset.fromDirection(1.1, 1))));
+              List<MapObject> mapsList = <MapObject>[];
+              mapsList.add(_placemark);
+              mapObjects.value = mapsList;
+              currentPoint.value = point;
+              await controller.moveCamera(
+                  CameraUpdate.newCameraPosition(
+                      CameraPosition(target: point, zoom: 17)),
+                  animation: animation);
+              // showBottomSheet(point);
+            },
+          ) /*)*/,
           Positioned(
               top: 50,
               child: RawMaterialButton(
@@ -249,30 +291,63 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 },
                 elevation: 2.0,
                 fillColor: Colors.white,
-                child: Icon(Icons.close, size: 14.0, color: Colors.black),
-                padding: EdgeInsets.all(10.0),
-                shape: CircleBorder(),
+                child: const Icon(Icons.close, size: 14.0, color: Colors.black),
+                padding: const EdgeInsets.all(10.0),
+                shape: const CircleBorder(),
               )),
           Positioned(
               right: 0,
-              bottom: 40,
+              bottom: 210,
               child: RawMaterialButton(
                 onPressed: () async {
-                  // lookForLocation();
+                  lookForLocation();
                 },
-                elevation: 2.0,
+                elevation: 6.0,
                 fillColor: Colors.white,
-                child: isLookingLocation
-                    ? CircularProgressIndicator(
-                  color: Colors.yellow.shade700,
-                )
-                    : Icon(Icons.navigation,
-                    size: 23.0, color: Colors.yellow.shade700),
-                padding: EdgeInsets.all(10.0),
-                shape: CircleBorder(),
+                child: isLookingLocation.value
+                    ? const CircularProgressIndicator(
+                        color: AppColors.mainColor,
+                      )
+                    : const Icon(Icons.navigation,
+                        size: 23.0, color: AppColors.mainColor),
+                padding: const EdgeInsets.all(10.0),
+                shape: const CircleBorder(),
               )),
         ]),
       )),
+      bottomSheet: DeliveryBottomSheet(currentPoint: currentPoint.value, onSetLocation: changeLocation),
     );
   }
 }
+
+// class DeliveryPage extends StatefulWidget {
+//   final YandexGeoData? geoData;
+//   const DeliveryPage({Key? key, this.geoData}) : super(key: key);
+//
+//   @override
+//   State<DeliveryPage> createState() => _DeliveryPageState();
+// }
+//
+// class _DeliveryPageState extends State<DeliveryPage> {
+//   late YandexMapController controller;
+//   Placemark? _placemark;
+//
+//   bool isLookingLocation = false;
+//
+//   showBottomSheet(Point point) {
+//     showModalBottomSheet(
+//       isScrollControlled: true,
+//       context: context,
+//       backgroundColor: Colors.white,
+//       builder: (context) => DeliveryModalSheet(currentPoint: point),
+//     );
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     Terminals? currentTerminal =
+//     Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+//     final List<MapObject> mapObjects = [];
+//
+//   }
+// }

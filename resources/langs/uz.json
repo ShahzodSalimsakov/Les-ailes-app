@@ -54,5 +54,11 @@
     "birthDay": "Tug'ilish",
     "email": "Elektron pochta",
     "phone": "Telefon"
-  }
+  },
+  "deliveryBottomSheet": {
+    "addressNotDeliverable": "Etkazib berish zonasidan tashqaridagi manzil yoki filiallar yopiq",
+    "continue": "Davom etish",
+    "specifyAddress": "Manzilni aniqlang"
+  },
+  "cancel": "Bekor qilish"
 }
