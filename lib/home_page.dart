@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:les_ailes/widgets/ChooseCity.dart';
 import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:les_ailes/widgets/productList.dart';
@@ -22,6 +23,7 @@ class HomePage extends StatelessWidget {
           shrinkWrap: true,
           children: [Column(children: [
             const Header(),
+            const ChooseCity(),
             const WayToReceiveAnOrder(),
             SliderCarousel(),
             const ProductList()
