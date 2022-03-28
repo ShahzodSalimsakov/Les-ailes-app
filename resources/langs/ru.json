@@ -55,6 +55,12 @@
     "phone": "Телефон"
   },
   "save": "Сохранить",
+  "deliveryBottomSheet": {
+    "addressNotDeliverable": "Адрес вне зоны доставки или филиалы закрыты",
+    "continue": "Продолжить",
+    "specifyAddress": "Уточните адрес"
+  },
+  "cancel": "Отменить",
   "cooking": "Готовится",
   "cancelled": "Отменён",
   "accepted": "Принят",
