@@ -74,5 +74,9 @@
   "done": "Yetkazib berildi",
   "delivery-address": "Yetkazib berish manzili",
   "goods-amount": "maxsulot qiymati",
-  "write": "Yozish"
+  "write": "Yozish",
+  "DeliveryTypeEnum": {
+    "pickup": "Tayyorlaymiz",
+    "deliver": "Yetkazib berish"
+  }
 }
