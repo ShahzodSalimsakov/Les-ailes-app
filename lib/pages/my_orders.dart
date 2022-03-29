@@ -61,20 +61,8 @@ class MyOrders extends HookWidget {
                       DateTime.parse(orders.value[index].createdAt ?? '')
                           .toLocal();
                   DateFormat createdAtFormat =
-                      DateFormat('MMM d, y, H:m', 'ru');
+                      DateFormat('d MMMM. H:m', 'ru');
                   Order order = orders.value[index];
-                  String house =
-                      order.house != null ? ', дом: ${order.house}' : '';
-                  String flat =
-                      order.flat != null ? ', кв.: ${order.flat}' : '';
-                  String entrance = order.entrance != null
-                      ? ', подъезд: ${order.entrance}'
-                      : '';
-                  String doorCode = order.doorCode != null
-                      ? ', код на двери: ${order.doorCode}'
-                      : '';
-                  String address =
-                      '${order.billingAddress}${house}${flat}${entrance}${doorCode}';
 
                   final hashids = HashIds(
                     salt: 'order',

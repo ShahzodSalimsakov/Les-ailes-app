@@ -49,7 +49,7 @@ class AboutUsPage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        launch("tel://71 100 00 00");
+                        launch("tel://71 200 42 42");
                       },
                       child: const Text(
                         "71 100 00 00",
