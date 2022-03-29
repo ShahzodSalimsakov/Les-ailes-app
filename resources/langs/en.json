@@ -74,5 +74,9 @@
   "total": "Total",
   "delivery-address": "Delivery address",
   "goods-amount": "item(s) worth",
-  "write": "Write"
-}
+  "write": "Write",
+  "DeliveryTypeEnum": {
+    "pickup": "Cook",
+    "deliver": "Deliver"
+  }
+},

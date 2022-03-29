@@ -74,5 +74,9 @@
   "done": "Доставлен",
   "delivery-address": "Адрес доставки",
   "goods-amount": "товар(а) на сумму",
-  "write": "Написать"
-}
+  "write": "Написать",
+  "DeliveryTypeEnum": {
+    "pickup": "Приготовим",
+    "deliver": "Доставка"
+  }
+},
