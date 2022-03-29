@@ -153,7 +153,7 @@ class DeliveryModalSheet extends HookWidget {
                 };
 
                 var url = Uri.https(
-                    'api.choparpizza.uz', 'api/terminals/find_nearest', {
+                    'api.lesailes.uz', 'api/terminals/find_nearest', {
                   'lat': currentPoint.latitude.toString(),
                   'lon': currentPoint.longitude.toString()
                 });
@@ -169,7 +169,7 @@ class DeliveryModalSheet extends HookWidget {
                   transaction.put('currentTerminal', terminal[0]);
 
                   var stockUrl = Uri.https(
-                      'api.choparpizza.uz',
+                      'api.lesailes.uz',
                       'api/terminals/get_stock',
                       {'terminal_id': terminal[0].id.toString()});
                   var stockResponse =
