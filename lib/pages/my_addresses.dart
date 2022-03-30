@@ -62,7 +62,6 @@ class MyAddresses extends HookWidget {
 
     useEffect(() {
       getMyAddresses();
-      return null;
     }, []);
 
     return Scaffold(
@@ -140,22 +139,22 @@ class MyAddresses extends HookWidget {
                                 ],
                               ));
                         }),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 28),
-                      child: SizedBox(
-                          height: 60,
-                          width: double.infinity,
-                          child: n.NikuButton.elevated(Text(
-                            tr('newAddress'),
-                            style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.w500),
-                          ))
-                            ..bg = AppColors.mainColor
-                            ..color = Colors.white
-                            ..mx = 36
-                            ..rounded = 20
-                            ..onPressed = () {}),
-                    )
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(vertical: 28),
+                    //   child: SizedBox(
+                    //       height: 60,
+                    //       width: double.infinity,
+                    //       child: n.NikuButton.elevated(Text(
+                    //         tr('newAddress'),
+                    //         style: const TextStyle(
+                    //             fontSize: 20, fontWeight: FontWeight.w500),
+                    //       ))
+                    //         ..bg = AppColors.mainColor
+                    //         ..color = Colors.white
+                    //         ..mx = 36
+                    //         ..rounded = 20
+                    //         ..onPressed = () {}),
+                    // )
                   ],
                 ),
               ],
