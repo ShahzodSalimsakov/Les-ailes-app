@@ -78,5 +78,6 @@
   "DeliveryTypeEnum": {
     "pickup": "Cook",
     "deliver": "Deliver"
-  }
+  },
+  "newAddress": "New address"
 }

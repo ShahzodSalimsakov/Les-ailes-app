@@ -73,7 +73,7 @@ class ChangeLang extends HookWidget {
                             },
                           );
                         }, separatorBuilder: (BuildContext context, int index) {
-                          return Divider();
+                          return const Divider();
                         }, itemCount: supportedLanguages.length, shrinkWrap: true)),
               ),
             ],
