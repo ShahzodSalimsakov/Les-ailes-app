@@ -72,5 +72,11 @@
   "cooked": "Tayyor va yuborilishi kutilmoqda",
   "delivering": "Yo'lda",
   "done": "Yetkazib berildi",
-  "delivery-address": "Yetkazib berish manzili"
+  "delivery-address": "Yetkazib berish manzili",
+  "goods-amount": "maxsulot qiymati",
+  "write": "Yozish",
+  "DeliveryTypeEnum": {
+    "pickup": "Tayyorlaymiz",
+    "deliver": "Yetkazib berish"
+  }
 }

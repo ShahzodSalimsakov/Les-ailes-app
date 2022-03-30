@@ -72,5 +72,11 @@
   "done": "Delivered",
   "order": "Order",
   "total": "Total",
-  "delivery-address": "Delivery address"
+  "delivery-address": "Delivery address",
+  "goods-amount": "item(s) worth",
+  "write": "Write",
+  "DeliveryTypeEnum": {
+    "pickup": "Cook",
+    "deliver": "Deliver"
+  }
 }

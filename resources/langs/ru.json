@@ -72,5 +72,11 @@
   "cooked": "Готов и ждёт отправки",
   "delivering": "В пути",
   "done": "Доставлен",
-  "delivery-address": "Адрес доставки"
+  "delivery-address": "Адрес доставки",
+  "goods-amount": "товар(а) на сумму",
+  "write": "Написать",
+  "DeliveryTypeEnum": {
+    "pickup": "Приготовим",
+    "deliver": "Доставка"
+  }
 }
