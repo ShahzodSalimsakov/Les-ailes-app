@@ -1,16 +1,20 @@
 import 'dart:convert';
 import 'package:dart_date/dart_date.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
+import 'package:http/http.dart' as http;
+import 'package:niku/niku.dart' as n;
 import '../models/city.dart';
 import '../models/delivery_location_data.dart';
 import '../models/stock.dart';
 import '../models/terminals.dart';
-import 'package:http/http.dart' as http;
 
+import '../utils/colors.dart';
 import '../widgets/terminals_modal.dart';
 
 class PickupPage extends HookWidget {
@@ -21,6 +25,13 @@ class PickupPage extends HookWidget {
   Widget build(BuildContext context) {
     final terminals = useState<List<Terminals>>(List<Terminals>.empty());
     City? currentCity = Hive.box<City>('currentCity').get('currentCity');
+    final tabController = useTabController(initialLength: 2);
+    final defaultTabIndex = useState(0);
+    final _tabKey = GlobalKey();
+
+    tabController.addListener(() {
+      defaultTabIndex.value = tabController.index;
+    });
 
     Future<void> getTerminals() async {
       Map<String, String> requestHeaders = {
@@ -30,8 +41,7 @@ class PickupPage extends HookWidget {
       bool serviceEnabled;
       LocationPermission permission;
       var formData = {'city_id': currentCity?.id.toString()};
-      var url =
-          Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
+      var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
@@ -39,10 +49,10 @@ class PickupPage extends HookWidget {
             json['data'].map((m) => Terminals.fromJson(m)).toList());
         DateTime currentTime = DateTime.now();
         List<Terminals> resultTerminals = [];
-        terminal.forEach((t) {
-          if (currentTime.weekday >= 1 && currentTime.weekday < 5) {
+        for (var t in terminal) {
+          if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
             if (t.openWork == null) {
-              return null;
+              return;
             } else {
               DateTime openWork = Date.parse(t.openWork!);
               openWork = openWork.toLocal();
@@ -67,7 +77,7 @@ class PickupPage extends HookWidget {
             }
           } else {
             if (t.openWeekend == null) {
-              return null;
+              return;
             } else {
               DateTime openWork = Date.parse(t.openWeekend!);
               openWork = openWork.toLocal();
@@ -92,7 +102,7 @@ class PickupPage extends HookWidget {
             }
           }
           resultTerminals.add(t);
-        });
+        }
 
         terminals.value = resultTerminals;
       }
@@ -230,218 +240,242 @@ class PickupPage extends HookWidget {
         builder: (context, box, _) {
           Terminals? currentTerminal =
               Hive.box<Terminals>('currentTerminal').get('currentTerminal');
-          return SafeArea(
-              child: Container(
-                  width: double.infinity,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                              child: OutlinedButton(
-                                  onPressed: () {},
-                                  style: ButtonStyle(
-                                      side: MaterialStateProperty.all(
-                                          BorderSide(
-                                              width: 1.0,
-                                              color: Colors.yellow.shade600)),
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      25.0)))),
-                                  child: Text(
-                                    'Списком',
-                                    style: TextStyle(
-                                        color: Colors.yellow.shade600),
-                                  ))),
-                          const SizedBox(
-                            width: 5.0,
-                          ),
-                          Expanded(
-                              child: OutlinedButton(
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                TerminalsModal(
-                                                    terminals:
-                                                        terminals.value)));
-                                  },
-                                  style: ButtonStyle(
-                                      side: MaterialStateProperty.all(
-                                          const BorderSide(
-                                              width: 1.0, color: Colors.grey)),
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      25.0)))),
-                                  child: const Text(
-                                    'На карте',
-                                    style: TextStyle(color: Colors.grey),
-                                  )))
-                        ],
-                      ),
-                      Expanded(
-                          child: Container(
-                        child: ListView.builder(
-                            itemCount: terminals.value.length,
-                            itemBuilder: (context, index) {
-                              var terminal = terminals.value[index];
-                              return InkWell(
-                                  onTap: () async {
-                                    if (!terminal.isWorking!) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(
-                                              content: Text(
-                                                  'Данный терминал сейчас не работает')));
-                                      return;
-                                    }
-                                    Box<Terminals> transaction =
-                                        Hive.box<Terminals>('currentTerminal');
-                                    transaction.put(
-                                        'currentTerminal', terminal);
+          return Scaffold(
+            body: SafeArea(
+                child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            n.NikuText(tr('pickup.pageTitle'), style: n.NikuTextStyle(fontSize: 24),),
+                            n.NikuButton(const Icon(Icons.close_outlined, size: 25, color: Colors.black,))..p = 0..m = 0..onPressed = () {
+                            Navigator.of(context).pop();
+                            }
+                          ],
+                        ),
+                        Expanded(
+                            child: ListView.builder(
+                                itemCount: terminals.value.length,
+                                itemBuilder: (context, index) {
+                                  var terminal = terminals.value[index];
+                                  return InkWell(
+                                      onTap: () async {
+                                        if (!terminal.isWorking!) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(const SnackBar(
+                                                  content: Text(
+                                                      'Данный терминал сейчас не работает')));
+                                          return;
+                                        }
+                                        Box<Terminals> transaction =
+                                            Hive.box<Terminals>(
+                                                'currentTerminal');
+                                        transaction.put(
+                                            'currentTerminal', terminal);
 
-                                    Map<String, String> requestHeaders = {
-                                      'Content-type': 'application/json',
-                                      'Accept': 'application/json'
-                                    };
+                                        Map<String, String> requestHeaders = {
+                                          'Content-type': 'application/json',
+                                          'Accept': 'application/json'
+                                        };
 
-                                    var stockUrl = Uri.https(
-                                        'api.lesailes.uz',
-                                        'api/terminals/get_stock', {
-                                      'terminal_id': terminal.id.toString()
-                                    });
-                                    var stockResponse = await http.get(stockUrl,
-                                        headers: requestHeaders);
-                                    if (stockResponse.statusCode == 200) {
-                                      var json = jsonDecode(stockResponse.body);
-                                      Stock newStockData = Stock(
-                                          prodIds: List<int>.from(json[
-                                              'data']) /* json['data'].map((id) => id as int).toList()*/);
-                                      Box<Stock> box = Hive.box<Stock>('stock');
-                                      box.put('stock', newStockData);
-                                    }
-                                  },
-                                  child: Opacity(
-                                    opacity: terminal.isWorking! ? 1 : 0.5,
-                                    child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 10),
-                                        decoration: BoxDecoration(
-                                            border: Border.all(
-                                              color: currentTerminal?.id ==
-                                                      terminal.id
-                                                  ? Colors.yellow.shade600
-                                                  : Colors.grey,
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(15))),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                        var stockUrl = Uri.https(
+                                            'api.lesailes.uz',
+                                            'api/terminals/get_stock', {
+                                          'terminal_id': terminal.id.toString()
+                                        });
+                                        var stockResponse = await http.get(
+                                            stockUrl,
+                                            headers: requestHeaders);
+                                        if (stockResponse.statusCode == 200) {
+                                          var json =
+                                              jsonDecode(stockResponse.body);
+                                          Stock newStockData = Stock(
+                                              prodIds: List<int>.from(json[
+                                                  'data']) /* json['data'].map((id) => id as int).toList()*/);
+                                          Box<Stock> box =
+                                              Hive.box<Stock>('stock');
+                                          box.put('stock', newStockData);
+                                        }
+                                      },
+                                      child: Opacity(
+                                        opacity: terminal.isWorking! ? 1 : 0.5,
+                                        child: Container(
+                                            padding: const EdgeInsets.all(10),
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  color: currentTerminal?.id ==
+                                                          terminal.id
+                                                      ? Colors.yellow.shade600
+                                                      : Colors.grey,
+                                                ),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(15))),
+                                            child: Column(
                                               children: [
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: currentTerminal
-                                                                      ?.id ==
-                                                                  terminal.id
-                                                              ? Colors.yellow
-                                                                  .shade600
-                                                              : Colors.grey,
-                                                          width: 1),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              40)),
-                                                  child: Container(
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(40),
-                                                          color: currentTerminal
-                                                                      ?.id ==
-                                                                  terminal.id
-                                                              ? Colors.yellow
-                                                                  .shade600
-                                                              : Colors.grey),
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                              3),
-                                                      width: 10,
-                                                      height: 10),
-                                                ),
-                                                const SizedBox(
-                                                  width: 12,
-                                                ),
-                                                Column(
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      terminals.value[index]
-                                                              .name ??
-                                                          '',
-                                                      style: const TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w400),
+                                                    Container(
+                                                      decoration: BoxDecoration(
+                                                          border: Border.all(
+                                                              color: currentTerminal
+                                                                          ?.id ==
+                                                                      terminal.id
+                                                                  ? Colors.yellow
+                                                                      .shade600
+                                                                  : Colors.grey,
+                                                              width: 1),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(40)),
+                                                      child: Container(
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          40),
+                                                              color: currentTerminal
+                                                                          ?.id ==
+                                                                      terminal.id
+                                                                  ? Colors.yellow
+                                                                      .shade600
+                                                                  : Colors.grey),
+                                                          margin: const EdgeInsets
+                                                              .all(3),
+                                                          width: 10,
+                                                          height: 10),
                                                     ),
                                                     const SizedBox(
-                                                      height: 5,
+                                                      width: 12,
                                                     ),
-                                                    SizedBox(
-                                                      child: Row(
-                                                        children: [
-                                                          Expanded(
-                                                              child: Text(
-                                                            terminals
-                                                                    .value[
-                                                                        index]
-                                                                    .desc ??
-                                                                '',
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                color:
-                                                                    Colors.grey,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400),
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .clip,
-                                                            softWrap: false,
-                                                          )),
-                                                        ],
-                                                      ),
-                                                      width:
-                                                          MediaQuery.of(context)
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          terminals.value[index]
+                                                                  .name ??
+                                                              '',
+                                                          style: const TextStyle(
+                                                              fontSize: 16,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w400),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        SizedBox(
+                                                          child: Row(
+                                                            children: [
+                                                              Expanded(
+                                                                  child: Text(
+                                                                terminals
+                                                                        .value[
+                                                                            index]
+                                                                        .desc ??
+                                                                    '',
+                                                                style: const TextStyle(
+                                                                    fontSize: 14,
+                                                                    color: Colors
+                                                                        .grey,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .clip,
+                                                                softWrap: false,
+                                                              )),
+                                                            ],
+                                                          ),
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width *
                                                               0.7,
+                                                        )
+                                                      ],
                                                     )
                                                   ],
-                                                )
+                                                ),
                                               ],
-                                            ),
-                                          ],
-                                        )),
-                                  ));
-                            }),
-                      ))
-                    ],
-                  )));
+                                            )),
+                                      ));
+                                }))
+                      ],
+                    ))),
+            bottomSheet: Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.8),
+                      spreadRadius: 10,
+                      blurRadius: 10,
+                      offset: const Offset(0, 7), // changes position of shadow
+                    )
+                  ]),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(30))),
+                    child: TabBar(
+                      onTap: (index) {},
+                      controller: tabController,
+                      tabs: [
+                        Tab(
+                          text: tr('pickup.tabList'),
+                        ),
+                        Tab(text: tr('pickup.tabMap'))
+                      ],
+                      // labelPadding: const EdgeInsets.symmetric(vertical: 2),
+                      indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.white),
+                      labelColor: Colors.black,
+                      unselectedLabelColor: Colors.black,
+                      labelStyle: const TextStyle(fontSize: 15),
+                      unselectedLabelStyle: const TextStyle(fontSize: 15),
+                    ),
+                  ),
+            Container(
+              width: double.infinity,
+              height: 60,
+              margin: const EdgeInsets.only(top: 20),
+              child: n.NikuButton(n.NikuText(
+                tr('pickup.buttonSelectThisBranch'),
+                style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
+              ))
+                ..bg = currentTerminal == null
+                    ? Colors.grey.shade200
+                    : AppColors.mainColor
+                ..rounded = 20
+            )
+                ],
+              ),
+            ),
+          );
         });
   }
 }

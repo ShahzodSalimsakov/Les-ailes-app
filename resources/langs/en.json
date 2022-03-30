@@ -79,5 +79,11 @@
     "pickup": "Cook",
     "deliver": "Deliver"
   },
-  "newAddress": "New address"
+  "newAddress": "New address",
+  "pickup": {
+    "tabList": "List",
+    "tabMap": "On map",
+    "buttonSelectThisBranch": "Pick up here",
+    "pageTitle": "Choose restaurant"
+  }
 }

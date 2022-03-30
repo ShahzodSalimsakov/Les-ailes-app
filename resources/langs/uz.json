@@ -79,5 +79,11 @@
     "pickup": "Tayyorlaymiz",
     "deliver": "Yetkazib berish"
   },
-  "newAddress": "Yangi ma'nzil"
+  "newAddress": "Yangi ma'nzil",
+  "pickup": {
+    "tabList": "Ro'yxat",
+    "tabMap": "Xaritada",
+    "buttonSelectThisBranch": "Bu yerdan olib keting",
+    "pageTitle": "Restoran tanlgang"
+  }
 }

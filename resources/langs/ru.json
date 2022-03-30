@@ -79,5 +79,11 @@
     "pickup": "Приготовим",
     "deliver": "Доставка"
   },
-  "newAddress": "Новый адрес"
+  "newAddress": "Новый адрес",
+  "pickup": {
+    "tabList": "Списком",
+    "tabMap": "На карте",
+    "buttonSelectThisBranch": "Забрать здесь",
+    "pageTitle": "Выберите ресторан"
+  }
 }
