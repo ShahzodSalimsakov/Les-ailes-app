@@ -49,7 +49,7 @@ class AddressSearchModal extends HookWidget {
         if (response.statusCode == 200) {
           var json = jsonDecode(response.body);
           List<MyAddress> addressList = List<MyAddress>.from(
-              json['data'].map((m) => new MyAddress.fromJson(m)).toList());
+              json['data'].map((m) => MyAddress.fromJson(m)).toList());
           myAddresses.value = addressList;
         }
       }
