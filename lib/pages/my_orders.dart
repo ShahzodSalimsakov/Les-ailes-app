@@ -60,8 +60,7 @@ class MyOrders extends HookWidget {
                   DateTime createdAt =
                       DateTime.parse(orders.value[index].createdAt ?? '')
                           .toLocal();
-                  DateFormat createdAtFormat =
-                      DateFormat('d MMMM. H:m', 'ru');
+                  DateFormat createdAtFormat = DateFormat('d MMMM. H:m', 'ru');
                   Order order = orders.value[index];
 
                   final hashids = HashIds(
@@ -74,7 +73,8 @@ class MyOrders extends HookWidget {
                       locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
                   return GestureDetector(
                     onTap: () {
-                      context.router.pushNamed('my_orders/${hashids.encode(order.id)}');
+                      context.router
+                          .pushNamed('my_orders/${hashids.encode(order.id)}');
                     },
                     child: Container(
                       // margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

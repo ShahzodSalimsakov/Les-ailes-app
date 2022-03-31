@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Choose how to receive order",
     "delivery": "Delivery",
+    "pickup": "Pickup",
     "takeAway": "Take away",
     "AtTheRestaurant": "At the restaurant",
     "toTheParkingLot": "To the parking lot"

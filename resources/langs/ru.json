@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Выберите способ получения заказа",
     "delivery": "Доставка",
+    "pickup": "Самовывоз",
     "takeAway": "C cобой ",
     "AtTheRestaurant": "В ресторане",
     "toTheParkingLot": "На парковку"

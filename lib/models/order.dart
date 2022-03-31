@@ -215,7 +215,7 @@ class Order {
     basket =
     json['basket'] != null ? new OrderBasket.fromJson(json['basket']) : null;
     terminalData = json['terminalData'] != null
-        ? new TerminalData.fromJson(json['terminalData'])
+        ? TerminalData.fromJson(json['terminalData'])
         : null;
   }
 

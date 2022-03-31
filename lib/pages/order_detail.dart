@@ -81,7 +81,6 @@ class OrderDetail extends HookWidget {
 
   Future<void>? _launched;
 
-  @override
   Future<void> _launchInBrowser(String url) async {
     if (!await launch(
       url,
@@ -153,7 +152,7 @@ class OrderDetail extends HookWidget {
           ? ', код на двери: ${order.value!.doorCode}'
           : '';
       String address =
-          '${order.value!.billingAddress}${house}${flat}${entrance}${doorCode}';
+          '${order.value!.billingAddress}$house$flat$entrance$doorCode';
 
       return Scaffold(
           appBar: AppBar(
@@ -284,76 +283,67 @@ class OrderDetail extends HookWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(tr("delivery-address"),
+                          Text(
+                              tr(order.value?.deliveryType == 'deliver'
+                                  ? "delivery-address"
+                                  : 'deliveryOrPickup.pickup'),
                               style: const TextStyle(fontSize: 22)),
                           const SizedBox(
                             height: 25,
                           ),
-                          Row(
-                            children: [
-                              Image.asset('images/restaurant.png',
-                                  width: 38, height: 38),
-                              const SizedBox(width: 16),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: const Text(
-                                        'Буюк Ипак Йули, 123',
-                                        style: TextStyle(fontSize: 18),
-                                      )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: Text(
-                                        'Отправлено в 16:20',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey.shade400),
-                                      )),
-                                ],
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 36,
-                          ),
-                          Row(
-                            children: [
-                              Image.asset('images/delivery_location.png',
-                                  width: 38, height: 38),
-                              const SizedBox(width: 16),
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: Text(
-                                        address,
-                                        style: const TextStyle(fontSize: 18),
-                                      )),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  SizedBox(
-                                      width: MediaQuery.of(context).size.width *
-                                          0.6,
-                                      child: Text(
-                                        'Ташкент, Узбекистан',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey.shade400),
-                                      )),
-                                ],
-                              )
-                            ],
-                          )
+                          order.value?.terminalData != null
+                              ? Row(
+                                  children: [
+                                    Image.asset('images/restaurant.png',
+                                        width: 38, height: 38),
+                                    const SizedBox(width: 16),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
+                                            child: Text(
+                                              order.value?.terminalData?.name ??
+                                                  '',
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                            )),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(
+                                  width: double.infinity,
+                                ),
+                          order.value?.deliveryType == 'deliver'
+                              ? Row(
+                                  children: [
+                                    Image.asset('images/delivery_location.png',
+                                        width: 38, height: 38),
+                                    const SizedBox(width: 16),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
+                                            child: Text(
+                                              address,
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                            )),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(
+                                  width: double.infinity,
+                                )
                         ],
                       ),
                     ),
@@ -537,7 +527,7 @@ class OrderDetail extends HookWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  launch("tel://71 200 42 42");
+                                  launch("tel:71 200 42 42");
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(17),
