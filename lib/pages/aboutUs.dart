@@ -162,7 +162,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('/privacy');
+                  context.router.pushNamed('privacy');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -190,7 +190,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('/terms');
+                  context.router.pushNamed('terms');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -219,7 +219,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('/franchise');
+                  context.router.pushNamed('franchise');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),

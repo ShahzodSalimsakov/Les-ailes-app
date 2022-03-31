@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Buyurtmani qanday qabul qilishni tanlang",
     "delivery": "Yetkazish",
+    "pickup": "Olib ketish",
     "takeAway": "Olib ketish",
     "AtTheRestaurant": "Restaranda",
     "toTheParkingLot": "To'xtash joyiga"
@@ -79,5 +80,15 @@
     "pickup": "Tayyorlaymiz",
     "deliver": "Yetkazib berish"
   },
-  "newAddress": "Yangi ma'nzil"
+  "newAddress": "Yangi ma'nzil",
+  "pickup": {
+    "tabList": "Ro'yxat",
+    "tabMap": "Xaritada",
+    "buttonSelectThisBranch": "Bu yerdan olib keting",
+    "pageTitle": "Restoran tanlgang",
+    "addressLabel": "Manzil",
+    "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
+    "terminalIsNotWorking": "Ushbu restoran hozirda yopiq"
+  },
+  "addressNotFound": "Manzil topilmadi"
 }

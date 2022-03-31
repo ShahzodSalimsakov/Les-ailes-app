@@ -215,7 +215,7 @@ class Order {
     basket =
     json['basket'] != null ? new OrderBasket.fromJson(json['basket']) : null;
     terminalData = json['terminalData'] != null
-        ? new TerminalData.fromJson(json['terminalData'])
+        ? TerminalData.fromJson(json['terminalData'])
         : null;
   }
 
@@ -848,18 +848,27 @@ class Child {
 class TerminalData {
   late String name;
   String? nameUz;
+  String? desc;
+  String? descEn;
+  String? descUz;
 
-  TerminalData({required this.name, this.nameUz});
+  TerminalData({required this.name, this.nameUz, this.desc, this.descEn, this.descUz});
 
   TerminalData.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     nameUz = json['name_uz'] != null ? json['name_uz'] : '';
+    desc = json['desc'] != null ? json['desc'] : '';
+    descEn = json['desc_en'] != null ? json['desc_en'] : '';
+    descUz = json['desc_uz'] != null ? json['desc_uz'] : '';
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = this.name;
     data['name_uz'] = this.nameUz;
+    data['desc'] = this.desc;
+    data['desc_en'] = this.descEn;
+    data['desc_uz'] = this.descUz;
     return data;
   }
 }
