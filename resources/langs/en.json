@@ -84,6 +84,9 @@
     "tabList": "List",
     "tabMap": "On map",
     "buttonSelectThisBranch": "Pick up here",
-    "pageTitle": "Choose restaurant"
+    "pageTitle": "Choose restaurant",
+    "addressLabel": "Address",
+    "workSchedule": "Work hours: from {fromTime} to {toTime}",
+    "terminalIsNotWorking": "This restaurant is currently closed"
   }
 }
