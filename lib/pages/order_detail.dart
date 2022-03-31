@@ -154,6 +154,21 @@ class OrderDetail extends HookWidget {
       String address =
           '${order.value!.billingAddress}$house$flat$entrance$doorCode';
 
+      var locale = context.locale.toString();
+      var terminal = order.value?.terminalData;
+      var terminalName = '';
+      var addressDesc = '';
+      switch (locale) {
+        case 'en':
+          addressDesc = terminal?.descEn ?? '';
+          break;
+        case 'uz':
+          addressDesc = terminal?.descUz ?? '';
+          break;
+        default:
+          addressDesc = terminal?.desc ?? '';
+          break;
+      }
       return Scaffold(
           appBar: AppBar(
             leading: IconButton(
@@ -306,8 +321,7 @@ class OrderDetail extends HookWidget {
                                                     .width *
                                                 0.6,
                                             child: Text(
-                                              order.value?.terminalData?.name ??
-                                                  '',
+                                              addressDesc,
                                               style:
                                                   const TextStyle(fontSize: 18),
                                             )),
@@ -319,27 +333,32 @@ class OrderDetail extends HookWidget {
                                   width: double.infinity,
                                 ),
                           order.value?.deliveryType == 'deliver'
-                              ? Row(
-                                  children: [
-                                    Image.asset('images/delivery_location.png',
-                                        width: 38, height: 38),
-                                    const SizedBox(width: 16),
-                                    Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        SizedBox(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.6,
-                                            child: Text(
-                                              address,
-                                              style:
-                                                  const TextStyle(fontSize: 18),
-                                            )),
-                                      ],
-                                    )
-                                  ],
+                              ? Padding(
+                                  child: Row(
+                                    children: [
+                                      Image.asset(
+                                          'images/delivery_location.png',
+                                          width: 38,
+                                          height: 38),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.6,
+                                              child: Text(
+                                                address,
+                                                style: const TextStyle(
+                                                    fontSize: 18),
+                                              )),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 20),
                                 )
                               : const SizedBox(
                                   width: double.infinity,
