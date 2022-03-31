@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Choose how to receive order",
     "delivery": "Delivery",
+    "pickup": "Pickup",
     "takeAway": "Take away",
     "AtTheRestaurant": "At the restaurant",
     "toTheParkingLot": "To the parking lot"
@@ -88,5 +89,6 @@
     "addressLabel": "Address",
     "workSchedule": "Work hours: from {fromTime} to {toTime}",
     "terminalIsNotWorking": "This restaurant is currently closed"
-  }
+  },
+  "addressNotFound": "Address not found"
 }

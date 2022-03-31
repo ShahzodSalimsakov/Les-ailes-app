@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Выберите способ получения заказа",
     "delivery": "Доставка",
+    "pickup": "Самовывоз",
     "takeAway": "C cобой ",
     "AtTheRestaurant": "В ресторане",
     "toTheParkingLot": "На парковку"
@@ -88,5 +89,6 @@
     "addressLabel": "Адрес",
     "workSchedule": "Режим работы: с {fromTime} до {toTime}",
     "terminalIsNotWorking": "Данный ресторан сейчас не работает"
-  }
+  },
+  "addressNotFound": "Адрес не найден"
 }

@@ -15,6 +15,7 @@
   "deliveryOrPickup": {
     "chooseType": "Buyurtmani qanday qabul qilishni tanlang",
     "delivery": "Yetkazish",
+    "pickup": "Olib ketish",
     "takeAway": "Olib ketish",
     "AtTheRestaurant": "Restaranda",
     "toTheParkingLot": "To'xtash joyiga"
@@ -88,5 +89,6 @@
     "addressLabel": "Manzil",
     "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
     "terminalIsNotWorking": "Ushbu restoran hozirda yopiq"
-  }
+  },
+  "addressNotFound": "Manzil topilmadi"
 }
