@@ -79,5 +79,6 @@
     "pickup": "Tayyorlaymiz",
     "deliver": "Yetkazib berish"
   },
-  "newAddress": "Yangi ma'nzil"
+  "newAddress": "Yangi ma'nzil",
+  "addressNotFound": "Manzil topilmadi"
 }

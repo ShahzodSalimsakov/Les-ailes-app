@@ -40,26 +40,6 @@ class MyAddresses extends HookWidget {
       }
     }
 
-    // Future<void> deleteAddress() async {
-    //   Box box = Hive.box<User>('user');
-    //   User? currentUser = box.get('user');
-    //   if (currentUser != null) {
-    //     Map<String, String> requestHeaders = {
-    //       'Content-type': 'application/json',
-    //       'Accept': 'application/json',
-    //       'Authorization': 'Bearer ${currentUser.userToken}'
-    //     };
-    //     var url = Uri.https('api.lesailes.uz', '/api/address/${address.value}');
-    //     var response = await http.get(url, headers: requestHeaders);
-    //     if (response.statusCode == 200) {
-    //       var json = jsonDecode(response.body);
-    //       List<MyAddress> addressList = List<MyAddress>.from(
-    //           json['data'].map((m) => MyAddress.fromJson(m)).toList());
-    //       address.value = addressList;
-    //     }
-    //   }
-    // }
-
     useEffect(() {
       getMyAddresses();
     }, []);
@@ -79,86 +59,146 @@ class MyAddresses extends HookWidget {
       body: SafeArea(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListView(
-              shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              children: [
-                Column(
-                  children: [
-                    ListView.separated(
-                        separatorBuilder: (context, index) => const Divider(
-                              color: Colors.grey,
-                            ),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: address.value.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          final hashids = HashIds(
-                            salt: 'order',
-                            minHashLength: 15,
-                            alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
-                          );
-
-                          final formatCurrency = NumberFormat.currency(
-                              locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-                          return Container(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              // margin: const EdgeInsets.symmetric(
-                              //     vertical: 10, horizontal: 15),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.7,
-                                        child: Text(
-                                            address.value[index].address ?? '',
-                                            style:
-                                                const TextStyle(fontSize: 18)),
-                                      ),
-                                      const SizedBox(
-                                        height: 6,
-                                      ),
-                                      Text("Мой дом",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade400)),
-                                    ],
+            child: address.value.isEmpty
+                ? Center(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.not_listed_location_outlined,
+                            size: 50),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Text(tr("addressNotFound"),
+                            style: const TextStyle(fontSize: 22)),
+                      ],
+                    ),
+                  )
+                : ListView(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    children: [
+                      Column(
+                        children: [
+                          ListView.separated(
+                              separatorBuilder: (context, index) =>
+                                  const Divider(
+                                    color: Colors.grey,
                                   ),
-                                  Image.asset(
-                                    'images/delete.png',
-                                    height: 25,
-                                    width: 30,
-                                  )
-                                ],
-                              ));
-                        }),
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(vertical: 28),
-                    //   child: SizedBox(
-                    //       height: 60,
-                    //       width: double.infinity,
-                    //       child: n.NikuButton.elevated(Text(
-                    //         tr('newAddress'),
-                    //         style: const TextStyle(
-                    //             fontSize: 20, fontWeight: FontWeight.w500),
-                    //       ))
-                    //         ..bg = AppColors.mainColor
-                    //         ..color = Colors.white
-                    //         ..mx = 36
-                    //         ..rounded = 20
-                    //         ..onPressed = () {}),
-                    // )
-                  ],
-                ),
-              ],
-            )),
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: address.value.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                final hashids = HashIds(
+                                  salt: 'order',
+                                  minHashLength: 15,
+                                  alphabet:
+                                      'abcdefghijklmnopqrstuvwxyz1234567890',
+                                );
+
+                                final formatCurrency = NumberFormat.currency(
+                                    locale: 'ru_RU',
+                                    symbol: 'сум',
+                                    decimalDigits: 0);
+                                return Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20),
+                                    // margin: const EdgeInsets.symmetric(
+                                    //     vertical: 10, horizontal: 15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7,
+                                              child: Text(
+                                                  address.value[index]
+                                                          .address ??
+                                                      '',
+                                                  style: const TextStyle(
+                                                      fontSize: 18)),
+                                            ),
+                                            const SizedBox(
+                                              height: 6,
+                                            ),
+                                            Text(
+                                                address.value[index].label ??
+                                                    '',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color:
+                                                        Colors.grey.shade400)),
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            print('deleted');
+                                            Future<void> deleteAddress() async {
+                                              Box box = Hive.box<User>('user');
+                                              User? currentUser =
+                                                  box.get('user');
+                                              if (currentUser != null) {
+                                                Map<String, String>
+                                                    requestHeaders = {
+                                                  'Content-type':
+                                                      'application/json',
+                                                  'Accept': 'application/json',
+                                                  'Authorization':
+                                                      'Bearer ${currentUser.userToken}'
+                                                };
+                                                var url = Uri.https(
+                                                    'api.lesailes.uz',
+                                                    '/api/address/${address.value[index].id}');
+                                                var response = await http
+                                                    .delete(url,
+                                                        headers:
+                                                            requestHeaders);
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  getMyAddresses();
+                                                }
+                                              }
+                                            }
+
+                                            deleteAddress();
+                                          },
+                                          child: Image.asset(
+                                            'images/delete.png',
+                                            height: 25,
+                                            width: 30,
+                                          ),
+                                        )
+                                      ],
+                                    ));
+                              }),
+                          // Padding(
+                          //   padding: const EdgeInsets.symmetric(vertical: 28),
+                          //   child: SizedBox(
+                          //       height: 60,
+                          //       width: double.infinity,
+                          //       child: n.NikuButton.elevated(Text(
+                          //         tr('newAddress'),
+                          //         style: const TextStyle(
+                          //             fontSize: 20, fontWeight: FontWeight.w500),
+                          //       ))
+                          //         ..bg = AppColors.mainColor
+                          //         ..color = Colors.white
+                          //         ..mx = 36
+                          //         ..rounded = 20
+                          //         ..onPressed = () {}),
+                          // )
+                        ],
+                      ),
+                    ],
+                  )),
       ),
     );
   }

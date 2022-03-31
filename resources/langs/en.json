@@ -79,5 +79,6 @@
     "pickup": "Cook",
     "deliver": "Deliver"
   },
-  "newAddress": "New address"
+  "newAddress": "New address",
+  "addressNotFound": "Address not found"
 }

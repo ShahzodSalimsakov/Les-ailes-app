@@ -47,7 +47,7 @@ class Header extends StatelessWidget {
                       width: 24, height: 24),
                 ),
               )..onPressed = () {
-                  context.router.pushNamed("/notifications");
+                  context.router.pushNamed("notifications");
                 }
             ],
           ),

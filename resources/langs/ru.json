@@ -79,5 +79,6 @@
     "pickup": "Приготовим",
     "deliver": "Доставка"
   },
-  "newAddress": "Новый адрес"
+  "newAddress": "Новый адрес",
+  "addressNotFound": "Адрес не найден"
 }
