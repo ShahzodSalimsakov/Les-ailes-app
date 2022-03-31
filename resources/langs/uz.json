@@ -81,5 +81,14 @@
     "deliver": "Yetkazib berish"
   },
   "newAddress": "Yangi ma'nzil",
+  "pickup": {
+    "tabList": "Ro'yxat",
+    "tabMap": "Xaritada",
+    "buttonSelectThisBranch": "Bu yerdan olib keting",
+    "pageTitle": "Restoran tanlgang",
+    "addressLabel": "Manzil",
+    "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
+    "terminalIsNotWorking": "Ushbu restoran hozirda yopiq"
+  },
   "addressNotFound": "Manzil topilmadi"
 }

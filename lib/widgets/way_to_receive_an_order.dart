@@ -98,7 +98,10 @@ class WayToReceiveAnOrder extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        context.router.pushNamed('pickup');
+                      },
                       child: Container(
                         width: 164,
                         height: 164,
@@ -121,7 +124,10 @@ class WayToReceiveAnOrder extends StatelessWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        context.router.pushNamed('pickup');
+                      },
                       child: Container(
                         width: 164,
                         height: 164,
@@ -152,15 +158,14 @@ class WayToReceiveAnOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Box<DeliveryLocationData>>(
-        valueListenable:
-            Hive.box<DeliveryLocationData>('deliveryLocationData').listenable(),
+    return ValueListenableBuilder<Box<DeliveryType>>(
+        valueListenable: Hive.box<DeliveryType>('deliveryType').listenable(),
         builder: (context, box, _) {
+          Box<DeliveryLocationData> deliveryLocationBox =
+              Hive.box<DeliveryLocationData>('deliveryLocationData');
           DeliveryLocationData? deliveryLocationData =
-              box.get('deliveryLocationData');
-          Box<DeliveryType> deliveryTypeBox =
-              Hive.box<DeliveryType>('deliveryType');
-          DeliveryType? deliveryType = deliveryTypeBox.get('deliveryType');
+              deliveryLocationBox.get('deliveryLocationData');
+          DeliveryType? deliveryType = box.get('deliveryType');
           String deliveryText = tr("main.deliveryOrPickup");
           Box<Terminals> terminalBox = Hive.box<Terminals>('currentTerminal');
           Terminals? currentTerminal = terminalBox.get('currentTerminal');
@@ -180,7 +185,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
             }
           }
 
-          if (deliveryLocationData != null) {
+          if (deliveryType != null) {
             return n.NikuButton(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -202,17 +207,27 @@ class WayToReceiveAnOrder extends StatelessWidget {
                                 height: 15,
                               ),
                         const SizedBox(width: 10),
-                        Text(tr(deliveryType.value.toString()), style: const TextStyle(color: Colors.grey),)
+                        Text(
+                          tr(deliveryType.value.toString()),
+                          style: const TextStyle(color: Colors.grey),
+                        )
                       ],
                     ),
                     const SizedBox(
                       height: 10,
                     ),
-                    deliveryType!.value == DeliveryTypeEnum.deliver
+                    deliveryType.value == DeliveryTypeEnum.deliver
                         ? SizedBox(
                             width: MediaQuery.of(context).size.width * 0.7,
-                            child: n.NikuText(deliveryText, style: n.NikuTextStyle(color: Colors.grey),))
-                        : n.NikuText(currentTerminal!.name)
+                            child: n.NikuText(
+                              deliveryText,
+                              style: n.NikuTextStyle(color: Colors.grey),
+                            ))
+                        : n.NikuText(
+                            currentTerminal!.name,
+                            style: n.NikuTextStyle(
+                                color: Colors.black, fontSize: 20),
+                          )
                   ],
                 ),
                 const Icon(
@@ -225,9 +240,9 @@ class WayToReceiveAnOrder extends StatelessWidget {
               ..bg = Colors.grey.shade100
               ..rounded = 20
               ..p = 20
-            ..onPressed = () {
-              openBottomSheet(context);
-            };
+              ..onPressed = () {
+                openBottomSheet(context);
+              };
           }
           return GestureDetector(
             child: Container(

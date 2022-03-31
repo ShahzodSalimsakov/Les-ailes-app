@@ -81,5 +81,14 @@
     "deliver": "Доставка"
   },
   "newAddress": "Новый адрес",
+  "pickup": {
+    "tabList": "Списком",
+    "tabMap": "На карте",
+    "buttonSelectThisBranch": "Забрать здесь",
+    "pageTitle": "Выберите ресторан",
+    "addressLabel": "Адрес",
+    "workSchedule": "Режим работы: с {fromTime} до {toTime}",
+    "terminalIsNotWorking": "Данный ресторан сейчас не работает"
+  },
   "addressNotFound": "Адрес не найден"
 }
