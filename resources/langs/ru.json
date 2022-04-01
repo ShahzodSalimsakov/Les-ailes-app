@@ -90,5 +90,7 @@
     "workSchedule": "Режим работы: с {fromTime} до {toTime}",
     "terminalIsNotWorking": "Данный ресторан сейчас не работает"
   },
-  "addressNotFound": "Адрес не найден"
+  "addressNotFound": "Адрес не найден",
+  "chooseCity": "Выберите город",
+  "yourCity": "Ваш город"
 }

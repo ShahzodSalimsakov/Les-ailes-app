@@ -323,6 +323,22 @@ class ProductCard extends HookWidget {
       print(productLine);
     }
 
+    var locale = context.locale.toString();
+    var attributeDataName = '';
+    switch (locale) {
+    // case 'en':
+    //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
+    //   break;
+      case 'uz':
+        attributeDataName =
+            product.attributeData?.name?.chopar?.uz ?? '';
+        break;
+      default:
+        attributeDataName =
+            product.attributeData?.name?.chopar?.ru ?? '';
+        break;
+    }
+
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         decoration: BoxDecoration(
@@ -338,7 +354,7 @@ class ProductCard extends HookWidget {
                 flex: 1,
               ),
               Text(
-                product.attributeData?.name?.chopar?.ru ?? '',
+                attributeDataName,
                 style: const TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),

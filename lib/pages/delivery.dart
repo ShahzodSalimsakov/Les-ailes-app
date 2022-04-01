@@ -121,7 +121,7 @@ class DeliveryPage extends HookWidget {
       isLookingLocation.value = false;
     }
 
-    void changeLocation (Point point) async {
+    void changeLocation(Point point) async {
       var _placemark = Placemark(
           mapId: placemarkId,
           point: point,
@@ -131,7 +131,7 @@ class DeliveryPage extends HookWidget {
           direction: 90,
           icon: PlacemarkIcon.single(PlacemarkIconStyle(
               image:
-              BitmapDescriptor.fromAssetImage('images/location_picker.png'),
+                  BitmapDescriptor.fromAssetImage('images/location_picker.png'),
               rotationType: RotationType.noRotation,
               scale: 3,
               anchor: Offset.fromDirection(1.1, 1))));
@@ -140,9 +140,8 @@ class DeliveryPage extends HookWidget {
       mapObjects.value = mapsList;
       currentPoint.value = point;
       await controller.moveCamera(
-          CameraUpdate.newCameraPosition(CameraPosition(
-              target: point,
-              zoom: 17)),
+          CameraUpdate.newCameraPosition(
+              CameraPosition(target: point, zoom: 17)),
           animation: animation);
     }
 
@@ -162,6 +161,14 @@ class DeliveryPage extends HookWidget {
               isLookingLocation.value = true;
               Box<City> box = Hive.box<City>('currentCity');
               City? currentCity = box.get('currentCity');
+
+              await controller.moveCamera(
+                  CameraUpdate.newCameraPosition(CameraPosition(
+                      target: Point(
+                          latitude: double.parse(currentCity!.lat),
+                          longitude: double.parse(currentCity.lon)),
+                      zoom: 12)),
+                  animation: animation);
 
               if (geoData != null) {
                 var _placemark = Placemark(
@@ -315,7 +322,8 @@ class DeliveryPage extends HookWidget {
               )),
         ]),
       )),
-      bottomSheet: DeliveryBottomSheet(currentPoint: currentPoint.value, onSetLocation: changeLocation),
+      bottomSheet: DeliveryBottomSheet(
+          currentPoint: currentPoint.value, onSetLocation: changeLocation),
     );
   }
 }

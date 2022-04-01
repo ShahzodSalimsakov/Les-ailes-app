@@ -15,24 +15,34 @@ class FixedBasket extends StatelessWidget {
     return ValueListenableBuilder<Box<Basket>>(
         valueListenable: Hive.box<Basket>('basket').listenable(),
         builder: (context, box, _) {
-
           Basket? basket = box.get('basket');
           int totalPrice = 0;
           if (basket != null) {
             totalPrice = basket.totalPrice ?? 0;
           }
 
-          final formatCurrency =
-          NumberFormat.currency(locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          final formatCurrency = NumberFormat.currency(
+              locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
 
-          String formatedTotalPrice = formatCurrency.format(double.tryParse(totalPrice.toString()));
-          if (totalPrice > 0)
-            {
-              return SizedBox(height: 100, width: double.infinity,child: n.NikuButton.elevated(Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Text(tr('basket.navigationBottomLabel')),
-                Text(formatedTotalPrice)
-              ],))..bg = AppColors.mainColor..color = Colors.white..mx = 20..my = 20..rounded = 25);
-            }
+          String formattedTotalPrice =
+              formatCurrency.format(double.tryParse(totalPrice.toString()));
+          if (totalPrice > 0) {
+            return SizedBox(
+                height: 100,
+                width: double.infinity,
+                child: n.NikuButton.elevated(Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(tr('basket.navigationBottomLabel')),
+                    Text(formattedTotalPrice)
+                  ],
+                ))
+                  ..bg = AppColors.mainColor
+                  ..color = Colors.white
+                  ..mx = 20
+                  ..my = 20
+                  ..rounded = 25);
+          }
           return const SizedBox(height: 0);
         });
   }

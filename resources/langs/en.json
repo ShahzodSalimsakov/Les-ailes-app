@@ -90,5 +90,7 @@
     "workSchedule": "Work hours: from {fromTime} to {toTime}",
     "terminalIsNotWorking": "This restaurant is currently closed"
   },
-  "addressNotFound": "Address not found"
+  "addressNotFound": "Address not found",
+  "chooseCity": "Choose city",
+  "yourCity": "Your city"
 }

@@ -215,7 +215,7 @@ class OrderDetail extends HookWidget {
                               Text(
                                 '${tr("order")} № ${order.value!.id}',
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 22),
+                                    fontWeight: FontWeight.w400, fontSize: 20),
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(

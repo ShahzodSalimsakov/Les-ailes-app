@@ -90,5 +90,7 @@
     "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
     "terminalIsNotWorking": "Ushbu restoran hozirda yopiq"
   },
-  "addressNotFound": "Manzil topilmadi"
+  "addressNotFound": "Manzil topilmadi",
+  "chooseCity": "Shaharni tanlang",
+  "yourCity": "Sizning shahringiz"
 }

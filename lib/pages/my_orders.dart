@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:les_ailes/models/order.dart';
+import 'package:les_ailes/routes/router.gr.dart';
 import 'package:les_ailes/utils/colors.dart';
 import '../models/user.dart';
 import 'order_detail.dart';
@@ -45,7 +46,7 @@ class MyOrders extends HookWidget {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => context.router.push(const HomePage()),
           ),
           title: Text(tr("leftMenu.myOrders"),
               style: const TextStyle(color: Colors.black)),
@@ -104,7 +105,7 @@ class MyOrders extends HookWidget {
                               Text(
                                 '${tr("order")} № ${order.id}',
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 22),
+                                    fontWeight: FontWeight.w400, fontSize: 20),
                               ),
                               Container(
                                 padding: const EdgeInsets.symmetric(
