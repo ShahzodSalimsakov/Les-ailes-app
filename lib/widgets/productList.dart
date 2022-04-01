@@ -41,6 +41,21 @@ class ProductList extends HookWidget {
     }, []);
 
     Widget _productSection(BuildContext context, int index) {
+      var locale = context.locale.toString();
+      var attributeDataName = '';
+      switch (locale) {
+        // case 'en':
+        //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
+        //   break;
+        case 'uz':
+          attributeDataName =
+              products.value[index].attributeData?.name?.chopar?.uz ?? '';
+          break;
+        default:
+          attributeDataName =
+              products.value[index].attributeData?.name?.chopar?.ru ?? '';
+          break;
+      }
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         margin: const EdgeInsets.only(right: 6),
@@ -48,7 +63,7 @@ class ProductList extends HookWidget {
             borderRadius: BorderRadius.circular(10), color: AppColors.grey),
         child: Center(
             child: Text(
-          products.value[index].attributeData?.name?.chopar?.ru ?? '',
+          attributeDataName,
           style: const TextStyle(
               fontSize: 18, color: Colors.black, fontWeight: FontWeight.w500),
         )),
@@ -97,13 +112,28 @@ class ProductList extends HookWidget {
           itemCount: products.value.length,
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
+            var locale = context.locale.toString();
+            var attributeDataName = '';
+            switch (locale) {
+              // case 'en':
+              //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
+              //   break;
+              case 'uz':
+                attributeDataName =
+                    products.value[index].attributeData?.name?.chopar?.uz ?? '';
+                break;
+              default:
+                attributeDataName =
+                    products.value[index].attributeData?.name?.chopar?.ru ?? '';
+                break;
+            }
             return StickyHeader(
               header: Container(
                 margin: const EdgeInsets.only(top: 30, bottom: 20),
                 height: 38.0,
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  products.value[index].attributeData?.name?.chopar?.ru ?? '',
+                  attributeDataName,
                   style: const TextStyle(
                       color: Colors.black,
                       fontSize: 30,
@@ -121,7 +151,7 @@ class ProductList extends HookWidget {
                     mainAxisSpacing: 20),
                 itemBuilder: (context, indx) {
                   Items? product = products.value[index].items?[indx];
-                        return ProductCard(product!);
+                  return ProductCard(product!);
                 },
               ),
             );

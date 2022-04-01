@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:les_ailes/models/city.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:les_ailes/utils/colors.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class ChooseCity extends HookWidget {
@@ -21,9 +23,9 @@ class ChooseCity extends HookWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                title: const Text(
-                  'Выберите город',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                title: Text(
+                  tr("chooseCity"),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 onTap: () => Navigator.of(context).pop(),
               ),
@@ -40,16 +42,26 @@ class ChooseCity extends HookWidget {
                   scrollDirection: Axis.vertical,
                   itemCount: cities.length,
                   itemBuilder: (context, index) {
+                    var locale = context.locale.toString();
+                    var cityName = '';
+                    switch (locale) {
+                      case "uz":
+                        cityName = cities[index].nameUz;
+                        break;
+                      default:
+                        cityName = cities[index].name;
+                        break;
+                    }
                     return ListTile(
                       title: Text(
-                        cities[index].name,
+                        cityName,
                         style: const TextStyle(color: Colors.black),
                       ),
                       trailing: currentCity != null &&
                               currentCity.id == cities[index].id
                           ? const Icon(
                               Icons.check,
-                              color: Colors.yellow,
+                              color: AppColors.mainColor,
                             )
                           : null,
                       selected: currentCity != null &&
@@ -79,8 +91,8 @@ class ChooseCity extends HookWidget {
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
-        List<City> cityList = List<City>.from(
-            json['data'].map((m) => City.fromJson(m)).toList());
+        List<City> cityList =
+            List<City>.from(json['data'].map((m) => City.fromJson(m)).toList());
         cities.value = cityList;
         City? currentCity = Hive.box<City>('currentCity').get('currentCity');
         if (currentCity == null) {
@@ -97,6 +109,16 @@ class ChooseCity extends HookWidget {
         valueListenable: Hive.box<City>('currentCity').listenable(),
         builder: (context, box, _) {
           City? currentCity = box.get('currentCity');
+          var locale = context.locale.toString();
+          var cityName = '';
+          switch (locale) {
+            case "uz":
+              cityName = currentCity?.nameUz ?? '';
+              break;
+            default:
+              cityName = currentCity?.name ?? '';
+              break;
+          }
           return ListTile(
               contentPadding: const EdgeInsets.only(left: 2, top: 0, bottom: 0),
               title: Row(
@@ -104,7 +126,7 @@ class ChooseCity extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    currentCity != null ? currentCity.name : 'Ваш город',
+                    currentCity != null ? cityName : tr('yourCity'),
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                   const Icon(Icons.keyboard_arrow_down),
