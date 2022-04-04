@@ -47,7 +47,7 @@ class DeliveryPage extends HookWidget {
         isLocationSet = false;
       }
       Position currentPosition;
-      if (!isLocationSet) {
+      // if (!isLocationSet) {
         bool serviceEnabled;
         LocationPermission permission;
 
@@ -76,17 +76,17 @@ class DeliveryPage extends HookWidget {
         }
 
         currentPosition = await Geolocator.getCurrentPosition();
-      } else {
-        currentPosition = Position(
-            longitude: deliveryData!.lon!,
-            latitude: deliveryData!.lat!,
-            timestamp: DateTime.now(),
-            accuracy: 0,
-            altitude: 0,
-            heading: 0,
-            speed: 0,
-            speedAccuracy: 0);
-      }
+      // } else {
+      //   currentPosition = Position(
+      //       longitude: deliveryData!.lon!,
+      //       latitude: deliveryData!.lat!,
+      //       timestamp: DateTime.now(),
+      //       accuracy: 0,
+      //       altitude: 0,
+      //       heading: 0,
+      //       speed: 0,
+      //       speedAccuracy: 0);
+      // }
       var _placemark = Placemark(
           mapId: placemarkId,
           point: Point(

@@ -92,5 +92,6 @@
   },
   "addressNotFound": "Address not found",
   "chooseCity": "Choose city",
-  "yourCity": "Your city"
+  "yourCity": "Your city",
+  "ready": "Ready"
 }

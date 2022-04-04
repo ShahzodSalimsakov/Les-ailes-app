@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -35,7 +36,7 @@ class DeliveryModalSheet extends HookWidget {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
-      var url = Uri.https('api.choparpizza.uz', 'api/geocode', {
+      var url = Uri.https('api.lesailes.uz', 'api/geocode', {
         'lat': currentPoint.latitude.toString(),
         'lon': currentPoint.longitude.toString()
       });
@@ -195,7 +196,7 @@ class DeliveryModalSheet extends HookWidget {
                     ..pop();
                 }
               },
-              text: 'Готово',
+              text: tr("ready"),
             ),
           )
         ];

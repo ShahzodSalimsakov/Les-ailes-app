@@ -46,7 +46,7 @@ class MyOrders extends HookWidget {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => context.router.push(const HomePage()),
+            onPressed: () => context.router.navigateBack(),
           ),
           title: Text(tr("leftMenu.myOrders"),
               style: const TextStyle(color: Colors.black)),

@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
 
+import '../models/city.dart';
 import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
 import '../models/stock.dart';
@@ -68,9 +69,11 @@ class DeliverFieldsModal extends HookWidget {
               ..onPressed = () {
                 Navigator.of(context).pop();
               },
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Form(
-                child: FormBuilder(
+              child: FormBuilder(
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: GridView.count(
@@ -132,7 +135,9 @@ class DeliverFieldsModal extends HookWidget {
                     ]),
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               width: double.infinity,
               height: 60,
@@ -153,6 +158,29 @@ class DeliverFieldsModal extends HookWidget {
                       lat: double.parse(geoData.coordinates.lat),
                       lon: double.parse(geoData.coordinates.long),
                       address: geoData.formatted ?? '');
+                  geoData.addressItems?.forEach((item) async {
+                    if (item.kind == 'province' || item.kind == 'area') {
+                      Map<String, String> requestHeaders = {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json'
+                      };
+                      var url =
+                          Uri.https('api.lesailes.uz', '/api/cities/public');
+                      var response =
+                          await http.get(url, headers: requestHeaders);
+                      if (response.statusCode == 200) {
+                        var json = jsonDecode(response.body);
+                        List<City> cityList = List<City>.from(
+                            json['data'].map((m) => City.fromJson(m)).toList());
+                        for (var element in cityList) {
+                          if (element.name == item.name) {
+                            Hive.box<City>('currentCity')
+                                .put('currentCity', element);
+                          }
+                        }
+                      }
+                    }
+                  });
                   deliveryLocationBox.put('deliveryLocationData', deliveryData);
                   Map<String, String> requestHeaders = {
                     'Content-type': 'application/json',

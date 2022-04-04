@@ -92,5 +92,6 @@
   },
   "addressNotFound": "Адрес не найден",
   "chooseCity": "Выберите город",
-  "yourCity": "Ваш город"
+  "yourCity": "Ваш город",
+  "ready": "Готово"
 }

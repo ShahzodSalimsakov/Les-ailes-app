@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:les_ailes/widgets/basket.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
@@ -32,17 +33,13 @@ class FixedBasket extends StatelessWidget {
             return GestureDetector(
               onTap: () {
                 showMaterialModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25.0),
+                        topRight: Radius.circular(25.0)),
+                  ),
                     context: context,
-                    builder: (context) => Material(
-                            child: CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                              leading: Container(),
-                              middle: const Text('Modal Page')),
-                          child: const SafeArea(
-                            bottom: false,
-                            child: Text('bottom bar'),
-                          ),
-                        )));
+                    builder: (context) => const BasketWidget());
               },
               child: SizedBox(
                   height: 100,
