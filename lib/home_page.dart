@@ -14,6 +14,13 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 60,
+        title: const Header(),
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       drawer: const LeftMenu(),
       body: SafeArea(
           child: Container(
@@ -21,13 +28,15 @@ class HomePage extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.vertical,
           shrinkWrap: true,
-          children: [Column(children: [
-            const Header(),
-            const ChooseCity(),
-            const WayToReceiveAnOrder(),
-            SliderCarousel(),
-            const ProductList()
-          ])],
+          children: [
+            Column(children: [
+              // const Header(),
+              const ChooseCity(),
+              const WayToReceiveAnOrder(),
+              SliderCarousel(),
+              const ProductList()
+            ])
+          ],
         ),
       )),
       bottomNavigationBar: const FixedBasket(),
