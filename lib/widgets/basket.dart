@@ -39,7 +39,7 @@ class BasketWidget extends HookWidget {
       };
 
       var url = Uri.https(
-          'api.choparpizza.uz', '/api/basket-lines/${hashids.encode(lineId)}');
+          'api.lesailes.uz', '/api/basket-lines/${hashids.encode(lineId)}');
       var response = await http.delete(url, headers: requestHeaders);
       if (response.statusCode == 200 ||
           response.statusCode == 201 ||
@@ -49,8 +49,7 @@ class BasketWidget extends HookWidget {
           'Accept': 'application/json'
         };
 
-        url = Uri.https(
-            'api.choparpizza.uz', '/api/baskets/${basket!.encodedId}');
+        url = Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
         response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
@@ -79,7 +78,7 @@ class BasketWidget extends HookWidget {
       };
 
       var url = Uri.https(
-          'api.choparpizza.uz',
+          'api.lesailes.uz',
           '/api/v1/basket-lines/${hashids.encode(line.id.toString())}/remove',
           {'quantity': '1'});
       var response = await http.put(url, headers: requestHeaders);
@@ -90,8 +89,7 @@ class BasketWidget extends HookWidget {
           'Accept': 'application/json'
         };
 
-        url = Uri.https(
-            'api.choparpizza.uz', '/api/baskets/${basket!.encodedId}');
+        url = Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
         response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
@@ -107,7 +105,7 @@ class BasketWidget extends HookWidget {
       };
 
       var url = Uri.https(
-          'api.choparpizza.uz',
+          'api.lesailes.uz',
           '/api/v1/basket-lines/${hashids.encode(line.id.toString())}/add',
           {'quantity': '1'});
       var response = await http.post(url, headers: requestHeaders);
@@ -118,8 +116,7 @@ class BasketWidget extends HookWidget {
           'Accept': 'application/json'
         };
 
-        url = Uri.https(
-            'api.choparpizza.uz', '/api/baskets/${basket!.encodedId}');
+        url = Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
         response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
@@ -134,62 +131,42 @@ class BasketWidget extends HookWidget {
           lineItem.child![0].variant?.product?.id !=
               lineItem.variant?.product?.boxId) {
         return Container(
-          height: 50.0,
-          width: 50,
-          // margin: EdgeInsets.all(15),
-          child: Row(
-            children: [
-              Expanded(
-                  child: Stack(
-                clipBehavior: Clip.hardEdge,
-                children: [
-                  Positioned(
-                      left: 0,
-                      child: Container(
-                        child: Image.network(
-                          'https://api.choparpizza.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-                          height: 50,
-                        ),
-                        width: 50,
-                      ))
-                ],
-              )),
-              Expanded(
-                  child: Stack(
-                children: [
-                  Positioned(
-                      right: 0,
-                      child: Container(
-                        width: 50,
-                        child: Image.network(
-                          'https://api.choparpizza.uz/storage/${lineItem.child![0].variant?.product?.assets![0].location}/${lineItem.child![0].variant?.product?.assets![0].filename}',
-                          height: 50,
-                        ),
-                      ))
-                ],
-              ))
-            ],
-          ),
-        );
+            margin: EdgeInsets.only(right: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(26),
+                color: Colors.grey.shade100),
+            height: 104,
+            width: 104,
+            // margin: EdgeInsets.all(15),
+            child: Image.network(
+              'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+              height: 104,
+            ));
       } else if (lineItem.variant?.product?.assets != null &&
           lineItem.variant!.product!.assets!.isNotEmpty) {
-        return Image.network(
-          'https://api.choparpizza.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-          width: 50.0,
-          height: 50.0,
-          // width: MediaQuery.of(context).size.width / 2.5,
+        return Container(
+          margin: EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(26),
+              color: Colors.grey.shade100),
+          child: Image.network(
+            'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+            width: 104,
+            height: 104,
+            // width: MediaQuery.of(context).size.width / 2.5,
+          ),
         );
       } else {
         return SvgPicture.network(
-          'https://choparpizza.uz/no_photo.svg',
-          width: 100.0,
-          height: 73.0,
+          'https://lesailes.uz/no_photo.svg',
+          width: 104,
+          height: 104,
         );
       }
     }
 
     Widget basketItems(Lines lines) {
-      final formatCurrency = new NumberFormat.currency(
+      final formatCurrency = NumberFormat.currency(
           locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
       String? productName = '';
       var productTotalPrice = 0;
@@ -216,55 +193,44 @@ class BasketWidget extends HookWidget {
             int.parse(double.parse(lines.total ?? '0.0000').toStringAsFixed(0));
       }
       return Container(
-          margin: EdgeInsets.symmetric(vertical: 40),
-          padding: EdgeInsets.symmetric(
-            horizontal: 15,
-          ),
+          margin: const EdgeInsets.symmetric(vertical: 15),
+          height: 104,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  renderProductImage(context, lines),
-                  SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: 120,
-                        child: Text(
-                          productName ?? '',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      lines.bonusId != null
-                          ? Text(
-                              tr('bonus'),
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.yellow.shade600),
-                            )
-                          : SizedBox()
-                    ],
-                  ),
-                ],
-              ),
+              renderProductImage(context, lines),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    formatCurrency.format(productTotalPrice),
-                    style: TextStyle(fontSize: 18),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Text(
+                      productName ?? '',
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
                   ),
+                  const Spacer(),
                   SizedBox(
-                    height: 10,
-                  ),
-                  lines.bonusId == null
-                      ? Container(
-                          height: 30.0,
+                    width: MediaQuery.of(context).size.width * 0.62,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Text(
+                            formatCurrency.format(productTotalPrice),
+                            style: const TextStyle(fontSize: 18),
+                          ),
+                        ),
+                        Container(
+                          height: 50.0,
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Colors.yellow.shade600,
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Colors.grey.shade200,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(18)),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -272,261 +238,64 @@ class BasketWidget extends HookWidget {
                             children: [
                               IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(Icons.remove,
-                                    size: 20.0, color: Colors.yellow.shade600),
+                                icon: const Icon(
+                                  Icons.remove,
+                                  size: 20.0,
+                                ),
                                 onPressed: () {
                                   decreaseQuantity(lines);
                                 },
                               ),
                               Text(
                                 lines.quantity.toString(),
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    color: Colors.yellow.shade600,
-                                    fontWeight: FontWeight.w700),
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w700),
                               ),
                               IconButton(
                                   padding: EdgeInsets.zero,
-                                  icon: Icon(Icons.add,
-                                      size: 20.0,
-                                      color: Colors.yellow.shade600),
+                                  icon: const Icon(
+                                    Icons.add,
+                                    size: 20.0,
+                                  ),
                                   onPressed: () {
                                     increaseQuantity(lines);
                                   })
                             ],
                           ),
                         )
-                      : SizedBox(),
+                      ],
+                    ),
+                  )
                 ],
-              ),
-              lines.quantity == 1
-                  ? IconButton(
-                      icon: Icon(
-                        Icons.close_outlined,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        destroyLine(lines.id);
-                      },
-                    )
-                  : SizedBox(
-                      width: 0,
-                    )
+              )
             ],
           ));
     }
 
-    Widget renderPage() {
-      final formatCurrency = new NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-      Basket? basket = basketBox.get('basket');
-      if (basket == null) {
-        return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/empty_cart.png'),
-              Text(
-                'Корзина пуста',
-                style: TextStyle(color: Colors.grey),
-              )
-            ],
-          ),
-        );
-      } else if (basket != null && basket.lineCount == 0) {
-        return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/empty_cart.png'),
-              Text(
-                'Корзина пуста',
-                style: TextStyle(color: Colors.grey),
-              )
-            ],
-          ),
-        );
-      } else if (basketData.value != null && basketData.value?.lines == null) {
-        return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/empty_cart.png'),
-              Text(
-                'Корзина пуста',
-                style: TextStyle(color: Colors.grey),
-              )
-            ],
-          ),
-        );
-      } else if (basketData.value != null) {
-        return Container(
-            padding: EdgeInsets.symmetric(vertical: 30),
-            child: Column(
-              children: [
-                Text("Проведите пальцем влево, чтобы удалить продукт"),
-                Expanded(
-                  child: ListView.separated(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: basketData.value!.lines!.length ?? 0,
-                      separatorBuilder: (context, index) {
-                        return Divider();
-                      },
-                      itemBuilder: (context, index) {
-                        final item = basketData.value!.lines![index];
-                        return item.bonusId != null
-                            ? basketItems(item)
-                            : Dismissible(
-                                direction: DismissDirection.endToStart,
-                                key: Key(item.id.toString()),
-                                child: basketItems(item),
-                                background: Container(
-                                  color: Colors.red,
-                                ),
-                                onDismissed: (DismissDirection direction) {
-                                  destroyLine(item.id);
-                                },
-                                secondaryBackground: Container(
-                                  color: Colors.red,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Icon(Icons.delete, color: Colors.white),
-                                        Text('Удалить',
-                                            style:
-                                                TextStyle(color: Colors.white)),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              );
-                      }),
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 15),
-                  child: Column(
-                    children: [
-                      // Container(
-                      //   height: 60,
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //     children: [
-                      //       Text(
-                      //         '${basket.lineCount} товар',
-                      //         style: TextStyle(
-                      //             fontWeight: FontWeight.w400, fontSize: 18),
-                      //       ),
-                      //       Text(
-                      //           formatCurrency
-                      //               .format(basketData.value?.total ?? 0),
-                      //           style: TextStyle(
-                      //               fontWeight: FontWeight.w400, fontSize: 18))
-                      //     ],
-                      //   ),
-                      // ),
-                      // Container(
-                      //   height: 60,
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //     children: [
-                      //       Text(
-                      //         'Доставка',
-                      //         style: TextStyle(
-                      //             fontWeight: FontWeight.w400, fontSize: 18),
-                      //       ),
-                      //       Text('10 000 сум',
-                      //           style: TextStyle(
-                      //               fontWeight: FontWeight.w400, fontSize: 18))
-                      //     ],
-                      //   ),
-                      // ),
-                      Container(
-                        height: 60,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Итого:',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w700, fontSize: 18),
-                            ),
-                            Text(
-                                formatCurrency
-                                    .format(basketData.value?.total ?? 0),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 18))
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                // Navigator.push(
-                                //   context,
-                                // MaterialPageRoute(
-                                // builder: (context) => OrderRegistration(),
-                                // ),
-                                // );
-                              },
-                              child: Text(
-                                'Оформить заказ',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w700),
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Colors.yellow.shade700),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(22.0),
-                                  )))))
-                    ],
-                  ),
-                )
-              ],
-            ));
-      } else {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
+    Future<void> getBasket() async {
+      if (basket != null) {
+        Map<String, String> requestHeaders = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        };
+
+        var url =
+            Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
+        var response = await http.get(url, headers: requestHeaders);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var json = jsonDecode(response.body);
+          BasketData basketLocalData = BasketData.fromJson(json['data']);
+          if (basketLocalData.lines != null) {
+            basket.lineCount = basketLocalData.lines!.length;
+            basketBox.put('basket', basket);
+          }
+          basketData.value = basketLocalData;
+        }
       }
     }
 
-    // Future<void> getBasket() async {
-    //   if (basket != null) {
-    //     Map<String, String> requestHeaders = {
-    //       'Content-type': 'application/json',
-    //       'Accept': 'application/json'
-    //     };
-    //
-    //     var url = Uri.https(
-    //         'api.choparpizza.uz', '/api/baskets/${basket!.encodedId}');
-    //     var response = await http.get(url, headers: requestHeaders);
-    //     if (response.statusCode == 200 || response.statusCode == 201) {
-    //       var json = jsonDecode(response.body);
-    //       BasketData basketLocalData = BasketData.fromJson(json['data']);
-    //       if (basketLocalData.lines != null) {
-    //         basket.lineCount = basketLocalData.lines!.length;
-    //         basketBox.put('basket', basket);
-    //       }
-    //       basketData.value = basketLocalData;
-    //     }
-    //   }
-    // }
-
     useEffect(() {
-      // getBasket();
+      getBasket();
     }, []);
 
     return Material(
@@ -541,6 +310,7 @@ class BasketWidget extends HookWidget {
               //         topRight: Radius.circular(30),
               //         topLeft:  Radius.circular(30))),
               backgroundColor: Colors.transparent,
+              elevation: 0,
               pinned: true,
               snap: false,
               floating: false,
@@ -580,11 +350,65 @@ class BasketWidget extends HookWidget {
                   SliverChildBuilderDelegate((BuildContext context, int index) {
                 return Column(
                   children: [
-                    WayToReceiveAnOrder(),
-
-                    // ListView.builder(itemBuilder: (context, index) {
-                    // return renderPage();
-                    // })
+                    const WayToReceiveAnOrder(),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    ListView.separated(
+                        padding: const EdgeInsets.only(top: 0),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.vertical,
+                        itemCount: basketData.value!.lines!.length ?? 0,
+                        separatorBuilder: (context, index) {
+                          return const Divider();
+                        },
+                        itemBuilder: (context, index) {
+                          final item = basketData.value!.lines![index];
+                          return item.bonusId != null
+                              ? basketItems(item)
+                              : Dismissible(
+                                  direction: DismissDirection.endToStart,
+                                  key: Key(item.id.toString()),
+                                  child: basketItems(item),
+                                  background: Container(
+                                    color: Colors.red,
+                                  ),
+                                  onDismissed: (DismissDirection direction) {
+                                    destroyLine(item.id);
+                                  },
+                                  secondaryBackground: Container(
+                                    color: Colors.red,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: const [
+                                          Icon(Icons.delete,
+                                              color: Colors.white),
+                                          Text('Удалить',
+                                              style: TextStyle(
+                                                  color: Colors.white)),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                        }),
+                    SizedBox(
+                      height: 244,
+                      child: ListView.builder(
+                          shrinkWrap:  true,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 15,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 100,
+                              color: Colors.green,
+                              child: Text('Recomended'),//here you can show the child or data from the list
+                            );
+                          }),
+                    )
                   ],
                 );
               }, childCount: 1),

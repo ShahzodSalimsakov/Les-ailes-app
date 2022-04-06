@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../../models/basket.dart';
+import '../../services/user_repository.dart';
 import '../../utils/colors.dart';
 
 class FixedBasket extends StatelessWidget {
@@ -32,14 +34,19 @@ class FixedBasket extends StatelessWidget {
           if (totalPrice > 0) {
             return GestureDetector(
               onTap: () {
-                showMaterialModalBottomSheet(
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(25.0),
-                        topRight: Radius.circular(25.0)),
-                  ),
-                    context: context,
-                    builder: (context) => const BasketWidget());
+                bool isUserAuthorized = UserRepository().isAuthorized();
+                if (isUserAuthorized) {
+                  showMaterialModalBottomSheet(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(25.0),
+                            topRight: Radius.circular(25.0)),
+                      ),
+                      context: context,
+                      builder: (context) => const BasketWidget());
+                } else {
+                  context.router.pushNamed('signIn');
+                }
               },
               child: SizedBox(
                   height: 100,
