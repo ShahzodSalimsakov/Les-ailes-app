@@ -48,7 +48,8 @@
   "basket": {
     "basket": "Savat",
     "navigationBottomLabel": "Savat",
-    "order": "Buyurtma berish"
+    "order": "Buyurtma berish",
+    "addToOrder": "Buyurtmaga qo'shing"
   },
   "save": "Saqlash",
   "profile": {

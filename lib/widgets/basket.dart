@@ -228,7 +228,7 @@ class BasketWidget extends HookWidget {
                         Container(
                           height: 50.0,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
+                            color: Colors.grey.shade100,
                             borderRadius:
                                 const BorderRadius.all(Radius.circular(18)),
                           ),
@@ -294,8 +294,25 @@ class BasketWidget extends HookWidget {
       }
     }
 
+    Future<void> fetchRecomendedItems() async {
+      if (basket != null) {
+        Map<String, String> requestHeaders = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        };
+
+        var url = Uri.https(
+            'api.lesailes.uz', '/api/baskets/related/${basket!.encodedId}');
+        var response = await http.get(url, headers: requestHeaders);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var json = jsonDecode(response.body);
+        }
+      }
+    }
+
     useEffect(() {
       getBasket();
+      fetchRecomendedItems();
     }, []);
 
     return Material(
@@ -358,7 +375,7 @@ class BasketWidget extends HookWidget {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         scrollDirection: Axis.vertical,
-                        itemCount: basketData.value!.lines!.length ?? 0,
+                        itemCount: basketData.value?.lines?.length ?? 0,
                         separatorBuilder: (context, index) {
                           return const Divider();
                         },
@@ -395,19 +412,239 @@ class BasketWidget extends HookWidget {
                                   ),
                                 );
                         }),
-                    SizedBox(
-                      height: 244,
-                      child: ListView.builder(
-                          shrinkWrap:  true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 15,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              width: 100,
-                              color: Colors.green,
-                              child: Text('Recomended'),//here you can show the child or data from the list
-                            );
-                          }),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 45,
+                        bottom: 10,
+                      ),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(tr('basket.addToOrder'),
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.w500))),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 30),
+                      child: SizedBox(
+                        height: 244,
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 15,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                  width: 140,
+                                  margin: const EdgeInsets.only(right: 10),
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(30),
+                                        color: AppColors.grey,
+                                      ),
+                                      child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Image.network(
+                                              'https://api.lesailes.uz/storage/products/2022/04/02/asraMEU3pUEjyJLLVtjem45xCHLmZDLg9V3UdiKf.png',
+                                              height: 140,
+                                              width: 140,
+                                            ),
+                                            const Spacer(
+                                              flex: 1,
+                                            ),
+                                            const Text(
+                                              "Ramadan",
+                                              style: TextStyle(fontSize: 20),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const Spacer(
+                                              flex: 1,
+                                            ),
+                                            // productLine != null
+                                            //     ? Row(
+                                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            //   children: [
+                                            //     SizedBox(
+                                            //         height: 50,
+                                            //         width: 50,
+                                            //         child: n.NikuButton.elevated(const Icon(
+                                            //           Icons.remove,
+                                            //           color: Colors.white,
+                                            //           size: 40,
+                                            //         ))
+                                            //           ..bg = AppColors.mainColor
+                                            //           ..rounded = 20
+                                            //           ..p = 0
+                                            //           ..onPressed = () {
+                                            //             decreaseQuantity(productLine!);
+                                            //           }
+                                            //     ),
+                                            //     n.NikuText(productLine.quantity.toString())
+                                            //       ..style = n.NikuTextStyle(
+                                            //           fontSize: 18, fontWeight: FontWeight.w500),
+                                            //     SizedBox(
+                                            //         height: 50,
+                                            //         width: 50,
+                                            //         child: n.NikuButton.elevated(const Icon(
+                                            //           Icons.add,
+                                            //           color: Colors.white,
+                                            //           size: 40,
+                                            //         ))
+                                            //           ..bg = AppColors.mainColor
+                                            //           ..rounded = 20
+                                            //           ..p = 0
+                                            //           ..onPressed = () {
+                                            //             increaseQuantity(productLine!);
+                                            //           }
+                                            //     ),
+                                            //   ],
+                                            // )
+                                            //     :
+                                            SizedBox(
+                                              height: 50,
+                                              width: 144,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  //   Box<DeliveryType> box =
+                                                  //   Hive.box<DeliveryType>('deliveryType');
+                                                  //   DeliveryType? deliveryType = box.get('deliveryType');
+                                                  //   Terminals? currentTerminal =
+                                                  //   Hive.box<Terminals>('currentTerminal')
+                                                  //       .get('currentTerminal');
+                                                  //   DeliveryLocationData? deliveryLocationData =
+                                                  //   Hive.box<DeliveryLocationData>(
+                                                  //       'deliveryLocationData')
+                                                  //       .get('deliveryLocationData');
+                                                  //
+                                                  //   //Check pickup terminal
+                                                  //   if (deliveryType != null &&
+                                                  //       deliveryType.value == DeliveryTypeEnum.pickup) {
+                                                  //     if (currentTerminal == null) {
+                                                  //       ScaffoldMessenger.of(context).showSnackBar(
+                                                  //           const SnackBar(
+                                                  //               content:
+                                                  //               Text('Не выбран филиал самовывоза')));
+                                                  //       return;
+                                                  //     }
+                                                  //   }
+                                                  //
+                                                  //   // Check delivery address
+                                                  //   if (deliveryType != null &&
+                                                  //       deliveryType.value == DeliveryTypeEnum.deliver) {
+                                                  //     if (deliveryLocationData == null) {
+                                                  //       ScaffoldMessenger.of(context).showSnackBar(
+                                                  //           const SnackBar(
+                                                  //               content:
+                                                  //               Text('Не указан адрес доставки')));
+                                                  //       return;
+                                                  //     } else if (deliveryLocationData.address == null) {
+                                                  //       ScaffoldMessenger.of(context).showSnackBar(
+                                                  //           const SnackBar(
+                                                  //               content:
+                                                  //               Text('Не указан адрес доставки')));
+                                                  //       return;
+                                                  //     }
+                                                  //   }
+                                                  //
+                                                  //   if (isInStock) {
+                                                  //     return;
+                                                  //   }
+                                                  //
+                                                  //   addToBasket();
+                                                },
+                                                child: Text("30000"),
+                                                style: ButtonStyle(
+                                                  shape: MaterialStateProperty
+                                                      .all<RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            18.0),
+                                                  )),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          AppColors.mainColor),
+                                                ),
+                                              ),
+                                            )
+                                          ])));
+                            }),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 30),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          color: Colors.grey.shade100),
+                      height: 187,
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Доставка:',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.grey.shade400),
+                                  ),
+                                  Text(
+                                    '12 000',
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.grey.shade400),
+                                  )
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    '3 товара на сумму:',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  Text(
+                                    '108 000',
+                                    style: TextStyle(fontSize: 20),
+                                  )
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    'Вернется 5% от заказа:',
+                                    style: TextStyle(
+                                        fontSize: 20, color: AppColors.plum),
+                                  ),
+                                  Text(
+                                    '5400 ',
+                                    style: TextStyle(
+                                        fontSize: 20, color: AppColors.plum),
+                                  )
+                                ]),
+                            Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: const [
+                                  Text(
+                                    'Итого:',
+                                    style: TextStyle(fontSize: 24),
+                                  ),
+                                  Text(
+                                    '120 000',
+                                    style: TextStyle(fontSize: 24),
+                                  )
+                                ]),
+                          ]),
                     )
                   ],
                 );
