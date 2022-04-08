@@ -49,7 +49,9 @@
     "basket": "Savat",
     "navigationBottomLabel": "Savat",
     "order": "Buyurtma berish",
-    "addToOrder": "Buyurtmaga qo'shing"
+    "addToOrder": "Buyurtmaga qo'shing",
+    "willReturn": "Qaytadi",
+    "fromOrder": "buyurtmadan"
   },
   "save": "Saqlash",
   "profile": {

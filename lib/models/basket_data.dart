@@ -33,7 +33,7 @@ class BasketData {
     otp = json['otp'];
     order = json['order'];
     if (json['lines'] != null) {
-      lines = json['lines'].map<Lines>((m) => new Lines.fromJson(m)).toList();
+      lines = json['lines'].map<Lines>((m) => Lines.fromJson(m)).toList();
     }
     total = json['total'];
     subTotal = json['sub_total'];

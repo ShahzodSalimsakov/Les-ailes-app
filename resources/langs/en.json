@@ -49,7 +49,9 @@
     "basket": "Basket",
     "navigationBottomLabel": "Cart",
     "order": "Order",
-    "addToOrder": "Add to order"
+    "addToOrder": "Add to order",
+    "willReturn": "Will return",
+    "fromOrder": "from order"
   },
   "profile": {
     "profile": "Profile",

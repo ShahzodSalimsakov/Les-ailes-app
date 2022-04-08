@@ -49,7 +49,9 @@
     "basket": "Корзина",
     "navigationBottomLabel": "Корзина",
     "order": "Заказать",
-    "addToOrder": "Добавьте к заказу"
+    "addToOrder": "Добавьте к заказу",
+    "willReturn": "Вернется",
+    "fromOrder": "от заказа"
   },
   "profile": {
     "profile": "Профиль",
