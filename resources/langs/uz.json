@@ -98,5 +98,12 @@
   "addressNotFound": "Manzil topilmadi",
   "chooseCity": "Shaharni tanlang",
   "yourCity": "Sizning shahringiz",
-  "ready": "Tayyor"
+  "ready": "Tayyor",
+  "orderCreate": {
+    "chooseDeliveryTime": "Yetkazib berish vaqti",
+    "deliverNow": "Tezroq",
+    "deliverLater": "Kechroq",
+    "chooseTime": "Yetkazib berish vaqtini tanlang"
+  },
+  "choose": "Tanlang"
 }

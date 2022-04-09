@@ -28,10 +28,17 @@ class DeliverFieldsModal extends HookWidget {
         Hive.box<DeliveryLocationData>('deliveryLocationData');
     DeliveryLocationData? deliveryLocationData =
         deliveryLocationBox.get('deliveryLocationData');
-    final houseText = useState<String>(deliveryLocationData?.house ?? '');
-    final flatText = useState<String>(deliveryLocationData?.flat ?? '');
-    final entranceText = useState<String>(deliveryLocationData?.entrance ?? '');
-    final doorCodeText = useState<String>(deliveryLocationData?.doorCode ?? '');
+    String? houseDefaultValue = '';
+    for (var element in geoData.addressItems!) {
+      if (element.kind == 'house') {
+        houseDefaultValue = element.name;
+      }
+    }
+
+    final houseText = useState<String>(houseDefaultValue ?? '');
+    final flatText = useState<String>('');
+    final entranceText = useState<String>('');
+    final doorCodeText = useState<String>('');
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
