@@ -12,7 +12,15 @@ class UserData {
   late int status;
   User? user;
 
-  UserData({required this.id, required this.userId, required this.userIdentify, required this.userContact, required this.userToken, required this.verifiedAt, required this.status, this.user});
+  UserData(
+      {required this.id,
+      required this.userId,
+      required this.userIdentify,
+      required this.userContact,
+      required this.userToken,
+      required this.verifiedAt,
+      required this.status,
+      this.user});
 
   UserData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -65,8 +73,22 @@ class User {
   late String userToken;
   @HiveField(10)
   late String? email;
+  @HiveField(11)
+  late String? birth;
 
-  User({required this.id, this.languageId, required this.name, required this.phone, this.verificationCode, this.phoneVerifiedAt, required this.createdAt, required this.updatedAt, this.mobile, required this.userToken, this.email});
+  User(
+      {required this.id,
+      this.languageId,
+      required this.name,
+      required this.phone,
+      this.verificationCode,
+      this.phoneVerifiedAt,
+      required this.createdAt,
+      required this.updatedAt,
+      this.mobile,
+      required this.userToken,
+      this.email,
+      this.birth});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -80,6 +102,7 @@ class User {
     mobile = json['mobile'];
     userToken = json['user_token'];
     email = json['email'];
+    birth = json['birth'];
   }
 
   Map<String, dynamic> toJson() {
@@ -95,6 +118,7 @@ class User {
     data['mobile'] = this.mobile;
     data['user_token'] = this.userToken;
     data['email'] = this.email;
+    data['birth'] = this.birth;
     return data;
   }
 }
@@ -107,7 +131,13 @@ class Roles {
   late String updatedAt;
   Pivot? pivot;
 
-  Roles({required this.id, required this.name, required this.guardName, required this.createdAt, required this.updatedAt, this.pivot});
+  Roles(
+      {required this.id,
+      required this.name,
+      required this.guardName,
+      required this.createdAt,
+      required this.updatedAt,
+      this.pivot});
 
   Roles.fromJson(Map<String, dynamic> json) {
     id = json['id'];

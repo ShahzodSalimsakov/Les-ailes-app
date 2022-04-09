@@ -813,11 +813,11 @@ class BasketWidget extends HookWidget {
                                 children: [
                                   Text(
                                     '${basketData.value?.lines?.length} ${tr("goods-amount")}:',
-                                    style: const TextStyle(fontSize: 20),
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                   Text(
                                     '$productsTotalPrice',
-                                    style: const TextStyle(fontSize: 20),
+                                    style: const TextStyle(fontSize: 18),
                                   )
                                 ]),
                             Row(
@@ -830,12 +830,15 @@ class BasketWidget extends HookWidget {
                                         tr("basket.fromOrder") +
                                         ':',
                                     style: const TextStyle(
-                                        fontSize: 20, color: AppColors.plum),
+                                        fontSize: 18, color: AppColors.plum),
                                   ),
+                                  Spacer(),
+                                  Image.asset('images/coin.png', height: 16, width: 16,),
+                                  SizedBox(width: 5,),
                                   Text(
                                     '$cashback',
                                     style: const TextStyle(
-                                        fontSize: 20, color: AppColors.plum),
+                                        fontSize: 18, color: AppColors.plum),
                                   )
                                 ]),
                             Row(

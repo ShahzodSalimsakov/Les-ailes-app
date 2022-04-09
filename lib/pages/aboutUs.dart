@@ -107,7 +107,7 @@ class AboutUsPage extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               launch(
-                                'https://www.facebook.com/choparpizza/',
+                                'https://www.facebook.com/lesailesuz/',
                                 forceSafariVC: false,
                                 forceWebView: false,
                                 headers: <String, String>{
