@@ -98,5 +98,12 @@
   "addressNotFound": "Адрес не найден",
   "chooseCity": "Выберите город",
   "yourCity": "Ваш город",
-  "ready": "Готово"
+  "ready": "Готово",
+  "orderCreate": {
+    "chooseDeliveryTime": "Время доставки",
+    "deliverNow": "Сейчас",
+    "deliverLater": "Позже",
+    "chooseTime": "Выберите время доставки"
+  },
+  "choose": "Выбрать"
 }

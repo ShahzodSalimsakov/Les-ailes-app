@@ -10,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:les_ailes/models/related_product.dart';
 import 'package:les_ailes/utils/colors.dart';
+import 'package:les_ailes/widgets/choose_delivery_time.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
@@ -346,6 +347,63 @@ class BasketWidget extends HookWidget {
       }
     }
 
+    String totalPrice = useMemoized(() {
+      String result = '0';
+      if (basketData.value != null) {
+        result = basketData.value!.total.toString();
+      }
+
+      final formatCurrency =
+      NumberFormat.currency(
+          locale: 'ru_RU',
+          symbol: 'сум',
+          decimalDigits: 0);
+
+      result = formatCurrency
+          .format(double.tryParse(result));
+      return result;
+    }, [
+      basketData.value
+    ]);
+
+    String cashback = useMemoized(() {
+      String result = '0';
+      if (basketData.value != null) {
+        result = (basketData.value!.total * 0.05).round().toString();
+      }
+
+      final formatCurrency =
+      NumberFormat.currency(
+          locale: 'ru_RU',
+          symbol: 'сум',
+          decimalDigits: 0);
+
+      result = formatCurrency
+          .format(double.tryParse(result));
+      return result;
+    }, [
+      basketData.value
+    ]);
+
+    String productsTotalPrice = useMemoized((){
+      String result = '0';
+      if (basketData.value != null) {
+        result = basketData.value!.total.toString();
+      }
+
+      final formatCurrency =
+      NumberFormat.currency(
+          locale: 'ru_RU',
+          symbol: 'сум',
+          decimalDigits: 0);
+
+      result = formatCurrency
+          .format(double.tryParse(result));
+      return result;
+    }, [
+      basketData.value
+    ]);
+
     useEffect(() {
       getBasket();
       fetchRecomendedItems();
@@ -406,8 +464,6 @@ class BasketWidget extends HookWidget {
             SliverList(
               delegate:
                   SliverChildBuilderDelegate((BuildContext context, int index) {
-                var cashback = basketData.value!.total * 0.05;
-                var totalPrice = basketData.value!.total;
                 return Column(
                   children: [
                     const WayToReceiveAnOrder(),
@@ -757,11 +813,11 @@ class BasketWidget extends HookWidget {
                                 children: [
                                   Text(
                                     '${basketData.value?.lines?.length} ${tr("goods-amount")}:',
-                                    style: const TextStyle(fontSize: 20),
+                                    style: const TextStyle(fontSize: 18),
                                   ),
                                   Text(
-                                    '${basketData.value?.total}',
-                                    style: const TextStyle(fontSize: 20),
+                                    '$productsTotalPrice',
+                                    style: const TextStyle(fontSize: 18),
                                   )
                                 ]),
                             Row(
@@ -774,13 +830,15 @@ class BasketWidget extends HookWidget {
                                         tr("basket.fromOrder") +
                                         ':',
                                     style: const TextStyle(
-                                        fontSize: 20, color: AppColors.plum),
+                                        fontSize: 18, color: AppColors.plum),
                                   ),
+                                  Spacer(),
                                   Image.asset('images/coin.png', height: 16, width: 16,),
+                                  SizedBox(width: 5,),
                                   Text(
                                     '$cashback',
                                     style: const TextStyle(
-                                        fontSize: 20, color: AppColors.plum),
+                                        fontSize: 18, color: AppColors.plum),
                                   )
                                 ]),
                             Row(
@@ -798,7 +856,8 @@ class BasketWidget extends HookWidget {
                                 ]),
                           ]),
                     ),
-
+                    SizedBox(height: 20,),
+                    ChooseDeliveryTime()
                   ],
                 );
               }, childCount: 1),

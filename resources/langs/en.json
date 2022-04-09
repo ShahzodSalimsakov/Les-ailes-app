@@ -98,5 +98,12 @@
   "addressNotFound": "Address not found",
   "chooseCity": "Choose city",
   "yourCity": "Your city",
-  "ready": "Ready"
+  "ready": "Ready",
+  "orderCreate": {
+    "chooseDeliveryTime": "Delivery time",
+    "deliverNow": "Now",
+    "deliverLater": "Later",
+    "chooseTime": "Select delivery time"
+  },
+  "choose": "Choose"
 }
