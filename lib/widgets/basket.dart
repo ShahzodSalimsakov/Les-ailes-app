@@ -776,6 +776,7 @@ class BasketWidget extends HookWidget {
                                     style: const TextStyle(
                                         fontSize: 20, color: AppColors.plum),
                                   ),
+                                  Image.asset('images/coin.png', height: 16, width: 16,),
                                   Text(
                                     '$cashback',
                                     style: const TextStyle(
@@ -796,7 +797,8 @@ class BasketWidget extends HookWidget {
                                   )
                                 ]),
                           ]),
-                    )
+                    ),
+
                   ],
                 );
               }, childCount: 1),

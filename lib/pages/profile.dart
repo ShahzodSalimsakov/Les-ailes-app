@@ -93,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         initialTime:
                                             const TimeOfDay(hour: 8, minute: 0),
-                                        // initialValue: DateTime.now(),
+                                        initialValue: currentUser?.birth != null ?  DateTime.parse(currentUser!.birth!) : DateTime.now(),
                                         // enabled: true,
                                       ),
                                       const SizedBox(
@@ -179,10 +179,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                       };
                                       var url = Uri.https(
                                           'api.lesailes.uz', '/api/me');
-                                      var values = _formKey.currentState!.value;
+                                      var values = {..._formKey.currentState!.value};
                                       if (values['email'] == null) {
                                         values['email'] = '';
                                       }
+
+                                      if (values['birth'] != null) {
+                                        values['birth'] = DateFormat('yyyy-MM-dd').format(values['birth']);
+                                      }
+
                                       var response = await http.post(url,
                                           headers: requestHeaders,
                                           body: jsonEncode(values));
