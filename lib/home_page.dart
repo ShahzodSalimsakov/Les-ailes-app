@@ -22,6 +22,10 @@ class HomePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          systemNavigationBarColor: Colors.transparent, // Navigation bar
+          statusBarColor: Colors.black, // Status bar
+        ),
       ),
       drawer: const LeftMenu(),
       body: SafeArea(
