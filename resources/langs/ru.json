@@ -103,7 +103,20 @@
     "chooseDeliveryTime": "Время доставки",
     "deliverNow": "Сейчас",
     "deliverLater": "Позже",
-    "chooseTime": "Выберите время доставки"
+    "chooseTime": "Выберите время доставки",
+    "payType": "Способ оплаты"
   },
-  "choose": "Выбрать"
+  "choose": "Выбрать",
+  "payType": {
+    "cash": "Наличными",
+    "uzcard": "UzCard",
+    "cashback": "Баллами",
+    "online": "Онлайн оплата",
+    "chooseDeliveryAddress": "Выберите адрес доставки или самовывоза"
+  },
+  "orderSuccess": {
+    "thanks": "Спасибо, заказ принят",
+    "yourOrderLabel": "Ваш заказ",
+    "statusLabel": "Статус заказа"
+  }
 }

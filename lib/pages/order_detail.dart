@@ -18,7 +18,7 @@ class OrderDetail extends HookWidget {
 
   OrderDetail({Key? key, @PathParam() required this.orderId}) : super(key: key);
 
-  Widget renderProductImage(BuildContext context, Lines lineItem) {
+  Widget renderProductImage(BuildContext context, OrderLines lineItem) {
     if (lineItem.child != null &&
         lineItem.child!.isNotEmpty &&
         lineItem.child![0].variant?.product?.id !=
@@ -404,7 +404,7 @@ class OrderDetail extends HookWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
-                                Lines lineItem =
+                                OrderLines lineItem =
                                     order.value!.basket!.lines![index];
                                 return ListTile(
                                   title: Column(

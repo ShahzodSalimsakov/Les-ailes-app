@@ -9,17 +9,32 @@ import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:les_ailes/models/related_product.dart';
+import 'package:les_ailes/pages/order_success.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:les_ailes/widgets/choose_delivery_time.dart';
+import 'package:les_ailes/widgets/pay_type/choose_pay_type.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
 
+import '../models/additional_phone_number.dart';
 import '../models/basket.dart';
 import '../models/basket_data.dart';
+import '../models/deliver_later_time.dart';
+import '../models/delivery_location_data.dart';
+import '../models/delivery_notes.dart';
+import '../models/delivery_time.dart';
+import '../models/delivery_type.dart';
+import '../models/order.dart';
+import '../models/pay_cash.dart';
+import '../models/pay_type.dart';
 import '../models/productSection.dart';
+import '../models/terminals.dart';
 import '../models/user.dart';
 import '../services/user_repository.dart';
+import 'additional_phone_number.dart';
+import 'comment.dart';
 
 class BasketWidget extends HookWidget {
   const BasketWidget({Key? key}) : super(key: key);
@@ -28,6 +43,7 @@ class BasketWidget extends HookWidget {
   Widget build(BuildContext context) {
     Box<Basket> basketBox = Hive.box<Basket>('basket');
     Basket? basket = basketBox.get('basket');
+    final _isOrderLoading = useState<bool>(false);
     final basketData = useState<BasketData?>(null);
     final relatedData =
         useState<List<RelatedProduct>>(List<RelatedProduct>.empty());
@@ -60,7 +76,7 @@ class BasketWidget extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
           BasketData newBasket = BasketData.fromJson(json['data']);
-          if (newBasket!.lines == null) {
+          if (newBasket.lines == null) {
             basket.lineCount = 0;
           } else {
             basket.lineCount = newBasket!.lines!.length ?? 0;
@@ -286,7 +302,7 @@ class BasketWidget extends HookWidget {
         };
 
         var url =
-            Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
+            Uri.https('api.lesailes.uz', '/api/baskets/${basket.encodedId}');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
@@ -308,7 +324,7 @@ class BasketWidget extends HookWidget {
         };
 
         var url = Uri.https(
-            'api.lesailes.uz', '/api/baskets/related/${basket!.encodedId}');
+            'api.lesailes.uz', '/api/baskets/related/${basket.encodedId}');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
@@ -328,12 +344,12 @@ class BasketWidget extends HookWidget {
         };
 
         var url = Uri.https(
-            'api.lesailes.uz', '/api/baskets/${basket!.encodedId}/clear');
+            'api.lesailes.uz', '/api/baskets/${basket.encodedId}/clear');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
           BasketData newBasket = BasketData.fromJson(json['data']);
-          if (newBasket!.lines == null) {
+          if (newBasket.lines == null) {
             basket.lineCount = 0;
           } else {
             basket.lineCount = newBasket!.lines!.length ?? 0;
@@ -353,18 +369,12 @@ class BasketWidget extends HookWidget {
         result = basketData.value!.total.toString();
       }
 
-      final formatCurrency =
-      NumberFormat.currency(
-          locale: 'ru_RU',
-          symbol: 'сум',
-          decimalDigits: 0);
+      final formatCurrency = NumberFormat.currency(
+          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
 
-      result = formatCurrency
-          .format(double.tryParse(result));
+      result = formatCurrency.format(double.tryParse(result));
       return result;
-    }, [
-      basketData.value
-    ]);
+    }, [basketData.value]);
 
     String cashback = useMemoized(() {
       String result = '0';
@@ -372,41 +382,30 @@ class BasketWidget extends HookWidget {
         result = (basketData.value!.total * 0.05).round().toString();
       }
 
-      final formatCurrency =
-      NumberFormat.currency(
-          locale: 'ru_RU',
-          symbol: 'сум',
-          decimalDigits: 0);
+      final formatCurrency = NumberFormat.currency(
+          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
 
-      result = formatCurrency
-          .format(double.tryParse(result));
+      result = formatCurrency.format(double.tryParse(result));
       return result;
-    }, [
-      basketData.value
-    ]);
+    }, [basketData.value]);
 
-    String productsTotalPrice = useMemoized((){
+    String productsTotalPrice = useMemoized(() {
       String result = '0';
       if (basketData.value != null) {
         result = basketData.value!.total.toString();
       }
 
-      final formatCurrency =
-      NumberFormat.currency(
-          locale: 'ru_RU',
-          symbol: 'сум',
-          decimalDigits: 0);
+      final formatCurrency = NumberFormat.currency(
+          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
 
-      result = formatCurrency
-          .format(double.tryParse(result));
+      result = formatCurrency.format(double.tryParse(result));
       return result;
-    }, [
-      basketData.value
-    ]);
+    }, [basketData.value]);
 
     useEffect(() {
       getBasket();
       fetchRecomendedItems();
+      return null;
     }, []);
 
     return Material(
@@ -420,7 +419,7 @@ class BasketWidget extends HookWidget {
               //     borderRadius: BorderRadius.only(
               //         topRight: Radius.circular(30),
               //         topLeft:  Radius.circular(30))),
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.white,
               elevation: 0,
               pinned: true,
               snap: false,
@@ -816,7 +815,7 @@ class BasketWidget extends HookWidget {
                                     style: const TextStyle(fontSize: 18),
                                   ),
                                   Text(
-                                    '$productsTotalPrice',
+                                    productsTotalPrice,
                                     style: const TextStyle(fontSize: 18),
                                   )
                                 ]),
@@ -832,11 +831,17 @@ class BasketWidget extends HookWidget {
                                     style: const TextStyle(
                                         fontSize: 18, color: AppColors.plum),
                                   ),
-                                  Spacer(),
-                                  Image.asset('images/coin.png', height: 16, width: 16,),
-                                  SizedBox(width: 5,),
+                                  const Spacer(),
+                                  Image.asset(
+                                    'images/coin.png',
+                                    height: 16,
+                                    width: 16,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
                                   Text(
-                                    '$cashback',
+                                    cashback,
                                     style: const TextStyle(
                                         fontSize: 18, color: AppColors.plum),
                                   )
@@ -850,14 +855,31 @@ class BasketWidget extends HookWidget {
                                     style: const TextStyle(fontSize: 24),
                                   ),
                                   Text(
-                                    '$totalPrice',
+                                    totalPrice,
                                     style: const TextStyle(fontSize: 24),
                                   )
                                 ]),
                           ]),
                     ),
-                    SizedBox(height: 20,),
-                    ChooseDeliveryTime()
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ChooseDeliveryTime(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ChoosePayType(),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    AdditionalPhoneNumberWidget(),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    const OrderCommentWidget(),
+                    const SizedBox(
+                      height: 50,
+                    )
                   ],
                 );
               }, childCount: 1),
@@ -866,12 +888,15 @@ class BasketWidget extends HookWidget {
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-          child: n.NikuButton.elevated(Text(
-        tr(
-          'basket.order',
-        ),
-        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-      ))
+          child: n.NikuButton.elevated(_isOrderLoading.value == true
+              ? const CircularProgressIndicator(color: Colors.white)
+              : Text(
+                  tr(
+                    'basket.order',
+                  ),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                ))
             ..bg = AppColors.mainColor
             ..color = Colors.white
             ..mx = 16
@@ -879,7 +904,253 @@ class BasketWidget extends HookWidget {
             ..mb = 28
             ..py = 15
             ..rounded = 20
-            ..onPressed = () {}),
+            ..onPressed = () async {
+              _isOrderLoading.value = true;
+              final hashids = HashIds(
+                salt: 'order',
+                minHashLength: 15,
+                alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+              );
+              Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+              DeliveryType? deliveryType = box.get('deliveryType');
+              DeliveryLocationData? deliveryLocationData =
+                  Hive.box<DeliveryLocationData>('deliveryLocationData')
+                      .get('deliveryLocationData');
+              Terminals? currentTerminal =
+                  Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+              DeliverLaterTime? deliverLaterTime =
+                  Hive.box<DeliverLaterTime>('deliveryLaterTime')
+                      .get('deliveryLaterTime');
+              DeliveryTime? deliveryTime =
+                  Hive.box<DeliveryTime>('deliveryTime').get('deliveryTime');
+              PayType? payType = Hive.box<PayType>('payType').get('payType');
+              PayCash? payCash = Hive.box<PayCash>('payCash').get('payCash');
+              DeliveryNotes? deliveryNotes =
+                  Hive.box<DeliveryNotes>('deliveryNotes').get('deliveryNotes');
+              AdditionalPhoneNumber? additionalPhoneNumber =
+                  Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
+                      .get('additionalPhoneNumber');
+              // Check deliveryType is chosen
+              if (deliveryType == null) {
+                _isOrderLoading.value = false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: const Text('Не выбран способ доставки')));
+                return;
+              }
+
+              //Check pickup terminal
+              if (deliveryType.value == DeliveryTypeEnum.pickup) {
+                if (currentTerminal == null) {
+                  _isOrderLoading.value = false;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Не выбран филиал самовывоза')));
+                  return;
+                }
+              }
+
+              // Check delivery address
+              if (deliveryType.value == DeliveryTypeEnum.deliver) {
+                if (deliveryLocationData == null) {
+                  _isOrderLoading.value = false;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Не указан адрес доставки')));
+                  return;
+                } else if (deliveryLocationData.address == null) {
+                  _isOrderLoading.value = false;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Не указан адрес доставки')));
+                  return;
+                }
+              }
+
+              // Check delivery time selected
+
+              if (deliveryTime == null) {
+                _isOrderLoading.value = false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Не указано время доставки')));
+                return;
+              } else if (deliveryTime.value == DeliveryTimeEnum.later) {
+                if (deliverLaterTime == null) {
+                  _isOrderLoading.value = false;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Не указано время доставки')));
+                  return;
+                } else if (deliverLaterTime.value.length == 0) {
+                  _isOrderLoading.value = false;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Не указано время доставки')));
+                  return;
+                }
+              }
+
+              if (payType == null) {
+                _isOrderLoading.value = false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Не указан способ оплаты')));
+                return;
+              }
+
+              Basket? basket = Hive.box<Basket>('basket').get('basket');
+              Box userBox = Hive.box<User>('user');
+              User? user = userBox.get('user');
+
+              Map<String, String> requestHeaders = {
+                'Content-type': 'application/json',
+                'Accept': 'application/json'
+              };
+
+              if (user != null) {
+                requestHeaders['Authorization'] = 'Bearer ${user.userToken}';
+              }
+
+              var url = Uri.https('api.lesailes.uz', '/api/orders');
+              Map<String, dynamic> formData = {
+                'basket_id': basket!.encodedId,
+                'formData': <String, dynamic>{
+                  'address': '',
+                  'flat': '',
+                  'house': '',
+                  'entrance': '',
+                  'door_code': '',
+                  'deliveryType': '',
+                  'sourceType': "app"
+                }
+              };
+              if (deliveryType.value == DeliveryTypeEnum.deliver) {
+                formData['formData']['address'] = deliveryLocationData!.address;
+                formData['formData']['flat'] = deliveryLocationData.flat ?? '';
+                formData['formData']['house'] =
+                    deliveryLocationData.house ?? '';
+                formData['formData']['entrance'] =
+                    deliveryLocationData.entrance ?? '';
+                formData['formData']['door_code'] =
+                    deliveryLocationData.doorCode ?? '';
+                formData['formData']['deliveryType'] = 'deliver';
+                formData['formData']['location'] = [
+                  deliveryLocationData.lat,
+                  deliveryLocationData.lon
+                ];
+              } else {
+                formData['formData']['deliveryType'] = 'pickup';
+              }
+
+              formData['formData']['terminal_id'] =
+                  currentTerminal!.id.toString();
+              formData['formData']['name'] = user!.name;
+              formData['formData']['phone'] = user!.phone;
+              formData['formData']['email'] = '';
+              formData['formData']['change'] = '';
+              formData['formData']['notes'] = '';
+              formData['formData']['delivery_day'] = '';
+              formData['formData']['delivery_time'] = '';
+              formData['formData']['delivery_schedule'] = 'now';
+              formData['formData']['sms_sub'] = false;
+              formData['formData']['email_sub'] = false;
+              formData['formData']['additionalPhone'] =
+                  additionalPhoneNumber?.additionalPhoneNumber ?? '';
+              if (deliveryTime.value == DeliveryTimeEnum.later) {
+                formData['formData']['delivery_schedule'] = 'later';
+                formData['formData']['delivery_time'] = deliveryTime.value;
+              }
+
+              if (payCash != null) {
+                formData['formData']['change'] = payCash.value;
+              }
+
+              if (deliveryNotes != null) {
+                formData['formData']['notes'] = deliveryNotes!.deliveryNotes;
+              }
+
+              if (payType != null) {
+                formData['formData']['pay_type'] = payType.value;
+              } else {
+                formData['formData']['pay_type'] = 'offline';
+              }
+
+              var response = await http.post(url,
+                  headers: requestHeaders, body: jsonEncode(formData));
+              if (response.statusCode == 200 || response.statusCode == 201) {
+                var json = jsonDecode(response.body);
+
+                Map<String, String> requestHeaders = {
+                  'Content-type': 'application/json',
+                  'Accept': 'application/json'
+                };
+
+                requestHeaders['Authorization'] = 'Bearer ${user.userToken}';
+
+                url = Uri.https('api.lesailes.uz', '/api/orders',
+                    {'id': json['order']['id']});
+
+                response = await http.get(url, headers: requestHeaders);
+                if (response.statusCode == 200 || response.statusCode == 201) {
+                  json = jsonDecode(response.body);
+                  Order order = Order.fromJson(json);
+                  await Hive.box<Basket>('basket').delete('basket');
+                  await Hive.box<DeliveryType>('deliveryType')
+                      .delete('deliveryType');
+                  await Hive.box<DeliveryLocationData>('deliveryLocationData')
+                      .delete('deliveryLocationData');
+                  await Hive.box<Terminals>('currentTerminal')
+                      .delete('currentTerminal');
+                  await Hive.box<DeliverLaterTime>('deliveryLaterTime')
+                      .delete('deliveryLaterTime');
+                  await Hive.box<DeliveryTime>('deliveryTime')
+                      .delete('deliveryTime');
+                  await Hive.box<PayType>('payType').delete('payType');
+                  await Hive.box<PayCash>('payCash').delete('payCash');
+                  await Hive.box<DeliveryNotes>('deliveryNotes')
+                      .delete('deliveryNotes');
+
+                  Navigator.of(context).pop();
+                  showBarModalBottomSheet(
+                      expand: false,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => OrderSuccess(order: order));
+
+                  // showPlatformDialog(
+                  //     context: context,
+                  //     builder: (_) => PlatformAlertDialog(
+                  //           title: Text(
+                  //             tr("order_is_accepted"),
+                  //             textAlign: TextAlign.center,
+                  //           ),
+                  //           content: Text(
+                  //             tr("order_is_accepted_content"),
+                  //             textAlign: TextAlign.center,
+                  //           ),
+                  //         ));
+                  _isOrderLoading.value = false;
+                  // Future.delayed(
+                  //     const Duration(
+                  //         milliseconds: 2000), () {
+                  //   Navigator.pushReplacement(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //       builder: (context) =>
+                  //           OrderDetail(
+                  //               orderId: hashids
+                  //                   .encode(order.id)),
+                  //     ),
+                  //   );
+                  // });
+                }
+                // BasketData basketData = new BasketData.fromJson(json['data']);
+                // Basket newBasket = new Basket(
+                //     encodedId: basketData.encodedId ?? '',
+                //     lineCount: basketData.lines?.length ?? 0);
+                // basketBox.put('basket', newBasket);
+              } else {
+                var errResponse = jsonDecode(response.body);
+                _isOrderLoading.value = false;
+                // print(response.body);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text(errResponse['error']['message'])));
+                return;
+              }
+            }),
     ));
   }
 }

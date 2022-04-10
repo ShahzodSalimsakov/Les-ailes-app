@@ -103,7 +103,20 @@
     "chooseDeliveryTime": "Delivery time",
     "deliverNow": "Now",
     "deliverLater": "Later",
-    "chooseTime": "Select delivery time"
+    "chooseTime": "Select delivery time",
+    "payType": "Payment method"
   },
-  "choose": "Choose"
+  "choose": "Choose",
+  "payType": {
+    "cash": "Cash",
+    "uzcard": "UzCard",
+    "cashback": "Coins",
+    "online": "Online payments",
+    "chooseDeliveryAddress": "Select a delivery or pickup address"
+  },
+  "orderSuccess": {
+    "thanks": "Thank you, order accepted",
+    "yourOrderLabel": "Your order",
+    "statusLabel": "Order status"
+  }
 }

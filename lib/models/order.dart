@@ -309,7 +309,7 @@ class OrderBasket {
   late String updatedAt;
   // List<Null> meta;
   String? otp;
-  List<Lines>? lines;
+  List<OrderLines>? lines;
 
   OrderBasket(
       {required this.id,
@@ -332,7 +332,7 @@ class OrderBasket {
     updatedAt = json['updated_at'];
     otp = json['otp'] != null ? json['otp'] : '';
     if (json['lines'] != null) {
-      lines = json['lines'].map<Lines>((m) => new Lines.fromJson(m)).toList();
+      lines = json['lines'].map<OrderLines>((m) => new OrderLines.fromJson(m)).toList();
     }
   }
 
@@ -353,7 +353,7 @@ class OrderBasket {
   }
 }
 
-class Lines {
+class OrderLines {
   late int id;
   late int basketId;
   late int productVariantId;
@@ -364,9 +364,9 @@ class Lines {
   dynamic modifiers;
   String? parentId;
   Variant? variant;
-  List<Child>? child;
+  List<OrderChild>? child;
 
-  Lines(
+  OrderLines(
       {required this.id,
         required this.basketId,
         required this.productVariantId,
@@ -379,7 +379,7 @@ class Lines {
         this.variant,
         this.child});
 
-  Lines.fromJson(Map<String, dynamic> json) {
+  OrderLines.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     basketId = json['basket_id'];
     productVariantId = json['product_variant_id'];
@@ -400,7 +400,7 @@ class Lines {
     variant =
     json['variant'] != null ? new Variant.fromJson(json['variant']) : null;
     if (json['child'] != null) {
-      child = json['child'].map<Child>((m) => new Child.fromJson(m)).toList();
+      child = json['child'].map<OrderChild>((m) => new OrderChild.fromJson(m)).toList();
     }
   }
 
@@ -789,7 +789,7 @@ class Product {
   }
 }
 
-class Child {
+class OrderChild {
   late int id;
   late int basketId;
   late int productVariantId;
@@ -801,7 +801,7 @@ class Child {
   late String parentId;
   Variant? variant;
 
-  Child(
+  OrderChild(
       {required this.id,
         required this.basketId,
         required this.productVariantId,
@@ -813,7 +813,7 @@ class Child {
         required this.parentId,
         this.variant});
 
-  Child.fromJson(Map<String, dynamic> json) {
+  OrderChild.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     basketId = json['basket_id'];
     productVariantId = json['product_variant_id'];
