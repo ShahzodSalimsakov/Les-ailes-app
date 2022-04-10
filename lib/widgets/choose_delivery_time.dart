@@ -15,7 +15,6 @@ import '../models/delivery_time.dart';
 class ChooseDeliveryTime extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final selectedTimeIndex = useState<int>(0);
     return ValueListenableBuilder<Box<DeliveryTime>>(
         valueListenable: Hive.box<DeliveryTime>('deliveryTime').listenable(),
     builder: (context, box, _) {

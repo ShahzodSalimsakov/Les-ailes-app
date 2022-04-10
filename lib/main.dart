@@ -8,10 +8,12 @@ import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:niku/niku.dart' as n;
 
+import 'models/additional_phone_number.dart';
 import 'models/basket.dart';
 import 'models/city.dart';
 import 'models/deliver_later_time.dart';
 import 'models/delivery_location_data.dart';
+import 'models/delivery_notes.dart';
 import 'models/delivery_time.dart';
 import 'models/delivery_type.dart';
 import 'models/pay_cash.dart';
@@ -40,10 +42,10 @@ void main() async {
   Hive.registerAdapter(DeliveryTimeEnumAdapter());
   Hive.registerAdapter(DeliverLaterTimeAdapter());
   Hive.registerAdapter(PayTypeAdapter());
-  // Hive.registerAdapter(DeliveryNotesAdapter());
+  Hive.registerAdapter(DeliveryNotesAdapter());
   Hive.registerAdapter(PayCashAdapter());
   Hive.registerAdapter(StockAdapter());
-  // Hive.registerAdapter(AdditionalPhoneNumberAdapter());
+  Hive.registerAdapter(AdditionalPhoneNumberAdapter());
   // Hive.registerAdapter(HomeIsScrolledAdapter());
   // Hive.registerAdapter(HomeScrollPositionAdapter());
 
@@ -56,10 +58,10 @@ void main() async {
   await Hive.openBox<DeliveryTime>('deliveryTime');
   await Hive.openBox<DeliverLaterTime>('deliveryLaterTime');
   await Hive.openBox<PayType>('payType');
-  // await Hive.openBox<DeliveryNotes>('deliveryNotes');
+  await Hive.openBox<DeliveryNotes>('deliveryNotes');
   await Hive.openBox<PayCash>('payCash');
   await Hive.openBox<Stock>('stock');
-  // await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
+  await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
   // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
   // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 

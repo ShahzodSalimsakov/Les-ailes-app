@@ -103,7 +103,20 @@
     "chooseDeliveryTime": "Yetkazib berish vaqti",
     "deliverNow": "Tezroq",
     "deliverLater": "Kechroq",
-    "chooseTime": "Yetkazib berish vaqtini tanlang"
+    "chooseTime": "Yetkazib berish vaqtini tanlang",
+    "payType": "To'lov usuli"
   },
-  "choose": "Tanlang"
+  "choose": "Tanlang",
+  "payType": {
+    "cash": "Naqd",
+    "uzcard": "UzCard",
+    "cashback": "Ballar",
+    "online": "Online to'lovlar",
+    "chooseDeliveryAddress": "Yetkazib berish yoki olib ketish manzilini tanlang"
+  },
+  "orderSuccess": {
+    "thanks": "Rahmat, buyurtma qabul qilindi",
+    "yourOrderLabel": "Sizning buyurtmangiz",
+    "statusLabel": "Buyurtma holati"
+  }
 }
