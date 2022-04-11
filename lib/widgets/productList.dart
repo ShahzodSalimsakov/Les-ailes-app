@@ -9,8 +9,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/widgets/productCard.dart';
+import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import '../models/basket.dart';
+import '../models/basket_data.dart';
 import '../models/productSection.dart';
 
 class ProductList extends HookWidget {
@@ -36,9 +38,13 @@ class ProductList extends HookWidget {
       }
     }
 
+
+
     useEffect(() {
       getProducts();
+      return null;
     }, []);
+
 
     Widget _productSection(BuildContext context, int index) {
       var locale = context.locale.toString();
@@ -140,20 +146,12 @@ class ProductList extends HookWidget {
                       fontWeight: FontWeight.w500),
                 ),
               ),
-              content: GridView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: products.value[index].items?.length ?? 0,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: (164 / 300),
-                    crossAxisSpacing: 15,
-                    mainAxisSpacing: 20),
-                itemBuilder: (context, indx) {
-                  Items? product = products.value[index].items?[indx];
-                  return ProductCard(product!);
-                },
-              ),
+              content:
+              ValueListenableBuilder<Box<Basket>>(
+                  valueListenable: Hive.box<Basket>('basket').listenable(),
+                  builder: (context, box, _) {
+                    return ProductCardList(products.value[index].items);
+                  }),
             );
           },
           shrinkWrap: true,

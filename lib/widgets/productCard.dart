@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
 
@@ -21,9 +22,10 @@ import '../models/user.dart';
 import '../utils/colors.dart';
 
 class ProductCard extends HookWidget {
-  final Items product;
+  final Items? product;
+  late BasketData? basketData;
 
-  const ProductCard(this.product, {Key? key}) : super(key: key);
+  ProductCard(this.product, this.basketData, {Key? key}) : super(key: key);
 
   Widget productImage(String? image) {
     if (image != null) {
@@ -58,7 +60,7 @@ class ProductCard extends HookWidget {
         NumberFormat.currency(locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
     String productPrice = '';
 
-    productPrice = product.price;
+    productPrice = product!.price;
 
     productPrice = formatCurrency.format(double.tryParse(productPrice));
     final _isBasketLoading = useState<bool>(false);
@@ -66,37 +68,27 @@ class ProductCard extends HookWidget {
     Box<Basket> basketBox = Hive.box<Basket>('basket');
     Basket? basket = basketBox.get('basket');
 
-    Box<Stock> stockBox = Hive.box<Stock>('stock');
-    Stock? stock = stockBox.get('stock');
+
 
     final hashids = HashIds(
       salt: 'basket',
       minHashLength: 15,
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
-    final basketData = useState<BasketData?>(null);
 
-    bool isInStock = false;
 
-    if (stock != null) {
-      if (stock.prodIds.isNotEmpty) {
-        if (stock.prodIds.contains(product.id)) {
-          isInStock = true;
-        }
-      }
-    }
 
     Lines? productLine;
 
-    if (basket != null) {
-      if (basketData.value != null && basketData.value!.lines != null) {
-        if (basketData.value!.lines!.isNotEmpty) {
+    if (basket != null && basketData != null) {
+      if (basketData!.lines != null) {
+        if (basketData!.lines!.isNotEmpty) {
           // print(basketData.value!.lines![3].variant!.id);
           // if (basketData.value!.lines![3].variant!.id == 347) {
           // print(product!.variants);
           // }
-          for (var element in basketData.value!.lines!) {
-            if (product.id == element.variant!.productId) {
+          for (var element in basketData!.lines!) {
+            if (product!.id == element.variant!.productId) {
               productLine = element;
             }
           }
@@ -104,27 +96,6 @@ class ProductCard extends HookWidget {
       }
     }
 
-    Future<void> getBasket() async {
-      if (basket != null) {
-        Map<String, String> requestHeaders = {
-          'Content-type': 'application/json',
-          'Accept': 'application/json'
-        };
-
-        var url =
-            Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
-        var response = await http.get(url, headers: requestHeaders);
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          var json = jsonDecode(response.body);
-          BasketData basketLocalData = BasketData.fromJson(json['data']);
-          if (basketLocalData.lines != null) {
-            basket.lineCount = basketLocalData.lines!.length;
-            basketBox.put('basket', basket);
-          }
-          basketData.value = basketLocalData;
-        }
-      }
-    }
 
     Future<void> destroyLine(int lineId) async {
       Map<String, String> requestHeaders = {
@@ -155,8 +126,6 @@ class ProductCard extends HookWidget {
           }
           basket.totalPrice = newBasket.total;
           basketBox.put('basket', basket);
-          // await Future.delayed(Duration(milliseconds: 50));
-          basketData.value = newBasket;
         }
       }
     }
@@ -188,11 +157,11 @@ class ProductCard extends HookWidget {
         response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
-          basketData.value = BasketData.fromJson(json['data']);
+          BasketData basketData = BasketData.fromJson(json['data']);
           Basket newBasket = Basket(
               encodedId: basket.encodedId ?? '',
-              lineCount: basketData.value!.lines?.length ?? 0,
-              totalPrice: basketData.value!.total);
+              lineCount: basketData!.lines?.length ?? 0,
+              totalPrice: basketData!.total);
           basketBox.put('basket', newBasket);
         }
       }
@@ -220,11 +189,11 @@ class ProductCard extends HookWidget {
         response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
-          basketData.value = BasketData.fromJson(json['data']);
+          BasketData basketData = BasketData.fromJson(json['data']);
           Basket newBasket = Basket(
               encodedId: basket.encodedId ?? '',
-              lineCount: basketData.value!.lines?.length ?? 0,
-              totalPrice: basketData.value!.total);
+              lineCount: basketData!.lines?.length ?? 0,
+              totalPrice: basketData!.total);
           basketBox.put('basket', newBasket);
         }
       }
@@ -235,7 +204,7 @@ class ProductCard extends HookWidget {
       List<Map<String, int>>? selectedModifiers;
       _isBasketLoading.value = true;
 
-      int selectedProdId = product.id;
+      int selectedProdId = product!.id;
 
       Box userBox = Hive.box<User>('user');
       User? user = userBox.get('user');
@@ -275,7 +244,6 @@ class ProductCard extends HookWidget {
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
-          basketData.value = basketLocalData;
         }
       } else {
         Map<String, String> requestHeaders = {
@@ -307,7 +275,6 @@ class ProductCard extends HookWidget {
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
-          basketData.value = basketLocalData;
         }
       }
       _isBasketLoading.value = true;
@@ -315,10 +282,6 @@ class ProductCard extends HookWidget {
       return;
     }
 
-    useEffect(() {
-      getBasket();
-      return null;
-    }, []);
 
     if (productLine != null) {
       print(productLine);
@@ -331,140 +294,165 @@ class ProductCard extends HookWidget {
       //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
       //   break;
       case 'uz':
-        attributeDataName = product.attributeData?.name?.chopar?.uz ?? '';
+        attributeDataName = product!.attributeData?.name?.chopar?.uz ?? '';
         break;
       default:
-        attributeDataName = product.attributeData?.name?.chopar?.ru ?? '';
+        attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
         break;
     }
 
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          color: AppColors.grey,
-        ),
-        child: Opacity(
-          opacity: isInStock ? 0.3 : 1,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                productImage(image),
-                const Spacer(
-                  flex: 1,
-                ),
-                Text(
-                  attributeDataName,
-                  style: const TextStyle(fontSize: 20),
-                  textAlign: TextAlign.center,
-                ),
-                const Spacer(
-                  flex: 1,
-                ),
-                productLine != null
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: n.NikuButton.elevated(const Icon(
-                                Icons.remove,
-                                color: Colors.white,
-                                size: 40,
-                              ))
-                                ..bg = AppColors.mainColor
-                                ..rounded = 20
-                                ..p = 0
-                                ..onPressed = () {
-                                  decreaseQuantity(productLine!);
-                                }),
-                          n.NikuText(productLine.quantity.toString())
-                            ..style = n.NikuTextStyle(
-                                fontSize: 18, fontWeight: FontWeight.w500),
-                          SizedBox(
-                              height: 50,
-                              width: 50,
-                              child: n.NikuButton.elevated(const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 40,
-                              ))
-                                ..bg = AppColors.mainColor
-                                ..rounded = 20
-                                ..p = 0
-                                ..onPressed = () {
-                                  increaseQuantity(productLine!);
-                                }),
-                        ],
-                      )
-                    : SizedBox(
-                        height: 50,
-                        width: 144,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Box<DeliveryType> box =
-                                Hive.box<DeliveryType>('deliveryType');
-                            DeliveryType? deliveryType =
-                                box.get('deliveryType');
-                            Terminals? currentTerminal =
-                                Hive.box<Terminals>('currentTerminal')
-                                    .get('currentTerminal');
-                            DeliveryLocationData? deliveryLocationData =
-                                Hive.box<DeliveryLocationData>(
-                                        'deliveryLocationData')
-                                    .get('deliveryLocationData');
+    Widget renderProduct(BuildContext context) {
+      Box<Stock> stockBox = Hive.box<Stock>('stock');
+      Stock? stock = stockBox.get('stock');
 
-                            //Check pickup terminal
-                            if (deliveryType != null &&
-                                deliveryType.value == DeliveryTypeEnum.pickup) {
-                              if (currentTerminal == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            'Не выбран филиал самовывоза')));
-                                return;
-                              }
-                            }
+      bool isInStock = false;
 
-                            // Check delivery address
-                            if (deliveryType != null &&
-                                deliveryType.value ==
-                                    DeliveryTypeEnum.deliver) {
-                              if (deliveryLocationData == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text('Не указан адрес доставки')));
-                                return;
-                              } else if (deliveryLocationData.address == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content:
-                                            Text('Не указан адрес доставки')));
-                                return;
-                              }
-                            }
+      if (stock != null) {
+        if (stock.prodIds.isNotEmpty) {
+          if (stock.prodIds.contains(product!.id)) {
+            isInStock = true;
+          }
+        }
+      }
 
-                            if (isInStock) {
-                              return;
-                            }
+      return Container(
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: AppColors.grey,
+          ),
+          child: Opacity(
+            opacity: isInStock ? 0.3 : 1,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  productImage(image),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  Text(
+                    attributeDataName,
+                    style: const TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                  const Spacer(
+                    flex: 1,
+                  ),
+                  productLine != null
+                      ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: n.NikuButton.elevated(const Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                            size: 40,
+                          ))
+                            ..bg = AppColors.mainColor
+                            ..rounded = 20
+                            ..p = 0
+                            ..onPressed = () {
+                              decreaseQuantity(productLine!);
+                            }),
+                      n.NikuText(productLine.quantity.toString())
+                        ..style = n.NikuTextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500),
+                      SizedBox(
+                          height: 50,
+                          width: 50,
+                          child: n.NikuButton.elevated(const Icon(
+                            Icons.add,
+                            color: Colors.white,
+                            size: 40,
+                          ))
+                            ..bg = AppColors.mainColor
+                            ..rounded = 20
+                            ..p = 0
+                            ..onPressed = () {
+                              increaseQuantity(productLine!);
+                            }),
+                    ],
+                  )
+                      : SizedBox(
+                    height: 50,
+                    width: 144,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Box<DeliveryType> box =
+                        Hive.box<DeliveryType>('deliveryType');
+                        DeliveryType? deliveryType =
+                        box.get('deliveryType');
+                        Terminals? currentTerminal =
+                        Hive.box<Terminals>('currentTerminal')
+                            .get('currentTerminal');
+                        DeliveryLocationData? deliveryLocationData =
+                        Hive.box<DeliveryLocationData>(
+                            'deliveryLocationData')
+                            .get('deliveryLocationData');
 
-                            addToBasket();
-                          },
-                          child: Text(productPrice),
-                          style: ButtonStyle(
-                            shape: MaterialStateProperty.all<
-                                RoundedRectangleBorder>(RoundedRectangleBorder(
+                        //Check pickup terminal
+                        if (deliveryType != null &&
+                            deliveryType.value ==
+                                DeliveryTypeEnum.pickup) {
+                          if (currentTerminal == null) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content: Text(
+                                    'Не выбран филиал самовывоза')));
+                            return;
+                          }
+                        }
+
+                        // Check delivery address
+                        if (deliveryType != null &&
+                            deliveryType.value ==
+                                DeliveryTypeEnum.deliver) {
+                          if (deliveryLocationData == null) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content: Text(
+                                    'Не указан адрес доставки')));
+                            return;
+                          } else if (deliveryLocationData.address ==
+                              null) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                                content: Text(
+                                    'Не указан адрес доставки')));
+                            return;
+                          }
+                        }
+
+                        if (isInStock) {
+                          return;
+                        }
+
+                        addToBasket();
+                      },
+                      child: Text(productPrice),
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0),
                             )),
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                AppColors.mainColor),
-                          ),
-                        ),
-                      )
-              ]),
-        ));
+                        backgroundColor:
+                        MaterialStateProperty.all<Color>(
+                            AppColors.mainColor),
+                      ),
+                    ),
+                  )
+                ]),
+          ));
+    }
+    return ValueListenableBuilder<Box<Stock>>(
+        valueListenable: Hive.box<Stock>('stock').listenable(),
+        builder: (context, box, _) {
+          return renderProduct(context);
+        });
   }
 }

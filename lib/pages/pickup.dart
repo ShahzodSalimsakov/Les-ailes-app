@@ -61,8 +61,6 @@ class PickupPage extends HookWidget {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
-      bool serviceEnabled;
-      LocationPermission permission;
       var formData = {'city_id': currentCity?.id.toString()};
       var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
       var response = await http.get(url, headers: requestHeaders);
@@ -187,50 +185,47 @@ class PickupPage extends HookWidget {
       } else if (deliveryData.lat == null) {
         isLocationSet = false;
       }
-      var currentPosition;
+      bool serviceEnabled;
+      bool hasPermission = true;
+      LocationPermission permission;
 
-      if (!isLocationSet) {
-        // Test if location services are enabled.
-        serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-        permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.denied) {
-          serviceEnabled = false;
-        }
-
-        if (permission == LocationPermission.deniedForever) {
-          serviceEnabled = false;
-        }
-
-        if (!serviceEnabled) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text(
-                  'Включите геолокацию, чтобы увидеть ближайшие филиалы первыми')));
-        }
-        try {
-          if (serviceEnabled) {
-            currentPosition = await Geolocator.getCurrentPosition();
-          }
-        } catch (e) {}
-      } else {
-        currentPosition = Position(
-            longitude: deliveryData!.lon!,
-            latitude: deliveryData!.lat!,
-            timestamp: DateTime.now(),
-            accuracy: 0,
-            altitude: 0,
-            heading: 0,
-            speed: 0,
-            speedAccuracy: 0);
+      // Test if location services are enabled.
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        hasPermission = true;
       }
 
-      if (currentPosition != null) {
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          hasPermission = false;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        hasPermission = false;
+      }
+
+      if (hasPermission) {
+        Position currentPosition = await Geolocator.getCurrentPosition();
         formData = {
           'city_id': currentCity?.id.toString(),
           'lat': currentPosition.latitude.toString(),
           'lon': currentPosition.longitude.toString()
         };
       }
+      // } else {
+      //   currentPosition = Position(
+      //       longitude: deliveryData!.lon!,
+      //       latitude: deliveryData!.lat!,
+      //       timestamp: DateTime.now(),
+      //       accuracy: 0,
+      //       altitude: 0,
+      //       heading: 0,
+      //       speed: 0,
+      //       speedAccuracy: 0);
+      // }
 
       url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
       response = await http.get(url, headers: requestHeaders);
@@ -414,8 +409,12 @@ class PickupPage extends HookWidget {
                                                   padding: const EdgeInsets.all(
                                                       15.0),
                                                   child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Column(
                                                         crossAxisAlignment:

@@ -10,14 +10,16 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
 class ChoosePayType extends HookWidget {
-
   Widget renderPayType(PayType payType, BuildContext context) {
     switch (payType.value) {
       case 'offline':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const FaIcon(FontAwesomeIcons.wallet, color: Colors.black,),
+            const FaIcon(
+              FontAwesomeIcons.wallet,
+              color: Colors.black,
+            ),
             const SizedBox(
               width: 20,
             ),
@@ -48,7 +50,11 @@ class ChoosePayType extends HookWidget {
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset('images/pay_type_les_coin.png', width: 30, height: 30,),
+            Image.asset(
+              'images/pay_type_les_coin.png',
+              width: 30,
+              height: 30,
+            ),
             const SizedBox(
               width: 20,
             ),
@@ -74,12 +80,16 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.transparent,
                 builder: (context) => PayTypeListWidget());
           };
-      break;
+        break;
       case 'uzcard':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset('images/pay_type_uzcard.png', width: 30, height: 30,),
+            Image.asset(
+              'images/pay_type_uzcard.png',
+              width: 30,
+              height: 30,
+            ),
             const SizedBox(
               width: 20,
             ),
@@ -105,12 +115,16 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.transparent,
                 builder: (context) => PayTypeListWidget());
           };
-      break;
+        break;
       default:
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Image.asset('images/${payType.value}.png', width: 30, height: 30,),
+            Image.asset(
+              'images/${payType.value}.png',
+              width: 30,
+              height: 30,
+            ),
             const SizedBox(
               width: 20,
             ),
@@ -136,12 +150,22 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.transparent,
                 builder: (context) => PayTypeListWidget());
           };
-      break;
+        break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      Box<PayType> box = Hive.box<PayType>('payType');
+      PayType? paymentType = box.get('payType');
+      if (paymentType == null) {
+        PayType newPayType = PayType();
+        newPayType.value = 'offline';
+        Hive.box<PayType>('payType').put('payType', newPayType);
+      }
+      return null;
+    }, []);
     return ValueListenableBuilder<Box<PayType>>(
         valueListenable: Hive.box<PayType>('payType').listenable(),
         builder: (context, box, _) {

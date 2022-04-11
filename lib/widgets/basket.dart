@@ -86,10 +86,9 @@ class BasketWidget extends HookWidget {
           basketBox.put('basket', basket);
           // await Future.delayed(Duration(milliseconds: 50));
           basketData.value = newBasket;
-          if(basket.lineCount == 0) {
+          if (basket.lineCount == 0) {
             Navigator.of(context).pop();
           }
-
         }
       }
     }
@@ -121,6 +120,11 @@ class BasketWidget extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
           basketData.value = BasketData.fromJson(json['data']);
+          Basket newBasket = Basket(
+              encodedId: basket.encodedId ?? '',
+              lineCount: basketData!.value!.lines?.length ?? 0,
+              totalPrice: basketData!.value!.total);
+          basketBox.put('basket', newBasket);
         }
       }
     }
@@ -148,6 +152,11 @@ class BasketWidget extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           json = jsonDecode(response.body);
           basketData.value = BasketData.fromJson(json['data']);
+          Basket newBasket = Basket(
+              encodedId: basket.encodedId ?? '',
+              lineCount: basketData!.value!.lines?.length ?? 0,
+              totalPrice: basketData!.value!.total);
+          basketBox.put('basket', newBasket);
         }
       }
     }
@@ -361,9 +370,12 @@ class BasketWidget extends HookWidget {
           }
 
           basketBox.put('basket', basket);
+          basket.totalPrice = newBasket.total;
           // await Future.delayed(Duration(milliseconds: 50));
           basketData.value = newBasket;
-          Navigator.of(context).pop();
+          if (basket.lineCount == 0) {
+            Navigator.of(context).pop();
+          }
         }
       }
     }

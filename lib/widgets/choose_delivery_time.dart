@@ -15,52 +15,93 @@ import '../models/delivery_time.dart';
 class ChooseDeliveryTime extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    useEffect(() {
+      Box<DeliveryTime> box = Hive.box<DeliveryTime>('deliveryTime');
+      DeliveryTime? deliveryTime = box.get('deliveryTime');
+      if (deliveryTime == null) {
+        DeliveryTime newDeliveryTime = DeliveryTime();
+        newDeliveryTime.value = DeliveryTimeEnum.now;
+        box.put('deliveryTime', newDeliveryTime);
+      }
+    }, []);
     return ValueListenableBuilder<Box<DeliveryTime>>(
         valueListenable: Hive.box<DeliveryTime>('deliveryTime').listenable(),
-    builder: (context, box, _) {
-      DeliveryTime? deliveryTime = box.
-      get('deliveryTime');
-      Box<DeliverLaterTime> deliveryTimeBox =
-      Hive.box<DeliverLaterTime>(
-          'deliveryLaterTime');
-      DeliverLaterTime? deliveryTimeSelected =
-      deliveryTimeBox.get('deliveryLaterTime');
-      if (deliveryTime == null) {
-        return n.NikuButton(Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
-            const SizedBox(width: 20,),
-            n.NikuText(tr('orderCreate.chooseDeliveryTime'), style: n.NikuTextStyle(fontSize: 20, color: Colors.black),),
-            const Spacer(),
-            const Icon(Icons.chevron_right, color: Colors.black, size: 30,)
-          ],
-        ))..p = 20..bg = Colors.grey.shade100..rounded = 20..onPressed = () {
-          showBarModalBottomSheet(
-              expand: false,
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) => ListOfDeliveryTimesTypes());
-        };
-      } else {
-        return n.NikuButton(Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
-            const SizedBox(width: 20,),
-            n.NikuText(deliveryTime.value == DeliveryTimeEnum.now ? tr('orderCreate.deliverNow') : deliveryTimeSelected!.value.toString(), style: n.NikuTextStyle(fontSize: 20, color: Colors.black),),
-            const Spacer(),
-            const Icon(Icons.chevron_right, color: Colors.black, size: 30,)
-          ],
-        ))..p = 20..bg = Colors.grey.shade100..rounded = 20..onPressed = () {
-          showBarModalBottomSheet(
-              expand: false,
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) => ListOfDeliveryTimesTypes());
-        };
-      }
-    }
-    );
+        builder: (context, box, _) {
+          DeliveryTime? deliveryTime = box.get('deliveryTime');
+          Box<DeliverLaterTime> deliveryTimeBox =
+              Hive.box<DeliverLaterTime>('deliveryLaterTime');
+          DeliverLaterTime? deliveryTimeSelected =
+              deliveryTimeBox.get('deliveryLaterTime');
+
+          if (deliveryTime == null) {
+            return n.NikuButton(Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const FaIcon(
+                  FontAwesomeIcons.clock,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                n.NikuText(
+                  tr('orderCreate.chooseDeliveryTime'),
+                  style: n.NikuTextStyle(fontSize: 20, color: Colors.black),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                  size: 30,
+                )
+              ],
+            ))
+              ..p = 20
+              ..bg = Colors.grey.shade100
+              ..rounded = 20
+              ..onPressed = () {
+                showBarModalBottomSheet(
+                    expand: false,
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => ListOfDeliveryTimesTypes());
+              };
+          } else {
+            return n.NikuButton(Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const FaIcon(
+                  FontAwesomeIcons.clock,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                n.NikuText(
+                  deliveryTime.value == DeliveryTimeEnum.now
+                      ? tr('orderCreate.deliverNow')
+                      : deliveryTimeSelected!.value.toString(),
+                  style: n.NikuTextStyle(fontSize: 20, color: Colors.black),
+                ),
+                const Spacer(),
+                const Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                  size: 30,
+                )
+              ],
+            ))
+              ..p = 20
+              ..bg = Colors.grey.shade100
+              ..rounded = 20
+              ..onPressed = () {
+                showBarModalBottomSheet(
+                    expand: false,
+                    context: context,
+                    backgroundColor: Colors.transparent,
+                    builder: (context) => ListOfDeliveryTimesTypes());
+              };
+          }
+        });
   }
 }
