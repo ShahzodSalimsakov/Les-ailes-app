@@ -29,11 +29,11 @@ class ChooseDeliveryTime extends HookWidget {
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
-            SizedBox(width: 20,),
+            const FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
+            const SizedBox(width: 20,),
             n.NikuText(tr('orderCreate.chooseDeliveryTime'), style: n.NikuTextStyle(fontSize: 20, color: Colors.black),),
-            Spacer(),
-            Icon(Icons.chevron_right, color: Colors.black, size: 30,)
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: Colors.black, size: 30,)
           ],
         ))..p = 20..bg = Colors.grey.shade100..rounded = 20..onPressed = () {
           showBarModalBottomSheet(
@@ -46,11 +46,11 @@ class ChooseDeliveryTime extends HookWidget {
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
-            SizedBox(width: 20,),
+            const FaIcon(FontAwesomeIcons.clock, color: Colors.black,),
+            const SizedBox(width: 20,),
             n.NikuText(deliveryTime.value == DeliveryTimeEnum.now ? tr('orderCreate.deliverNow') : deliveryTimeSelected!.value.toString(), style: n.NikuTextStyle(fontSize: 20, color: Colors.black),),
-            Spacer(),
-            Icon(Icons.chevron_right, color: Colors.black, size: 30,)
+            const Spacer(),
+            const Icon(Icons.chevron_right, color: Colors.black, size: 30,)
           ],
         ))..p = 20..bg = Colors.grey.shade100..rounded = 20..onPressed = () {
           showBarModalBottomSheet(

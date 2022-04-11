@@ -14,7 +14,12 @@ class AdditionalPhoneNumberWidget extends HookWidget {
     return Container(
         // color: Colors.white,
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 20),
+        padding: const EdgeInsets.only(
+          top: 10,
+          right: 5,
+          left: 5,
+          bottom: 0,
+        ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Text(
             'Дополнительный номер телефона',
@@ -33,8 +38,7 @@ class AdditionalPhoneNumberWidget extends HookWidget {
               scrollPadding: EdgeInsets.only(bottom: 150),
               maxLength: 12,
               onInputChanged: (number) {
-                AdditionalPhoneNumber additionalPhone =
-                    AdditionalPhoneNumber();
+                AdditionalPhoneNumber additionalPhone = AdditionalPhoneNumber();
                 additionalPhone.additionalPhoneNumber =
                     number.phoneNumber ?? '';
                 Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
@@ -50,7 +54,8 @@ class AdditionalPhoneNumberWidget extends HookWidget {
               ),
               ignoreBlank: false,
               autoValidateMode: AutovalidateMode.disabled,
-              selectorTextStyle: const TextStyle(color: Colors.black, fontSize: 24.0),
+              selectorTextStyle:
+                  const TextStyle(color: Colors.black, fontSize: 24.0),
               initialValue: number,
               formatInput: true,
               countrySelectorScrollControlled: false,

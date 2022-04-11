@@ -82,9 +82,14 @@ class BasketWidget extends HookWidget {
             basket.lineCount = newBasket!.lines!.length ?? 0;
           }
 
+          basket.totalPrice = newBasket.total;
           basketBox.put('basket', basket);
           // await Future.delayed(Duration(milliseconds: 50));
           basketData.value = newBasket;
+          if(basket.lineCount == 0) {
+            Navigator.of(context).pop();
+          }
+
         }
       }
     }
@@ -412,745 +417,801 @@ class BasketWidget extends HookWidget {
         child: Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              // shape: const ContinuousRectangleBorder(
-              //     borderRadius: BorderRadius.only(
-              //         topRight: Radius.circular(30),
-              //         topLeft:  Radius.circular(30))),
-              backgroundColor: Colors.white,
-              elevation: 0,
-              pinned: true,
-              snap: false,
-              floating: false,
-              expandedHeight: 100.0,
-              foregroundColor: Colors.black,
-              actions: [
-                GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Padding(
-                      padding: EdgeInsets.only(right: 28),
-                      child: Center(child: Icon(Icons.close)),
-                    ))
-              ],
-              leading: GestureDetector(
-                onTap: () {
-                  clearBasket();
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 20),
-                  child: Center(
-                      child: Image.asset(
-                    'images/delete.png',
-                    width: 25,
-                    height: 25,
-                  )),
+        child: Stack(
+          children: [
+            CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  // shape: const ContinuousRectangleBorder(
+                  //     borderRadius: BorderRadius.only(
+                  //         topRight: Radius.circular(30),
+                  //         topLeft:  Radius.circular(30))),
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  pinned: true,
+                  snap: false,
+                  floating: false,
+                  expandedHeight: 100.0,
+                  foregroundColor: Colors.black,
+                  actions: [
+                    GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+                        child: const Padding(
+                          padding: EdgeInsets.only(right: 28),
+                          child: Center(child: Icon(Icons.close)),
+                        ))
+                  ],
+                  leading: GestureDetector(
+                    onTap: () {
+                      clearBasket();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Center(
+                          child: Image.asset(
+                        'images/delete.png',
+                        width: 25,
+                        height: 25,
+                      )),
+                    ),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    centerTitle: true,
+                    collapseMode: CollapseMode.parallax,
+                    title: Text(
+                      tr("basket.basket"),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  ),
                 ),
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                collapseMode: CollapseMode.parallax,
-                title: Text(
-                  tr("basket.basket"),
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int index) {
-                return Column(
-                  children: [
-                    const WayToReceiveAnOrder(),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    ListView.separated(
-                        padding: const EdgeInsets.only(top: 0),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        scrollDirection: Axis.vertical,
-                        itemCount: basketData.value?.lines?.length ?? 0,
-                        separatorBuilder: (context, index) {
-                          return const Divider();
-                        },
-                        itemBuilder: (context, index) {
-                          final item = basketData.value!.lines![index];
-                          return item.bonusId != null
-                              ? basketItems(item)
-                              : Dismissible(
-                                  direction: DismissDirection.endToStart,
-                                  key: Key(item.id.toString()),
-                                  child: basketItems(item),
-                                  background: Container(
-                                    color: Colors.red,
-                                  ),
-                                  onDismissed: (DismissDirection direction) {
-                                    destroyLine(item.id);
-                                  },
-                                  secondaryBackground: Container(
-                                    color: Colors.red,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: const [
-                                          Icon(Icons.delete,
-                                              color: Colors.white),
-                                          Text('Удалить',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                        ],
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        const WayToReceiveAnOrder(),
+                        const SizedBox(height: 20),
+                        const Divider(),
+                        ListView.separated(
+                            padding: const EdgeInsets.only(top: 0),
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            scrollDirection: Axis.vertical,
+                            itemCount: basketData.value?.lines?.length ?? 0,
+                            separatorBuilder: (context, index) {
+                              return const Divider();
+                            },
+                            itemBuilder: (context, index) {
+                              final item = basketData.value!.lines![index];
+                              return item.bonusId != null
+                                  ? basketItems(item)
+                                  : Dismissible(
+                                      direction: DismissDirection.endToStart,
+                                      key: Key(item.id.toString()),
+                                      child: basketItems(item),
+                                      background: Container(
+                                        color: Colors.red,
                                       ),
-                                    ),
-                                  ),
-                                );
-                        }),
-                    relatedData.value.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(
-                              top: 45,
-                              bottom: 10,
-                            ),
-                            child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(tr('basket.addToOrder'),
-                                    style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.w500))),
-                          )
-                        : const SizedBox(),
-                    relatedData.value.isNotEmpty
-                        ? Padding(
-                            padding: const EdgeInsets.only(bottom: 30),
-                            child: SizedBox(
-                              height: 280,
-                              child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: relatedData.value.length,
-                                  itemBuilder: (context, index) {
-                                    final formatCurrency =
-                                        NumberFormat.currency(
-                                            locale: 'ru_RU',
-                                            symbol: 'сум',
-                                            decimalDigits: 0);
-                                    String productPrice = '';
+                                      onDismissed:
+                                          (DismissDirection direction) {
+                                        destroyLine(item.id);
+                                      },
+                                      secondaryBackground: Container(
+                                        color: Colors.red,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: const [
+                                              Icon(Icons.delete,
+                                                  color: Colors.white),
+                                              Text('Удалить',
+                                                  style: TextStyle(
+                                                      color: Colors.white)),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                            }),
+                        relatedData.value.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 45,
+                                  bottom: 10,
+                                ),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(tr('basket.addToOrder'),
+                                        style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w500))),
+                              )
+                            : const SizedBox(),
+                        relatedData.value.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(bottom: 30),
+                                child: SizedBox(
+                                  height: 280,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: relatedData.value.length,
+                                      itemBuilder: (context, index) {
+                                        final formatCurrency =
+                                            NumberFormat.currency(
+                                                locale: 'ru_RU',
+                                                symbol: 'сум',
+                                                decimalDigits: 0);
+                                        String productPrice = '';
 
-                                    productPrice =
-                                        relatedData.value[index].price;
+                                        productPrice =
+                                            relatedData.value[index].price;
 
-                                    productPrice = formatCurrency
-                                        .format(double.tryParse(productPrice));
-                                    return Container(
-                                        width: 140,
-                                        margin:
-                                            const EdgeInsets.only(right: 10),
-                                        child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 10),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              color: AppColors.grey,
-                                            ),
-                                            child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Image.network(
-                                                    relatedData
-                                                        .value[index].image,
-                                                    height: 140,
-                                                    width: 140,
-                                                  ),
-                                                  const Spacer(
-                                                    flex: 1,
-                                                  ),
-                                                  Text(
-                                                    relatedData.value[index]
-                                                        .customName,
-                                                    style: const TextStyle(
-                                                        fontSize: 20),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                  const Spacer(
-                                                    flex: 1,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 50,
-                                                    width: 144,
-                                                    child: ElevatedButton(
-                                                      onPressed: () async {
-                                                        List<Map<String, int>>?
-                                                            selectedModifiers;
-                                                        _isBasketLoading.value =
-                                                            true;
+                                        productPrice = formatCurrency.format(
+                                            double.tryParse(productPrice));
+                                        return Container(
+                                            width: 140,
+                                            margin: const EdgeInsets.only(
+                                                right: 10),
+                                            child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  color: AppColors.grey,
+                                                ),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Image.network(
+                                                        relatedData
+                                                            .value[index].image,
+                                                        height: 140,
+                                                        width: 140,
+                                                      ),
+                                                      const Spacer(
+                                                        flex: 1,
+                                                      ),
+                                                      Text(
+                                                        relatedData.value[index]
+                                                            .customName,
+                                                        style: const TextStyle(
+                                                            fontSize: 20),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                      const Spacer(
+                                                        flex: 1,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 50,
+                                                        width: 144,
+                                                        child: ElevatedButton(
+                                                          onPressed: () async {
+                                                            List<
+                                                                    Map<String,
+                                                                        int>>?
+                                                                selectedModifiers;
+                                                            _isBasketLoading
+                                                                .value = true;
 
-                                                        int selectedProdId =
-                                                            relatedData
-                                                                .value[index]
-                                                                .id;
+                                                            int selectedProdId =
+                                                                relatedData
+                                                                    .value[
+                                                                        index]
+                                                                    .id;
 
-                                                        Box userBox =
-                                                            Hive.box<User>(
-                                                                'user');
-                                                        User? user =
-                                                            userBox.get('user');
-                                                        Box basketBox =
-                                                            Hive.box<Basket>(
-                                                                'basket');
-                                                        Basket? basket =
-                                                            basketBox
-                                                                .get('basket');
+                                                            Box userBox =
+                                                                Hive.box<User>(
+                                                                    'user');
+                                                            User? user = userBox
+                                                                .get('user');
+                                                            Box basketBox = Hive
+                                                                .box<Basket>(
+                                                                    'basket');
+                                                            Basket? basket =
+                                                                basketBox.get(
+                                                                    'basket');
 
-                                                        if (basket != null &&
-                                                            basket.encodedId
-                                                                .isNotEmpty &&
-                                                            basket.encodedId
-                                                                .isNotEmpty) {
-                                                          Map<String, String>
-                                                              requestHeaders = {
-                                                            'Content-type':
-                                                                'application/json',
-                                                            'Accept':
-                                                                'application/json'
-                                                          };
+                                                            if (basket !=
+                                                                    null &&
+                                                                basket.encodedId
+                                                                    .isNotEmpty &&
+                                                                basket.encodedId
+                                                                    .isNotEmpty) {
+                                                              Map<String,
+                                                                      String>
+                                                                  requestHeaders =
+                                                                  {
+                                                                'Content-type':
+                                                                    'application/json',
+                                                                'Accept':
+                                                                    'application/json'
+                                                              };
 
-                                                          if (user != null) {
-                                                            requestHeaders[
-                                                                    'Authorization'] =
-                                                                'Bearer ${user.userToken}';
-                                                          }
-
-                                                          var url = Uri.https(
-                                                              'api.lesailes.uz',
-                                                              '/api/baskets-lines');
-                                                          var formData = {
-                                                            'basket_id': basket
-                                                                .encodedId,
-                                                            'variants': [
-                                                              {
-                                                                'id':
-                                                                    selectedProdId,
-                                                                'quantity': 1,
-                                                                'modifiers':
-                                                                    selectedModifiers
+                                                              if (user !=
+                                                                  null) {
+                                                                requestHeaders[
+                                                                        'Authorization'] =
+                                                                    'Bearer ${user.userToken}';
                                                               }
-                                                            ]
-                                                          };
-                                                          var response = await http.post(
-                                                              url,
-                                                              headers:
-                                                                  requestHeaders,
-                                                              body: jsonEncode(
-                                                                  formData));
-                                                          if (response.statusCode ==
-                                                                  200 ||
-                                                              response.statusCode ==
-                                                                  201) {
-                                                            var json =
-                                                                jsonDecode(
-                                                                    response
-                                                                        .body);
-                                                            BasketData
-                                                                basketLocalData =
+
+                                                              var url = Uri.https(
+                                                                  'api.lesailes.uz',
+                                                                  '/api/baskets-lines');
+                                                              var formData = {
+                                                                'basket_id': basket
+                                                                    .encodedId,
+                                                                'variants': [
+                                                                  {
+                                                                    'id':
+                                                                        selectedProdId,
+                                                                    'quantity':
+                                                                        1,
+                                                                    'modifiers':
+                                                                        selectedModifiers
+                                                                  }
+                                                                ]
+                                                              };
+                                                              var response = await http.post(
+                                                                  url,
+                                                                  headers:
+                                                                      requestHeaders,
+                                                                  body: jsonEncode(
+                                                                      formData));
+                                                              if (response.statusCode ==
+                                                                      200 ||
+                                                                  response.statusCode ==
+                                                                      201) {
+                                                                var json =
+                                                                    jsonDecode(
+                                                                        response
+                                                                            .body);
                                                                 BasketData
-                                                                    .fromJson(json[
-                                                                        'data']);
-                                                            Basket newBasket = Basket(
-                                                                encodedId:
-                                                                    basketLocalData
-                                                                            .encodedId ??
-                                                                        '',
-                                                                lineCount:
-                                                                    basketLocalData
+                                                                    basketLocalData =
+                                                                    BasketData
+                                                                        .fromJson(
+                                                                            json['data']);
+                                                                Basket newBasket = Basket(
+                                                                    encodedId:
+                                                                        basketLocalData.encodedId ??
+                                                                            '',
+                                                                    lineCount: basketLocalData
                                                                             .lines
                                                                             ?.length ??
                                                                         0,
-                                                                totalPrice:
-                                                                    basketLocalData
-                                                                        .total);
-                                                            basketBox.put(
-                                                                'basket',
-                                                                newBasket);
-                                                            basketData.value =
-                                                                basketLocalData;
-                                                          }
-                                                        } else {
-                                                          Map<String, String>
-                                                              requestHeaders = {
-                                                            'Content-type':
-                                                                'application/json',
-                                                            'Accept':
-                                                                'application/json'
-                                                          };
-
-                                                          if (user != null) {
-                                                            requestHeaders[
-                                                                    'Authorization'] =
-                                                                'Bearer ${user.userToken}';
-                                                          }
-
-                                                          var url = Uri.https(
-                                                              'api.lesailes.uz',
-                                                              '/api/baskets');
-                                                          var formData = {
-                                                            'variants': [
-                                                              {
-                                                                'id':
-                                                                    selectedProdId,
-                                                                'quantity': 1,
-                                                                'modifiers':
-                                                                    selectedModifiers
+                                                                    totalPrice:
+                                                                        basketLocalData
+                                                                            .total);
+                                                                basketBox.put(
+                                                                    'basket',
+                                                                    newBasket);
+                                                                basketData
+                                                                        .value =
+                                                                    basketLocalData;
                                                               }
-                                                            ]
-                                                          };
-                                                          var response = await http.post(
-                                                              url,
-                                                              headers:
-                                                                  requestHeaders,
-                                                              body: jsonEncode(
-                                                                  formData));
-                                                          if (response.statusCode ==
-                                                                  200 ||
-                                                              response.statusCode ==
-                                                                  201) {
-                                                            var json =
-                                                                jsonDecode(
-                                                                    response
-                                                                        .body);
-                                                            BasketData
-                                                                basketLocalData =
+                                                            } else {
+                                                              Map<String,
+                                                                      String>
+                                                                  requestHeaders =
+                                                                  {
+                                                                'Content-type':
+                                                                    'application/json',
+                                                                'Accept':
+                                                                    'application/json'
+                                                              };
+
+                                                              if (user !=
+                                                                  null) {
+                                                                requestHeaders[
+                                                                        'Authorization'] =
+                                                                    'Bearer ${user.userToken}';
+                                                              }
+
+                                                              var url = Uri.https(
+                                                                  'api.lesailes.uz',
+                                                                  '/api/baskets');
+                                                              var formData = {
+                                                                'variants': [
+                                                                  {
+                                                                    'id':
+                                                                        selectedProdId,
+                                                                    'quantity':
+                                                                        1,
+                                                                    'modifiers':
+                                                                        selectedModifiers
+                                                                  }
+                                                                ]
+                                                              };
+                                                              var response = await http.post(
+                                                                  url,
+                                                                  headers:
+                                                                      requestHeaders,
+                                                                  body: jsonEncode(
+                                                                      formData));
+                                                              if (response.statusCode ==
+                                                                      200 ||
+                                                                  response.statusCode ==
+                                                                      201) {
+                                                                var json =
+                                                                    jsonDecode(
+                                                                        response
+                                                                            .body);
                                                                 BasketData
-                                                                    .fromJson(json[
-                                                                        'data']);
-                                                            Basket newBasket = Basket(
-                                                                encodedId:
-                                                                    basketLocalData
-                                                                            .encodedId ??
-                                                                        '',
-                                                                lineCount:
-                                                                    basketLocalData
+                                                                    basketLocalData =
+                                                                    BasketData
+                                                                        .fromJson(
+                                                                            json['data']);
+                                                                Basket newBasket = Basket(
+                                                                    encodedId:
+                                                                        basketLocalData.encodedId ??
+                                                                            '',
+                                                                    lineCount: basketLocalData
                                                                             .lines
                                                                             ?.length ??
                                                                         0,
-                                                                totalPrice:
-                                                                    basketLocalData
-                                                                        .total);
-                                                            basketBox.put(
-                                                                'basket',
-                                                                newBasket);
-                                                            basketData.value =
-                                                                basketLocalData;
-                                                          }
-                                                        }
-                                                        _isBasketLoading.value =
-                                                            true;
+                                                                    totalPrice:
+                                                                        basketLocalData
+                                                                            .total);
+                                                                basketBox.put(
+                                                                    'basket',
+                                                                    newBasket);
+                                                                basketData
+                                                                        .value =
+                                                                    basketLocalData;
+                                                              }
+                                                            }
+                                                            _isBasketLoading
+                                                                .value = true;
 
-                                                        return;
-                                                      },
-                                                      child: Text(productPrice),
-                                                      style: ButtonStyle(
-                                                        shape: MaterialStateProperty.all<
-                                                                RoundedRectangleBorder>(
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      18.0),
-                                                        )),
-                                                        backgroundColor:
-                                                            MaterialStateProperty
-                                                                .all<Color>(
+                                                            return;
+                                                          },
+                                                          child: Text(
+                                                              productPrice),
+                                                          style: ButtonStyle(
+                                                            shape: MaterialStateProperty.all<
+                                                                    RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          18.0),
+                                                            )),
+                                                            backgroundColor:
+                                                                MaterialStateProperty.all<
+                                                                        Color>(
                                                                     AppColors
                                                                         .mainColor),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ])));
-                                  }),
-                            ),
-                          )
-                        : const SizedBox(),
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 30),
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          color: Colors.grey.shade100),
-                      height: 187,
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            // Row(
-                            //     mainAxisAlignment:
-                            //         MainAxisAlignment.spaceBetween,
-                            //     children: [
-                            //       Text(
-                            //         tr("deliveryOrPickup.delivery") + ':',
-                            //         style: TextStyle(
-                            //             fontSize: 20,
-                            //             color: Colors.grey.shade400),
-                            //       ),
-                            //       Text(
-                            //         '12 000',
-                            //         style: TextStyle(
-                            //             fontSize: 20,
-                            //             color: Colors.grey.shade400),
-                            //       )
-                            //     ]),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${basketData.value?.lines?.length} ${tr("goods-amount")}:',
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                  Text(
-                                    productsTotalPrice,
-                                    style: const TextStyle(fontSize: 18),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    tr("basket.willReturn") +
-                                        ' 5% ' +
-                                        tr("basket.fromOrder") +
-                                        ':',
-                                    style: const TextStyle(
-                                        fontSize: 18, color: AppColors.plum),
-                                  ),
-                                  const Spacer(),
-                                  Image.asset(
-                                    'images/coin.png',
-                                    height: 16,
-                                    width: 16,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    cashback,
-                                    style: const TextStyle(
-                                        fontSize: 18, color: AppColors.plum),
-                                  )
-                                ]),
-                            Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '${tr("total")}:',
-                                    style: const TextStyle(fontSize: 24),
-                                  ),
-                                  Text(
-                                    totalPrice,
-                                    style: const TextStyle(fontSize: 24),
-                                  )
-                                ]),
-                          ]),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ChooseDeliveryTime(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    ChoosePayType(),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    AdditionalPhoneNumberWidget(),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    const OrderCommentWidget(),
-                    const SizedBox(
-                      height: 50,
-                    )
-                  ],
-                );
-              }, childCount: 1),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ])));
+                                      }),
+                                ),
+                              )
+                            : const SizedBox(),
+                        Container(
+                          margin: const EdgeInsets.only(bottom: 30),
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: Colors.grey.shade100),
+                          height: 187,
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                // Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(
+                                //         tr("deliveryOrPickup.delivery") + ':',
+                                //         style: TextStyle(
+                                //             fontSize: 20,
+                                //             color: Colors.grey.shade400),
+                                //       ),
+                                //       Text(
+                                //         '12 000',
+                                //         style: TextStyle(
+                                //             fontSize: 20,
+                                //             color: Colors.grey.shade400),
+                                //       )
+                                //     ]),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${basketData.value?.lines?.length} ${tr("goods-amount")}:',
+                                        style: const TextStyle(fontSize: 18),
+                                      ),
+                                      Text(
+                                        productsTotalPrice,
+                                        style: const TextStyle(fontSize: 18),
+                                      )
+                                    ]),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        tr("basket.willReturn") +
+                                            ' 5% ' +
+                                            tr("basket.fromOrder") +
+                                            ':',
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            color: AppColors.plum),
+                                      ),
+                                      const Spacer(),
+                                      Image.asset(
+                                        'images/coin.png',
+                                        height: 16,
+                                        width: 16,
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(
+                                        cashback,
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            color: AppColors.plum),
+                                      )
+                                    ]),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '${tr("total")}:',
+                                        style: const TextStyle(fontSize: 24),
+                                      ),
+                                      Text(
+                                        totalPrice,
+                                        style: const TextStyle(fontSize: 24),
+                                      )
+                                    ]),
+                              ]),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ChooseDeliveryTime(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        ChoosePayType(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        AdditionalPhoneNumberWidget(),
+                        // const SizedBox(
+                        //   height: 5,
+                        // ),
+                        const OrderCommentWidget(),
+                        const SizedBox(
+                          height: 50,
+                        )
+                      ],
+                    );
+                  }, childCount: 1),
+                ),
+              ],
             ),
+            Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  color: Colors.white,
+                  child: n.NikuButton.elevated(_isOrderLoading.value == true
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          tr(
+                            'basket.order',
+                          ),
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.w500),
+                        ))
+                    ..bg = AppColors.mainColor
+                    ..color = Colors.white
+                    ..mx = 16
+                    ..mt = 10
+                    ..mb = 28
+                    ..py = 15
+                    ..rounded = 20
+                    ..onPressed = () async {
+                      _isOrderLoading.value = true;
+                      final hashids = HashIds(
+                        salt: 'order',
+                        minHashLength: 15,
+                        alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+                      );
+                      Box<DeliveryType> box =
+                          Hive.box<DeliveryType>('deliveryType');
+                      DeliveryType? deliveryType = box.get('deliveryType');
+                      DeliveryLocationData? deliveryLocationData =
+                          Hive.box<DeliveryLocationData>('deliveryLocationData')
+                              .get('deliveryLocationData');
+                      Terminals? currentTerminal =
+                          Hive.box<Terminals>('currentTerminal')
+                              .get('currentTerminal');
+                      DeliverLaterTime? deliverLaterTime =
+                          Hive.box<DeliverLaterTime>('deliveryLaterTime')
+                              .get('deliveryLaterTime');
+                      DeliveryTime? deliveryTime =
+                          Hive.box<DeliveryTime>('deliveryTime')
+                              .get('deliveryTime');
+                      PayType? payType =
+                          Hive.box<PayType>('payType').get('payType');
+                      PayCash? payCash =
+                          Hive.box<PayCash>('payCash').get('payCash');
+                      DeliveryNotes? deliveryNotes =
+                          Hive.box<DeliveryNotes>('deliveryNotes')
+                              .get('deliveryNotes');
+                      AdditionalPhoneNumber? additionalPhoneNumber =
+                          Hive.box<AdditionalPhoneNumber>(
+                                  'additionalPhoneNumber')
+                              .get('additionalPhoneNumber');
+                      // Check deliveryType is chosen
+                      if (deliveryType == null) {
+                        _isOrderLoading.value = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Не выбран способ доставки')));
+                        return;
+                      }
+
+                      //Check pickup terminal
+                      if (deliveryType.value == DeliveryTypeEnum.pickup) {
+                        if (currentTerminal == null) {
+                          _isOrderLoading.value = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content:
+                                      Text('Не выбран филиал самовывоза')));
+                          return;
+                        }
+                      }
+
+                      // Check delivery address
+                      if (deliveryType.value == DeliveryTypeEnum.deliver) {
+                        if (deliveryLocationData == null) {
+                          _isOrderLoading.value = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Не указан адрес доставки')));
+                          return;
+                        } else if (deliveryLocationData.address == null) {
+                          _isOrderLoading.value = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Не указан адрес доставки')));
+                          return;
+                        }
+                      }
+
+                      // Check delivery time selected
+
+                      if (deliveryTime == null) {
+                        _isOrderLoading.value = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Не указано время доставки')));
+                        return;
+                      } else if (deliveryTime.value == DeliveryTimeEnum.later) {
+                        if (deliverLaterTime == null) {
+                          _isOrderLoading.value = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Не указано время доставки')));
+                          return;
+                        } else if (deliverLaterTime.value.length == 0) {
+                          _isOrderLoading.value = false;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Не указано время доставки')));
+                          return;
+                        }
+                      }
+
+                      if (payType == null) {
+                        _isOrderLoading.value = false;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Не указан способ оплаты')));
+                        return;
+                      }
+
+                      Basket? basket = Hive.box<Basket>('basket').get('basket');
+                      Box userBox = Hive.box<User>('user');
+                      User? user = userBox.get('user');
+
+                      Map<String, String> requestHeaders = {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json'
+                      };
+
+                      if (user != null) {
+                        requestHeaders['Authorization'] =
+                            'Bearer ${user.userToken}';
+                      }
+
+                      var url = Uri.https('api.lesailes.uz', '/api/orders');
+                      Map<String, dynamic> formData = {
+                        'basket_id': basket!.encodedId,
+                        'formData': <String, dynamic>{
+                          'address': '',
+                          'flat': '',
+                          'house': '',
+                          'entrance': '',
+                          'door_code': '',
+                          'deliveryType': '',
+                          'sourceType': "app"
+                        }
+                      };
+                      if (deliveryType.value == DeliveryTypeEnum.deliver) {
+                        formData['formData']['address'] =
+                            deliveryLocationData!.address;
+                        formData['formData']['flat'] =
+                            deliveryLocationData.flat ?? '';
+                        formData['formData']['house'] =
+                            deliveryLocationData.house ?? '';
+                        formData['formData']['entrance'] =
+                            deliveryLocationData.entrance ?? '';
+                        formData['formData']['door_code'] =
+                            deliveryLocationData.doorCode ?? '';
+                        formData['formData']['deliveryType'] = 'deliver';
+                        formData['formData']['location'] = [
+                          deliveryLocationData.lat,
+                          deliveryLocationData.lon
+                        ];
+                      } else {
+                        formData['formData']['deliveryType'] = 'pickup';
+                      }
+
+                      formData['formData']['terminal_id'] =
+                          currentTerminal!.id.toString();
+                      formData['formData']['name'] = user!.name;
+                      formData['formData']['phone'] = user!.phone;
+                      formData['formData']['email'] = '';
+                      formData['formData']['change'] = '';
+                      formData['formData']['notes'] = '';
+                      formData['formData']['delivery_day'] = '';
+                      formData['formData']['delivery_time'] = '';
+                      formData['formData']['delivery_schedule'] = 'now';
+                      formData['formData']['sms_sub'] = false;
+                      formData['formData']['email_sub'] = false;
+                      formData['formData']['additionalPhone'] =
+                          additionalPhoneNumber?.additionalPhoneNumber ?? '';
+                      if (deliveryTime.value == DeliveryTimeEnum.later) {
+                        formData['formData']['delivery_schedule'] = 'later';
+                        formData['formData']['delivery_time'] =
+                            deliveryTime.value;
+                      }
+
+                      if (payCash != null) {
+                        formData['formData']['change'] = payCash.value;
+                      }
+
+                      if (deliveryNotes != null) {
+                        formData['formData']['notes'] =
+                            deliveryNotes!.deliveryNotes;
+                      }
+
+                      if (payType != null) {
+                        formData['formData']['pay_type'] = payType.value;
+                      } else {
+                        formData['formData']['pay_type'] = 'offline';
+                      }
+
+                      var response = await http.post(url,
+                          headers: requestHeaders, body: jsonEncode(formData));
+                      if (response.statusCode == 200 ||
+                          response.statusCode == 201) {
+                        var json = jsonDecode(response.body);
+
+                        Map<String, String> requestHeaders = {
+                          'Content-type': 'application/json',
+                          'Accept': 'application/json'
+                        };
+
+                        requestHeaders['Authorization'] =
+                            'Bearer ${user.userToken}';
+
+                        url = Uri.https('api.lesailes.uz', '/api/orders',
+                            {'id': json['order']['id']});
+
+                        response = await http.get(url, headers: requestHeaders);
+                        if (response.statusCode == 200 ||
+                            response.statusCode == 201) {
+                          json = jsonDecode(response.body);
+                          Order order = Order.fromJson(json);
+                          await Hive.box<Basket>('basket').delete('basket');
+                          await Hive.box<DeliveryType>('deliveryType')
+                              .delete('deliveryType');
+                          await Hive.box<DeliveryLocationData>(
+                                  'deliveryLocationData')
+                              .delete('deliveryLocationData');
+                          await Hive.box<Terminals>('currentTerminal')
+                              .delete('currentTerminal');
+                          await Hive.box<DeliverLaterTime>('deliveryLaterTime')
+                              .delete('deliveryLaterTime');
+                          await Hive.box<DeliveryTime>('deliveryTime')
+                              .delete('deliveryTime');
+                          await Hive.box<PayType>('payType').delete('payType');
+                          await Hive.box<PayCash>('payCash').delete('payCash');
+                          await Hive.box<DeliveryNotes>('deliveryNotes')
+                              .delete('deliveryNotes');
+
+                          Navigator.of(context).pop();
+                          showBarModalBottomSheet(
+                              expand: false,
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) => OrderSuccess(order: order));
+
+                          // showPlatformDialog(
+                          //     context: context,
+                          //     builder: (_) => PlatformAlertDialog(
+                          //           title: Text(
+                          //             tr("order_is_accepted"),
+                          //             textAlign: TextAlign.center,
+                          //           ),
+                          //           content: Text(
+                          //             tr("order_is_accepted_content"),
+                          //             textAlign: TextAlign.center,
+                          //           ),
+                          //         ));
+                          _isOrderLoading.value = false;
+                          // Future.delayed(
+                          //     const Duration(
+                          //         milliseconds: 2000), () {
+                          //   Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           OrderDetail(
+                          //               orderId: hashids
+                          //                   .encode(order.id)),
+                          //     ),
+                          //   );
+                          // });
+                        }
+                        // BasketData basketData = new BasketData.fromJson(json['data']);
+                        // Basket newBasket = new Basket(
+                        //     encodedId: basketData.encodedId ?? '',
+                        //     lineCount: basketData.lines?.length ?? 0);
+                        // basketBox.put('basket', newBasket);
+                      } else {
+                        var errResponse = jsonDecode(response.body);
+                        _isOrderLoading.value = false;
+                        // print(response.body);
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(errResponse['error']['message'])));
+                        return;
+                      }
+                    },
+                ))
           ],
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-          child: n.NikuButton.elevated(_isOrderLoading.value == true
-              ? const CircularProgressIndicator(color: Colors.white)
-              : Text(
-                  tr(
-                    'basket.order',
-                  ),
-                  style: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w500),
-                ))
-            ..bg = AppColors.mainColor
-            ..color = Colors.white
-            ..mx = 16
-            ..mt = 10
-            ..mb = 28
-            ..py = 15
-            ..rounded = 20
-            ..onPressed = () async {
-              _isOrderLoading.value = true;
-              final hashids = HashIds(
-                salt: 'order',
-                minHashLength: 15,
-                alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
-              );
-              Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
-              DeliveryType? deliveryType = box.get('deliveryType');
-              DeliveryLocationData? deliveryLocationData =
-                  Hive.box<DeliveryLocationData>('deliveryLocationData')
-                      .get('deliveryLocationData');
-              Terminals? currentTerminal =
-                  Hive.box<Terminals>('currentTerminal').get('currentTerminal');
-              DeliverLaterTime? deliverLaterTime =
-                  Hive.box<DeliverLaterTime>('deliveryLaterTime')
-                      .get('deliveryLaterTime');
-              DeliveryTime? deliveryTime =
-                  Hive.box<DeliveryTime>('deliveryTime').get('deliveryTime');
-              PayType? payType = Hive.box<PayType>('payType').get('payType');
-              PayCash? payCash = Hive.box<PayCash>('payCash').get('payCash');
-              DeliveryNotes? deliveryNotes =
-                  Hive.box<DeliveryNotes>('deliveryNotes').get('deliveryNotes');
-              AdditionalPhoneNumber? additionalPhoneNumber =
-                  Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
-                      .get('additionalPhoneNumber');
-              // Check deliveryType is chosen
-              if (deliveryType == null) {
-                _isOrderLoading.value = false;
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: const Text('Не выбран способ доставки')));
-                return;
-              }
-
-              //Check pickup terminal
-              if (deliveryType.value == DeliveryTypeEnum.pickup) {
-                if (currentTerminal == null) {
-                  _isOrderLoading.value = false;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Не выбран филиал самовывоза')));
-                  return;
-                }
-              }
-
-              // Check delivery address
-              if (deliveryType.value == DeliveryTypeEnum.deliver) {
-                if (deliveryLocationData == null) {
-                  _isOrderLoading.value = false;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Не указан адрес доставки')));
-                  return;
-                } else if (deliveryLocationData.address == null) {
-                  _isOrderLoading.value = false;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Не указан адрес доставки')));
-                  return;
-                }
-              }
-
-              // Check delivery time selected
-
-              if (deliveryTime == null) {
-                _isOrderLoading.value = false;
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Не указано время доставки')));
-                return;
-              } else if (deliveryTime.value == DeliveryTimeEnum.later) {
-                if (deliverLaterTime == null) {
-                  _isOrderLoading.value = false;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Не указано время доставки')));
-                  return;
-                } else if (deliverLaterTime.value.length == 0) {
-                  _isOrderLoading.value = false;
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Не указано время доставки')));
-                  return;
-                }
-              }
-
-              if (payType == null) {
-                _isOrderLoading.value = false;
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Не указан способ оплаты')));
-                return;
-              }
-
-              Basket? basket = Hive.box<Basket>('basket').get('basket');
-              Box userBox = Hive.box<User>('user');
-              User? user = userBox.get('user');
-
-              Map<String, String> requestHeaders = {
-                'Content-type': 'application/json',
-                'Accept': 'application/json'
-              };
-
-              if (user != null) {
-                requestHeaders['Authorization'] = 'Bearer ${user.userToken}';
-              }
-
-              var url = Uri.https('api.lesailes.uz', '/api/orders');
-              Map<String, dynamic> formData = {
-                'basket_id': basket!.encodedId,
-                'formData': <String, dynamic>{
-                  'address': '',
-                  'flat': '',
-                  'house': '',
-                  'entrance': '',
-                  'door_code': '',
-                  'deliveryType': '',
-                  'sourceType': "app"
-                }
-              };
-              if (deliveryType.value == DeliveryTypeEnum.deliver) {
-                formData['formData']['address'] = deliveryLocationData!.address;
-                formData['formData']['flat'] = deliveryLocationData.flat ?? '';
-                formData['formData']['house'] =
-                    deliveryLocationData.house ?? '';
-                formData['formData']['entrance'] =
-                    deliveryLocationData.entrance ?? '';
-                formData['formData']['door_code'] =
-                    deliveryLocationData.doorCode ?? '';
-                formData['formData']['deliveryType'] = 'deliver';
-                formData['formData']['location'] = [
-                  deliveryLocationData.lat,
-                  deliveryLocationData.lon
-                ];
-              } else {
-                formData['formData']['deliveryType'] = 'pickup';
-              }
-
-              formData['formData']['terminal_id'] =
-                  currentTerminal!.id.toString();
-              formData['formData']['name'] = user!.name;
-              formData['formData']['phone'] = user!.phone;
-              formData['formData']['email'] = '';
-              formData['formData']['change'] = '';
-              formData['formData']['notes'] = '';
-              formData['formData']['delivery_day'] = '';
-              formData['formData']['delivery_time'] = '';
-              formData['formData']['delivery_schedule'] = 'now';
-              formData['formData']['sms_sub'] = false;
-              formData['formData']['email_sub'] = false;
-              formData['formData']['additionalPhone'] =
-                  additionalPhoneNumber?.additionalPhoneNumber ?? '';
-              if (deliveryTime.value == DeliveryTimeEnum.later) {
-                formData['formData']['delivery_schedule'] = 'later';
-                formData['formData']['delivery_time'] = deliveryTime.value;
-              }
-
-              if (payCash != null) {
-                formData['formData']['change'] = payCash.value;
-              }
-
-              if (deliveryNotes != null) {
-                formData['formData']['notes'] = deliveryNotes!.deliveryNotes;
-              }
-
-              if (payType != null) {
-                formData['formData']['pay_type'] = payType.value;
-              } else {
-                formData['formData']['pay_type'] = 'offline';
-              }
-
-              var response = await http.post(url,
-                  headers: requestHeaders, body: jsonEncode(formData));
-              if (response.statusCode == 200 || response.statusCode == 201) {
-                var json = jsonDecode(response.body);
-
-                Map<String, String> requestHeaders = {
-                  'Content-type': 'application/json',
-                  'Accept': 'application/json'
-                };
-
-                requestHeaders['Authorization'] = 'Bearer ${user.userToken}';
-
-                url = Uri.https('api.lesailes.uz', '/api/orders',
-                    {'id': json['order']['id']});
-
-                response = await http.get(url, headers: requestHeaders);
-                if (response.statusCode == 200 || response.statusCode == 201) {
-                  json = jsonDecode(response.body);
-                  Order order = Order.fromJson(json);
-                  await Hive.box<Basket>('basket').delete('basket');
-                  await Hive.box<DeliveryType>('deliveryType')
-                      .delete('deliveryType');
-                  await Hive.box<DeliveryLocationData>('deliveryLocationData')
-                      .delete('deliveryLocationData');
-                  await Hive.box<Terminals>('currentTerminal')
-                      .delete('currentTerminal');
-                  await Hive.box<DeliverLaterTime>('deliveryLaterTime')
-                      .delete('deliveryLaterTime');
-                  await Hive.box<DeliveryTime>('deliveryTime')
-                      .delete('deliveryTime');
-                  await Hive.box<PayType>('payType').delete('payType');
-                  await Hive.box<PayCash>('payCash').delete('payCash');
-                  await Hive.box<DeliveryNotes>('deliveryNotes')
-                      .delete('deliveryNotes');
-
-                  Navigator.of(context).pop();
-                  showBarModalBottomSheet(
-                      expand: false,
-                      context: context,
-                      backgroundColor: Colors.transparent,
-                      builder: (context) => OrderSuccess(order: order));
-
-                  // showPlatformDialog(
-                  //     context: context,
-                  //     builder: (_) => PlatformAlertDialog(
-                  //           title: Text(
-                  //             tr("order_is_accepted"),
-                  //             textAlign: TextAlign.center,
-                  //           ),
-                  //           content: Text(
-                  //             tr("order_is_accepted_content"),
-                  //             textAlign: TextAlign.center,
-                  //           ),
-                  //         ));
-                  _isOrderLoading.value = false;
-                  // Future.delayed(
-                  //     const Duration(
-                  //         milliseconds: 2000), () {
-                  //   Navigator.pushReplacement(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //       builder: (context) =>
-                  //           OrderDetail(
-                  //               orderId: hashids
-                  //                   .encode(order.id)),
-                  //     ),
-                  //   );
-                  // });
-                }
-                // BasketData basketData = new BasketData.fromJson(json['data']);
-                // Basket newBasket = new Basket(
-                //     encodedId: basketData.encodedId ?? '',
-                //     lineCount: basketData.lines?.length ?? 0);
-                // basketBox.put('basket', newBasket);
-              } else {
-                var errResponse = jsonDecode(response.body);
-                _isOrderLoading.value = false;
-                // print(response.body);
-                ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(errResponse['error']['message'])));
-                return;
-              }
-            }),
+      // bottomNavigationBar: BottomAppBar(
+      //     child: ),
     ));
   }
 }
