@@ -93,7 +93,10 @@
     "pageTitle": "Выберите ресторан",
     "addressLabel": "Адрес",
     "workSchedule": "Режим работы: с {fromTime} до {toTime}",
-    "terminalIsNotWorking": "Данный ресторан сейчас не работает"
+    "terminalIsNotWorking": "Данный ресторан сейчас не работает",
+    "scheduleLabel": "Время работы",
+    "workScheduleNumbers": "{fromTime} - {toTime}",
+    "showRoute": "Построить маршрут"
   },
   "addressNotFound": "Адрес не найден",
   "chooseCity": "Выберите город",

@@ -93,7 +93,10 @@
     "pageTitle": "Choose restaurant",
     "addressLabel": "Address",
     "workSchedule": "Work hours: from {fromTime} to {toTime}",
-    "terminalIsNotWorking": "This restaurant is currently closed"
+    "terminalIsNotWorking": "This restaurant is currently closed",
+    "scheduleLabel": "Working hours",
+    "workScheduleNumbers": "{fromTime} - {toTime}",
+    "showRoute": "Build a route"
   },
   "addressNotFound": "Address not found",
   "chooseCity": "Choose city",
