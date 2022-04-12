@@ -94,7 +94,10 @@
     "pageTitle": "Restoran tanlgang",
     "addressLabel": "Manzil",
     "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
-    "terminalIsNotWorking": "Ushbu restoran hozirda yopiq"
+    "terminalIsNotWorking": "Ushbu restoran hozirda yopiq",
+    "scheduleLabel": "Ish vaqti",
+    "workScheduleNumbers": "{fromTime} - {toTime}",
+    "showRoute": "Marshrutni qurish"
   },
   "addressNotFound": "Manzil topilmadi",
   "chooseCity": "Shaharni tanlang",

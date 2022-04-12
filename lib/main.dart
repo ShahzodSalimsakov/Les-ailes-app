@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:les_ailes/models/pickup_type.dart';
+import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.gr.dart';
 import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
@@ -35,6 +37,9 @@ void main() async {
   Hive.registerAdapter(CityAdapter());
   Hive.registerAdapter(BasketAdapter());
   Hive.registerAdapter(TerminalsAdapter());
+  Hive.registerAdapter(TempTerminalsAdapter());
+  Hive.registerAdapter(PickupTypeAdapter());
+  Hive.registerAdapter(PickupTypeEnumAdapter());
   Hive.registerAdapter(DeliveryLocationDataAdapter());
   Hive.registerAdapter(DeliveryTypeAdapter());
   Hive.registerAdapter(DeliveryTypeEnumAdapter());
@@ -53,6 +58,9 @@ void main() async {
   await Hive.openBox<City>('currentCity');
   await Hive.openBox<Basket>('basket');
   await Hive.openBox<Terminals>('currentTerminal');
+  await Hive.openBox<TempTerminals>('tempTerminal');
+  await Hive.openBox<PickupType>('pickupType');
+  // await Hive.openBox<PickupTypeEnum>('picku');
   await Hive.openBox<DeliveryLocationData>('deliveryLocationData');
   await Hive.openBox<DeliveryType>('deliveryType');
   await Hive.openBox<DeliveryTime>('deliveryTime');
