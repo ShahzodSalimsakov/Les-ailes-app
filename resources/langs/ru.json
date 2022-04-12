@@ -10,7 +10,8 @@
     "myAddresses": "Мои адреса"
   },
   "main": {
-    "deliveryOrPickup": "Закажите доставку или заберите"
+    "deliveryOrPickup": "Закажите доставку или заберите",
+    "newsAndPromotions": "Новости и акции"
   },
   "deliveryOrPickup": {
     "chooseType": "Выберите способ получения заказа",

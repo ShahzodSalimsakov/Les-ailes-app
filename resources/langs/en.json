@@ -10,7 +10,8 @@
     "myAddresses": "My addresses"
   },
   "main": {
-    "deliveryOrPickup": "Schedule delivery or pick up"
+    "deliveryOrPickup": "Schedule delivery or pick up",
+    "newsAndPromotions": "News and promotions"
   },
   "deliveryOrPickup": {
     "chooseType": "Choose how to receive order",

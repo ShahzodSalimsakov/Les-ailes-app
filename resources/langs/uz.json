@@ -10,7 +10,8 @@
     "myAddresses": "Mening manzillarim"
   },
   "main": {
-    "deliveryOrPickup": "Buyurtma bering yoki olib keting"
+    "deliveryOrPickup": "Buyurtma bering yoki olib keting",
+    "newsAndPromotions": "Yangiliklar va aktsiyalar"
   },
   "deliveryOrPickup": {
     "chooseType": "Buyurtmani qanday qabul qilishni tanlang",
