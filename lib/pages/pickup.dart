@@ -52,8 +52,7 @@ class PickupPage extends HookWidget {
       } else {
         element.value = PickupTypeEnum.map;
       }
-      Box<PickupType> transaction =
-      Hive.box<PickupType>('pickupType');
+      Box<PickupType> transaction = Hive.box<PickupType>('pickupType');
       transaction.put('pickupType', element);
     });
 
@@ -225,11 +224,19 @@ class PickupPage extends HookWidget {
               if (closeWork.hour < openWork.hour) {
                 closeWork = closeWork.setDay(currentTime.day + 1);
               }
-              if (currentTime.isAfter(openWork) &&
-                  currentTime.isBefore(closeWork)) {
-                t.isWorking = true;
+
+              if (closeWork.getHours < openWork.getHours) {
+                if (currentTime < openWork && currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               } else {
-                t.isWorking = false;
+                if (currentTime < openWork || currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               }
             }
           } else {
@@ -247,14 +254,18 @@ class PickupPage extends HookWidget {
               closeWork = closeWork.setMonth(currentTime.month);
               closeWork = closeWork.setYear(currentTime.year);
 
-              if (closeWork.hour < openWork.hour) {
-                closeWork = closeWork.setDay(currentTime.day + 1);
-              }
-              if (currentTime.isAfter(openWork) &&
-                  currentTime.isBefore(closeWork)) {
-                t.isWorking = true;
+              if (closeWork.getHours < openWork.getHours) {
+                if (currentTime < openWork && currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               } else {
-                t.isWorking = false;
+                if (currentTime < openWork || currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               }
             }
           }
@@ -313,7 +324,8 @@ class PickupPage extends HookWidget {
                                         ..m = 0
                                         ..onPressed = () {
                                           Box<PickupType> transaction =
-                                          Hive.box<PickupType>('pickupType');
+                                              Hive.box<PickupType>(
+                                                  'pickupType');
                                           transaction.delete('pickupType');
                                           Navigator.of(context).pop();
                                         }
