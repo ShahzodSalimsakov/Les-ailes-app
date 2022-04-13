@@ -19,10 +19,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 60,
+        toolbarHeight: 80,
         title: const Header(),
         automaticallyImplyLeading: false,
         backgroundColor: Colors.transparent,

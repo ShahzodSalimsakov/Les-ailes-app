@@ -51,51 +51,54 @@ class NotificationsPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ListView.builder(
-                itemCount: 3,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                      clipBehavior: Clip.antiAlias,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
-                      ),
-                      elevation: 5,
-                      margin: const EdgeInsets.only(bottom: 20),
-                      child: Column(
-                        children: [
-                          Stack(
-                            alignment: Alignment.topCenter,
-                            children: [
-                              Ink.image(
-                                image: const NetworkImage(
-                                  'https://placeimg.com/640/480/any',
+      body: Container(
+        color: Colors.grey.shade100,
+        child: SafeArea(
+          child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+              child: ListView.builder(
+                  itemCount: 1,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Card(
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                        elevation: 0,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: Column(
+                          children: [
+                            Stack(
+                              alignment: Alignment.topCenter,
+                              children: [
+                                Ink.image(
+                                  image: const NetworkImage(
+                                    'https://api.lesailes.uz/storage/sliders/2022/04/02/ZSEMqH8dwGJoLCrwGuAXNekhkc4TySsSvnO49X7q.jpg',
+                                  ),
+                                  height: 244,
+                                  fit: BoxFit.cover,
                                 ),
-                                height: 244,
-                                fit: BoxFit.cover,
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                    "Аномальная температура не помеха, доставим вкусности прямо до дома🚗 Также напоминаем про супер предложение - Ramadan Set’s. Закажи домой любимое от Лэса и порадуй близких ❤️",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 14,
-                                        height: 1.6))
                               ],
                             ),
-                          )
-                        ],
-                      ));
-                })),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                      "Аномальная температура не помеха, доставим вкусности прямо до дома🚗 Также напоминаем про супер предложение - Ramadan Set’s. Закажи домой любимое от Лэса и порадуй близких ❤️",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 14,
+                                          height: 1.6))
+                                ],
+                              ),
+                            )
+                          ],
+                        ));
+                  })),
+        ),
       ),
     );
   }
