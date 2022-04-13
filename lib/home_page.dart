@@ -28,8 +28,8 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: const SystemUiOverlayStyle(
-          systemNavigationBarColor: Colors.transparent, // Navigation bar
           statusBarColor: AppColors.mainColor, // Status bar
+          statusBarBrightness: Brightness.light
         ),
       ),
       drawer: const LeftMenu(),
