@@ -28,9 +28,8 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
         systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: AppColors.mainColor, // Status bar
-          statusBarBrightness: Brightness.light
-        ),
+            statusBarColor: AppColors.mainColor, // Status bar
+            statusBarBrightness: Brightness.light),
       ),
       drawer: const LeftMenu(),
       body: SafeArea(
@@ -45,7 +44,7 @@ class HomePage extends StatelessWidget {
               const ChooseCity(),
               const WayToReceiveAnOrder(),
               SliderCarousel(),
-               const ProductList()
+              const ProductList()
             ])
           ],
         ),
