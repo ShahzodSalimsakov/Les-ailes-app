@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
@@ -58,8 +59,8 @@ class AdditionalPhoneNumberWidget extends HookWidget {
           bottom: 0,
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text(
-            'Дополнительный номер телефона',
+          Text(
+            tr("additionalPhoneNumber"),
             style: TextStyle(fontSize: 18),
           ),
           const SizedBox(

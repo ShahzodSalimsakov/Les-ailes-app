@@ -122,5 +122,12 @@
     "thanks": "Thank you, order accepted",
     "yourOrderLabel": "Your order",
     "statusLabel": "Order status"
-  }
+  },
+  "house": "House",
+  "flat": "Flat",
+  "entrance": "Entrance",
+  "intercom": "Intercom",
+  "additionalPhoneNumber": "Additional phone number",
+  "commentToOrder": "Comment to order",
+  "comment": "Comment"
 }

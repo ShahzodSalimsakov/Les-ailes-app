@@ -52,7 +52,7 @@ class AboutUsPage extends StatelessWidget {
                         launch("tel://71 200 42 42");
                       },
                       child: const Text(
-                        "71 100 00 00",
+                        "71 200 42 42",
                         style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,

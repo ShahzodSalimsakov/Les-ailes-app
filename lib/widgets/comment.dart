@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
@@ -14,8 +15,8 @@ class OrderCommentWidget extends HookWidget {
         width: double.infinity,
         padding: const EdgeInsets.only(top: 20, bottom: 60, right: 5, left: 5),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          const Text(
-            'Комментарий к заказу',
+           Text(
+            tr("commentToOrder"),
             style: TextStyle(fontSize: 18),
           ),
           const SizedBox(
@@ -31,7 +32,7 @@ class OrderCommentWidget extends HookWidget {
               ),
               fillColor: Colors.grey.shade200,
               filled: true,
-              hintText: 'Комментарий',
+              hintText: tr("comment"),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),

@@ -95,7 +95,7 @@ class DeliverFieldsModal extends HookWidget {
                         // autofocus: true,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            hintText: 'Дом',
+                            hintText: tr("house"),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide.none),
@@ -107,7 +107,7 @@ class DeliverFieldsModal extends HookWidget {
                         name: 'flat',
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            labelText: 'Квартира',
+                            labelText: tr("flat"),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide.none),
@@ -119,7 +119,7 @@ class DeliverFieldsModal extends HookWidget {
                         name: 'entrance',
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            labelText: 'Подъезд',
+                            labelText: tr("entrance"),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide.none),
@@ -131,7 +131,7 @@ class DeliverFieldsModal extends HookWidget {
                         name: 'doorCode',
                         // keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                            labelText: 'Домофон',
+                            labelText: tr("intercom"),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                                 borderSide: BorderSide.none),
