@@ -123,32 +123,32 @@ class WayToReceiveAnOrder extends StatelessWidget {
                             ]),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        context.router.pushNamed('pickup');
-                      },
-                      child: Container(
-                        width: 164,
-                        height: 164,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(26),
-                          color: AppColors.grey,
-                        ),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset('images/parking.png',
-                                  height: 92, width: 92),
-                              const SizedBox(height: 36),
-                              Text(
-                                tr("deliveryOrPickup.toTheParkingLot"),
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ]),
-                      ),
-                    )
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.of(context).pop();
+                    //     context.router.pushNamed('pickup');
+                    //   },
+                    //   child: Container(
+                    //     width: 164,
+                    //     height: 164,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(26),
+                    //       color: AppColors.grey,
+                    //     ),
+                    //     child: Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         children: [
+                    //           Image.asset('images/parking.png',
+                    //               height: 92, width: 92),
+                    //           const SizedBox(height: 36),
+                    //           Text(
+                    //             tr("deliveryOrPickup.toTheParkingLot"),
+                    //             style: const TextStyle(fontSize: 20),
+                    //           )
+                    //         ]),
+                    //   ),
+                    // )
                   ],
                   shrinkWrap: true,
                 ),

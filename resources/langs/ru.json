@@ -37,7 +37,7 @@
     "pushNotify": "Пуш уведомления, смс, эл.почта"
   },
   "about": {
-    "callCenter": "Qo'ng'iroqlar markazi",
+    "callCenter": "Call Center",
     "followUs": "ПОДПИСЫВАЙТЕСЬ НА НАС:",
     "privacy": "Политика конфиденциальности",
     "terms": "Пользовательское соглашение",
@@ -122,5 +122,12 @@
     "thanks": "Спасибо, заказ принят",
     "yourOrderLabel": "Ваш заказ",
     "statusLabel": "Статус заказа"
-  }
+  },
+  "house": "Дом",
+  "flat": "Квартира",
+  "entrance": "Вход",
+  "intercom": "Домофон",
+  "additionalPhoneNumber": "Дополнительный номер телефона ",
+  "commentToOrder": "Комментарий к заказу",
+  "comment": "Комментарий"
 }

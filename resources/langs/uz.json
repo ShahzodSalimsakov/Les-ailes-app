@@ -18,7 +18,7 @@
     "delivery": "Yetkazish",
     "pickup": "Olib ketish",
     "takeAway": "Olib ketish",
-    "AtTheRestaurant": "Restaranda",
+    "AtTheRestaurant": "Restoranda",
     "toTheParkingLot": "To'xtash joyiga"
   },
   "signIn": {
@@ -58,7 +58,7 @@
   "profile": {
     "profile": "Profil",
     "name": "Ism",
-    "birthDay": "Tug'ilish",
+    "birthDay": "Tug'ilgan kun",
     "email": "Elektron pochta",
     "phone": "Telefon"
   },
@@ -91,7 +91,7 @@
     "tabList": "Ro'yxat",
     "tabMap": "Xaritada",
     "buttonSelectThisBranch": "Bu yerdan olib keting",
-    "pageTitle": "Restoran tanlgang",
+    "pageTitle": "Restoranni tanlang",
     "addressLabel": "Manzil",
     "workSchedule": "Ish vaqti: {fromTime} dan {toTime} gacha",
     "terminalIsNotWorking": "Ushbu restoran hozirda yopiq",
@@ -122,5 +122,12 @@
     "thanks": "Rahmat, buyurtma qabul qilindi",
     "yourOrderLabel": "Sizning buyurtmangiz",
     "statusLabel": "Buyurtma holati"
-  }
+  },
+  "house": "Uy",
+  "flat": "Kvartira",
+  "entrance": "Kirish",
+  "intercom": "Domofon",
+  "additionalPhoneNumber": "Qo'shimcha telefon raqami",
+  "commentToOrder": "Buyurtmaga sharh bering",
+  "comment": "Sharh"
 }
