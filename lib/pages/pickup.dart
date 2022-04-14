@@ -101,14 +101,22 @@ class PickupPage extends HookWidget {
               closeWork = closeWork.setMonth(currentTime.month);
               closeWork = closeWork.setYear(currentTime.year);
 
-              if (closeWork.hour < openWork.hour) {
-                closeWork = closeWork.setDay(currentTime.day + 1);
-              }
-              if (currentTime.isAfter(openWork) &&
-                  currentTime.isBefore(closeWork)) {
-                t.isWorking = true;
+              // if (closeWork.hour < openWork.hour) {
+              //   closeWork = closeWork.setDay(currentTime.day + 1);
+              // }
+
+              if (closeWork.getHours < openWork.getHours) {
+                if (currentTime < openWork && currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               } else {
-                t.isWorking = false;
+                if (currentTime < openWork || currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               }
             }
           } else {
@@ -126,14 +134,18 @@ class PickupPage extends HookWidget {
               closeWork = closeWork.setMonth(currentTime.month);
               closeWork = closeWork.setYear(currentTime.year);
 
-              if (closeWork.hour < openWork.hour) {
-                closeWork = closeWork.setDay(currentTime.day + 1);
-              }
-              if (currentTime.isAfter(openWork) &&
-                  currentTime.isBefore(closeWork)) {
-                t.isWorking = true;
+              if (closeWork.getHours < openWork.getHours) {
+                if (currentTime < openWork && currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               } else {
-                t.isWorking = false;
+                if (currentTime < openWork || currentTime > closeWork) {
+                  t.isWorking = false;
+                } else {
+                  t.isWorking = true;
+                }
               }
             }
           }
@@ -221,9 +233,9 @@ class PickupPage extends HookWidget {
               closeWork = closeWork.setMonth(currentTime.month);
               closeWork = closeWork.setYear(currentTime.year);
 
-              if (closeWork.hour < openWork.hour) {
-                closeWork = closeWork.setDay(currentTime.day + 1);
-              }
+              // if (closeWork.hour < openWork.hour) {
+              //   closeWork = closeWork.setDay(currentTime.day + 1);
+              // }
 
               if (closeWork.getHours < openWork.getHours) {
                 if (currentTime < openWork && currentTime > closeWork) {
