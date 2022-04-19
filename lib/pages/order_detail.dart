@@ -546,7 +546,7 @@ class OrderDetail extends HookWidget {
                               ),
                               GestureDetector(
                                 onTap: () {
-                                  launch("tel:71 200 42 42");
+                                  launch("tel:712004242");
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.all(17),
