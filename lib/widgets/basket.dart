@@ -344,7 +344,6 @@ class BasketWidget extends HookWidget {
           var json = jsonDecode(response.body);
           List<RelatedProduct> localRelatedProduct = List<RelatedProduct>.from(
               json['data'].map((m) => RelatedProduct.fromJson(m)).toList());
-          localRelatedProduct;
           relatedData.value = localRelatedProduct;
         }
       }

@@ -244,34 +244,163 @@ class WayToReceiveAnOrder extends StatelessWidget {
                 openBottomSheet(context);
               };
           }
-          return GestureDetector(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 220,
-                      child: Text(
-                        deliveryText,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600),
-                      ),
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    context.router.pushNamed('delivery');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26),
+                      color: AppColors.grey,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 4,
+                          // offset: Offset(1, 1), // Shadow position
+                        ),
+                      ],
                     ),
-                    Image.asset("images/rocket.png")
-                  ]),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: AppColors.green),
-              height: 75,
-              width: double.infinity,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('images/car.png', height: 40, width: 40),
+                          Text(
+                            tr("deliveryOrPickup.delivery"),
+                            style: const TextStyle(fontSize: 15),
+                          )
+                        ]),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    context.router.pushNamed('pickup');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26),
+                      color: AppColors.grey,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 4,
+                          // offset: Offset(2, 4), // Shadow position
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('images/bag.png', height: 40, width: 40),
+                          Text(
+                            tr("deliveryOrPickup.takeAway"),
+                            style: const TextStyle(fontSize: 15),
+                          )
+                        ]),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    context.router.pushNamed('pickup');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26),
+                      color: AppColors.grey,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 4,
+                          // offset: Offset(2, 4), // Shadow position
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset('images/inrestourant.png',
+                              height: 40, width: 40),
+                          Text(
+                            tr("deliveryOrPickup.AtTheRestaurant"),
+                            style: const TextStyle(fontSize: 15),
+                          )
+                        ]),
+                  ),
+                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.of(context).pop();
+                //     context.router.pushNamed('pickup');
+                //   },
+                //   child: Container(
+                //     width: 164,
+                //     height: 164,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(26),
+                //       color: AppColors.grey,
+                //     ),
+                //     child: Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         children: [
+                //           Image.asset('images/parking.png',
+                //               height: 92, width: 92),
+                //           const SizedBox(height: 36),
+                //           Text(
+                //             tr("deliveryOrPickup.toTheParkingLot"),
+                //             style: const TextStyle(fontSize: 20),
+                //           )
+                //         ]),
+                //   ),
+                // )
+              ],
             ),
-            onTap: () {
-              openBottomSheet(context);
-            },
           );
+
+          //   GestureDetector(
+          //   child: Container(
+          //     padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
+          //     child: Row(
+          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //         children: [
+          //           SizedBox(
+          //             width: 220,
+          //             child: Text(
+          //               deliveryText,
+          //               style: const TextStyle(
+          //                   color: Colors.white,
+          //                   fontSize: 22,
+          //                   fontWeight: FontWeight.w600),
+          //             ),
+          //           ),
+          //           Image.asset("images/rocket.png")
+          //         ]),
+          //     decoration: BoxDecoration(
+          //         borderRadius: BorderRadius.circular(20),
+          //         color: AppColors.green),
+          //     height: 75,
+          //     width: double.infinity,
+          //   ),
+          //   onTap: () {
+          //     openBottomSheet(context);
+          //   },
+          // );
         });
   }
 }

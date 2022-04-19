@@ -129,5 +129,11 @@
   "intercom": "Intercom",
   "additionalPhoneNumber": "Additional phone number",
   "commentToOrder": "Comment to order",
-  "comment": "Comment"
+  "comment": "Comment",
+  "incorrectCode": "The entered code is incorrect or the code has expired",
+  "sentCodeToNumber": "Sent code to number",
+  "getNewCode": "Get a new code",
+  "wrongNumber": "Wrong number",
+  "enterYourName": "Enter your name",
+  "yourName": "Your name"
 }
