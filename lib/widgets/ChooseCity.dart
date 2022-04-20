@@ -6,8 +6,11 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:les_ailes/models/delivery_location_data.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+import '../models/delivery_type.dart';
 
 class ChooseCity extends HookWidget {
   const ChooseCity({Key? key}) : super(key: key);
@@ -69,6 +72,11 @@ class ChooseCity extends HookWidget {
                       onTap: () {
                         Box<City> transaction = Hive.box<City>('currentCity');
                         transaction.put('currentCity', cities[index]);
+                        final Box<DeliveryLocationData> deliveryLocationBox =
+                        Hive.box<DeliveryLocationData>('deliveryLocationData');
+                        deliveryLocationBox.delete('deliveryLocationData');
+                        Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+                        box.delete('deliveryType');
                         Navigator.of(context).pop();
                       },
                     );

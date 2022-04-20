@@ -129,5 +129,6 @@
   "intercom": "Domofon",
   "additionalPhoneNumber": "Qo'shimcha telefon raqami",
   "commentToOrder": "Buyurtmaga sharh bering",
-  "comment": "Sharh"
+  "comment": "Sharh",
+  "nearBranchNotFound": "Sizga eng yaqin filial topilmadi"
 }
