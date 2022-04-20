@@ -127,7 +127,8 @@
   "flat": "Квартира",
   "entrance": "Вход",
   "intercom": "Домофон",
-  "additionalPhoneNumber": "Дополнительный номер телефона ",
+  "additionalPhoneNumber": "Дополнительный номер телефона",
   "commentToOrder": "Комментарий к заказу",
-  "comment": "Комментарий"
+  "comment": "Комментарий",
+  "nearBranchNotFound": "Ближайший к Вам филиал не найден"
 }

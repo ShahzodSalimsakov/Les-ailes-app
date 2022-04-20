@@ -483,6 +483,7 @@ class BasketWidget extends HookWidget {
                       (BuildContext context, int index) {
                     return Column(
                       children: [
+                        const SizedBox(height: 20),
                         const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),

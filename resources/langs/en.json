@@ -135,5 +135,6 @@
   "getNewCode": "Get a new code",
   "wrongNumber": "Wrong number",
   "enterYourName": "Enter your name",
-  "yourName": "Your name"
+  "yourName": "Your name",
+  "nearBranchNotFound": "No branch near you found"
 }

@@ -43,6 +43,7 @@ class PickupPage extends HookWidget {
     final _tabKey = GlobalKey();
     final localSelectedTerminal = useState<TempTerminals?>(null);
     var mapObjects = useState<List<MapObject>>([]);
+    final isLoading = useState(false);
 
     tabController.addListener(() async {
       defaultTabIndex.value = tabController.index;
@@ -77,6 +78,8 @@ class PickupPage extends HookWidget {
         'Accept': 'application/json'
       };
       var formData = {'city_id': currentCity?.id.toString()};
+
+      /*
       var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
@@ -154,9 +157,9 @@ class PickupPage extends HookWidget {
 
         terminals.value = resultTerminals;
       }
-
+*/
       bool isLocationSet = true;
-
+      isLoading.value = true;
       final Box<DeliveryLocationData> deliveryLocationBox =
           Hive.box<DeliveryLocationData>('deliveryLocationData');
       DeliveryLocationData? deliveryData =
@@ -209,8 +212,8 @@ class PickupPage extends HookWidget {
       //       speedAccuracy: 0);
       // }
 
-      url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
-      response = await http.get(url, headers: requestHeaders);
+      var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
+      var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
         List<TempTerminals> terminal = List<TempTerminals>.from(
@@ -283,7 +286,7 @@ class PickupPage extends HookWidget {
           }
           resultTerminals.add(t);
         }
-
+        isLoading.value = false;
         terminals.value = resultTerminals;
       }
     }
@@ -344,7 +347,22 @@ class PickupPage extends HookWidget {
                                     ],
                                   ),
                                 ),
-                                PickupListView(terminals: terminals.value)
+                                isLoading.value == true
+                                    ? const Expanded(
+                                        child: Center(
+                                          child: CircularProgressIndicator(
+                                            color: AppColors.mainColor,
+                                          ),
+                                        ),
+                                      )
+                                    : terminals.value.isNotEmpty
+                                        ? PickupListView(
+                                            terminals: terminals.value)
+                                        : Expanded(
+                                            child: Center(
+                                            child:
+                                                Text(tr("nearBranchNotFound")),
+                                          ))
                               ],
                             ),
                           ),
