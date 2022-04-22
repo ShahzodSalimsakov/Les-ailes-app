@@ -62,6 +62,7 @@ dependencies:
   intl: ^0.17.0
   maps_launcher: ^2.0.1
   location: ^4.3.0
+  map_launcher: ^2.2.1+2
 
 dev_dependencies:
   flutter_test:

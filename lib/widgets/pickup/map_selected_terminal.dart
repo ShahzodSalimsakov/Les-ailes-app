@@ -3,16 +3,18 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/utils/colors.dart';
+import 'package:les_ailes/widgets/pickup/map_selection.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../../models/temp_terminals.dart';
 
 class PickupMapSelectedTerminal extends HookWidget {
+  const PickupMapSelectedTerminal({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var locale = context.locale.toString();
@@ -97,7 +99,7 @@ class PickupMapSelectedTerminal extends HookWidget {
                                       : const SizedBox(
                                           height: 0,
                                         )),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20,
                               ),
                               SizedBox(
@@ -106,15 +108,15 @@ class PickupMapSelectedTerminal extends HookWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    FaIcon(FontAwesomeIcons.clock),
-                                    SizedBox(
+                                    const FaIcon(FontAwesomeIcons.clock),
+                                    const SizedBox(
                                       width: 5,
                                     ),
                                     n.NikuText(
                                       tr('pickup.scheduleLabel'),
                                       style: n.NikuTextStyle(fontSize: 20),
                                     ),
-                                    Spacer(),
+                                    const Spacer(),
                                     n.NikuText(
                                       tr('pickup.workScheduleNumbers',
                                           namedArgs: {
@@ -128,26 +130,12 @@ class PickupMapSelectedTerminal extends HookWidget {
                                   ],
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 30,
                               ),
-                              n.NikuButton(Row(
-                                children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.route,
-                                    color: AppColors.plum,
-                                  ),
-                                  SizedBox(width: 15,),
-                                  n.NikuText(
-                                    tr('pickup.showRoute'),
-                                    style: n.NikuTextStyle(
-                                        color: AppColors.plum, fontSize: 20),
-                                  )
-                                ],
-                              ))
-                                ..onPressed = () {
-                                  MapsLauncher.launchCoordinates(double.parse(terminal.latitude!), double.parse(terminal.longitude!));
-                                }
+                              MapSelection(
+                                  latitude: double.parse(terminal.latitude!),
+                                  longitude: double.parse(terminal.longitude!), desc: address)
                             ],
                           ),
                         ),
