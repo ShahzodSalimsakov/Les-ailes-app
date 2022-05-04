@@ -137,5 +137,7 @@
   "leaveAReview" : "Sharh qoldiring",
   "send": "Yuborish",
   "reviewSended": "Sharh yuborildi",
-  "selectFirst": "Avval tanlang"
+  "selectFirst": "Avval tanlang",
+  "nearest_terminal_not_found": "Sizga eng yaqin filial topilmadi",
+  "nearest_terminals_is_closed": "Sizga eng yaqin filial yopiq"
 }

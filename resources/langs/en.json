@@ -143,5 +143,7 @@
   "leaveAReview" : "Leave a review",
   "send": "Send",
   "reviewSended": "Review sended",
-  "selectFirst": "Select first"
+  "selectFirst": "Select first",
+  "nearest_terminal_not_found": "The branch nearest to you has not been found",
+  "nearest_terminals_is_closed": "The branch closest to you is closed"
 }
