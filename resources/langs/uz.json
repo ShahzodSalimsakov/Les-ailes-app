@@ -130,5 +130,7 @@
   "additionalPhoneNumber": "Qo'shimcha telefon raqami",
   "commentToOrder": "Buyurtmaga sharh bering",
   "comment": "Sharh",
-  "nearBranchNotFound": "Sizga eng yaqin filial topilmadi"
+  "nearBranchNotFound": "Sizga eng yaqin filial topilmadi",
+  "nearest_terminal_not_found": "Sizga eng yaqin filial topilmadi",
+  "nearest_terminals_is_closed": "Sizga eng yaqin filial yopiq"
 }

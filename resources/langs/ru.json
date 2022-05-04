@@ -130,5 +130,7 @@
   "additionalPhoneNumber": "Дополнительный номер телефона",
   "commentToOrder": "Комментарий к заказу",
   "comment": "Комментарий",
-  "nearBranchNotFound": "Ближайший к Вам филиал не найден"
+  "nearBranchNotFound": "Ближайший к Вам филиал не найден",
+  "nearest_terminal_not_found": "Ближайший к Вам филиал не найден",
+  "nearest_terminals_is_closed": "Ближайший к Вам филиал закрыт"
 }
