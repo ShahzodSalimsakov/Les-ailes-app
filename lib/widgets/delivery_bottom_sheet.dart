@@ -36,6 +36,8 @@ class DeliveryBottomSheet extends HookWidget {
     DeliveryLocationData? deliveryLocationData =
         deliveryLocationBox.get('deliveryLocationData');
 
+    var notFoundText = useState<String>('nearest_terminal_not_found');
+
     Future<void> getPointData() async {
       if (currentPoint != null) {
         Map<String, String> requestHeaders = {
@@ -62,12 +64,15 @@ class DeliveryBottomSheet extends HookWidget {
                     ['items']
                 .map((m) => Terminals.fromJson(m))
                 .toList());
-
+            notFoundText.value = json['data']['errorMessage'];
             if (terminal.isNotEmpty) {
               currentTerminal.value = terminal[0];
+            } else {
+              currentTerminal.value = null;
             }
           } else {
             currentTerminal.value = null;
+            notFoundText.value = 'nearest_terminal_not_found';
           }
         }
       }
@@ -94,7 +99,7 @@ class DeliveryBottomSheet extends HookWidget {
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: n.NikuText(
                       currentTerminal.value == null
-                          ? tr('deliveryBottomSheet.addressNotDeliverable')
+                          ? tr(notFoundText.value)
                           : geoData.value?.title,
                       style: n.NikuTextStyle(color: Colors.grey, fontSize: 18),
                     )),
