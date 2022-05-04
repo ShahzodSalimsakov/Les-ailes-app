@@ -5,6 +5,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -95,6 +96,9 @@ class OrderDetail extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final order = useState<Order?>(null);
+    final product = useState(0.0);
+    final equipment = useState(0.0);
+    final delivery = useState(0.0);
     const String toLaunch = 'https://t.me/lesaileshelpbot';
 
     Future<void> loadOrder() async {
@@ -464,6 +468,140 @@ class OrderDetail extends HookWidget {
                               },
                               itemCount:
                                   order.value!.basket?.lines?.length ?? 0)
+                        ],
+                      ),
+                    ),
+                    Container(
+                      // margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(26)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 7,
+                            offset: const Offset(
+                                0, 3), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 16),
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 15),
+                      child: Column(
+                        children: [
+                          Align(
+                            heightFactor: 2,
+                            alignment: Alignment.topLeft,
+                            child: Text(tr("leaveAReview"),
+                                style: const TextStyle(fontSize: 20)),
+                          ),
+                          Text(tr("product"),
+                              style: const TextStyle(fontSize: 18)),
+                          RatingBar.builder(
+                            initialRating: 0,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: AppColors.mainColor,
+                            ),
+                            onRatingUpdate: (rating) {
+                              product.value = rating;
+                            },
+                          ),
+                          Text(tr("equipment"),
+                              style: const TextStyle(fontSize: 18)),
+                          RatingBar.builder(
+                            initialRating: 0,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: AppColors.mainColor,
+                            ),
+                            onRatingUpdate: (rating) {
+                              equipment.value = rating;
+                            },
+                          ),
+                          Text(tr("delivery"),
+                              style: const TextStyle(fontSize: 18)),
+                          RatingBar.builder(
+                            initialRating: 0,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: false,
+                            itemCount: 5,
+                            itemPadding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            itemBuilder: (context, _) => const Icon(
+                              Icons.star,
+                              color: AppColors.mainColor,
+                            ),
+                            onRatingUpdate: (rating) {
+                              delivery.value = rating;
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              print(delivery);
+                              if (product.value == 0.0 ||
+                                  equipment.value == 0.0 ||
+                                  delivery.value == 0.0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(tr("selectFirst"))));
+                              } else {
+                                Map<String, String> requestHeaders = {
+                                  'Content-type': 'application/json',
+                                  'Accept': 'application/json',
+                                };
+                                var url = Uri.https('crm.choparpizza.uz',
+                                    '/rest/1/5boca3dtup3vevqk/new.review.neutral');
+                                var response = await http.post(url,
+                                    headers: requestHeaders,
+                                    body: jsonEncode({
+                                      "phone": order.value!.billingPhone,
+                                      "order_id": order.value!.id,
+                                      "project": "les",
+                                      "product": product.value,
+                                      "service": equipment.value,
+                                      "courier": delivery.value
+                                    }));
+                                if (response.statusCode == 200) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(tr("reviewSended"))));
+                                }
+                              }
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 73, vertical: 20),
+                                decoration: const BoxDecoration(
+                                  color: AppColors.grey,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                ),
+                                child: Text(
+                                  tr('send'),
+                                  style: const TextStyle(fontSize: 20),
+                                )),
+                          ),
                         ],
                       ),
                     ),

@@ -136,5 +136,12 @@
   "wrongNumber": "Wrong number",
   "enterYourName": "Enter your name",
   "yourName": "Your name",
-  "nearBranchNotFound": "No branch near you found"
+  "nearBranchNotFound": "No branch near you found",
+  "product": "Product",
+  "equipment": "Equipment",
+  "delivery": "Delivery",
+  "leaveAReview" : "Leave a review",
+  "send": "Send",
+  "reviewSended": "Review sended",
+  "selectFirst": "Select first"
 }

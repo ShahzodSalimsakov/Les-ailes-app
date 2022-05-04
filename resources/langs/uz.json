@@ -130,5 +130,12 @@
   "additionalPhoneNumber": "Qo'shimcha telefon raqami",
   "commentToOrder": "Buyurtmaga sharh bering",
   "comment": "Sharh",
-  "nearBranchNotFound": "Sizga eng yaqin filial topilmadi"
+  "nearBranchNotFound": "Sizga eng yaqin filial topilmadi",
+  "product": "Mahsulot",
+  "equipment": "To'plam",
+  "delivery": "Yetkazish xizmati",
+  "leaveAReview" : "Sharh qoldiring",
+  "send": "Yuborish",
+  "reviewSended": "Sharh yuborildi",
+  "selectFirst": "Avval tanlang"
 }

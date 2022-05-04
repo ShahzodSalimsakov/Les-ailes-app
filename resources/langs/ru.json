@@ -130,5 +130,12 @@
   "additionalPhoneNumber": "Дополнительный номер телефона",
   "commentToOrder": "Комментарий к заказу",
   "comment": "Комментарий",
-  "nearBranchNotFound": "Ближайший к Вам филиал не найден"
+  "nearBranchNotFound": "Ближайший к Вам филиал не найден",
+  "product": "Продукт",
+  "equipment": "Комплектация",
+  "delivery": "Доставка",
+  "leaveAReview" : "Оставьте отзыв",
+  "send": "Отправить",
+  "reviewSended": "Отзыв отправлен",
+  "selectFirst": "Сначало выберите"
 }
