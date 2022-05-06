@@ -536,8 +536,10 @@ class OrderDetail extends HookWidget {
                               equipment.value = rating;
                             },
                           ),
+                          order.value?.deliveryType == 'deliver' ?
                           Text(tr("delivery"),
-                              style: const TextStyle(fontSize: 18)),
+                              style: const TextStyle(fontSize: 18)) : SizedBox(),
+                          order.value?.deliveryType == 'deliver' ?
                           RatingBar.builder(
                             initialRating: 0,
                             minRating: 1,
@@ -553,16 +555,14 @@ class OrderDetail extends HookWidget {
                             onRatingUpdate: (rating) {
                               delivery.value = rating;
                             },
-                          ),
+                          ): SizedBox(),
                           const SizedBox(
                             height: 10,
                           ),
                           GestureDetector(
                             onTap: () async {
-                              print(delivery);
                               if (product.value == 0.0 ||
-                                  equipment.value == 0.0 ||
-                                  delivery.value == 0.0) {
+                                  equipment.value == 0.0) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text(tr("selectFirst"))));
                               } else {

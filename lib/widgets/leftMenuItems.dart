@@ -7,10 +7,10 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:les_ailes/utils/colors.dart';
+import 'package:les_ailes/widgets/cashback.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
-
 
 import '../models/basket.dart';
 import '../models/user.dart';
@@ -38,7 +38,6 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
   }
 
   logout() async {
-
     Box<User> transaction = Hive.box<User>('user');
     User currentUser = transaction.get('user')!;
     Map<String, String> requestHeaders = {
@@ -46,19 +45,16 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${currentUser.userToken}'
     };
-    var url =
-    Uri.https('api.lesailes.uz', '/api/logout');
+    var url = Uri.https('api.lesailes.uz', '/api/logout');
     var formData = {};
     var response = await http.post(url,
-        headers: requestHeaders,
-        body: jsonEncode(formData));
+        headers: requestHeaders, body: jsonEncode(formData));
     if (response.statusCode == 200) {
       var json = jsonDecode(response.body);
     }
     transaction.delete('user');
     Box<Basket> basketBox = Hive.box<Basket>('basket');
     basketBox.delete('basket');
-
   }
 
   @override
@@ -74,12 +70,21 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(height: 60,),
-                ListTile(
-                  title: Text(currentUser != null ? currentUser.name : '', style: const TextStyle(fontSize: 26),),
-                  subtitle: Text(currentUser != null ? currentUser.phone : '', style: const TextStyle(fontSize: 16),),
+                const SizedBox(
+                  height: 60,
                 ),
-                const Spacer(flex: 1),
+                ListTile(
+                  title: Text(
+                    currentUser != null ? currentUser.name : '',
+                    style: const TextStyle(fontSize: 26),
+                  ),
+                  subtitle: Text(
+                    currentUser != null ? currentUser.phone : '',
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                Cashback(),
+                // const Spacer(flex: 1),
                 ListView(
                   shrinkWrap: true,
                   children: [
@@ -88,7 +93,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr("leftMenu.profilePage"),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -100,7 +106,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr('leftMenu.myOrders'),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -112,7 +119,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr('leftMenu.myAddresses'),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -124,7 +132,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr('leftMenu.settings'),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -132,11 +141,12 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       },
                     ),
                     ListTile(
-                      leading:
-                      SvgPicture.asset("images/about.svg", width: 24, height: 24),
+                      leading: SvgPicture.asset("images/about.svg",
+                          width: 24, height: 24),
                       title: Text(
                         tr("leftMenu.aboutUs"),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -145,9 +155,16 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     ),
                   ],
                 ),
-                SizedBox(width: double.infinity,child: n.NikuButton.elevated(Text(tr('signIn.logout')))..bg = AppColors.mainColor..color = Colors.white..mx = 20..rounded = 10..onPressed = () {
-                  logout();
-                }),
+                SizedBox(
+                    width: double.infinity,
+                    child: n.NikuButton.elevated(Text(tr('signIn.logout')))
+                      ..bg = AppColors.mainColor
+                      ..color = Colors.white
+                      ..mx = 20
+                      ..rounded = 10
+                      ..onPressed = () {
+                        logout();
+                      }),
                 const Spacer(flex: 1),
                 GestureDetector(
                   onTap: () => setState(() {
@@ -155,8 +172,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                   }),
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    margin:
-                    const EdgeInsets.only(bottom: 50, left: 0, right: 30, top: 0),
+                    margin: const EdgeInsets.only(
+                        bottom: 50, left: 0, right: 30, top: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.shade200,
@@ -165,7 +182,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     width: 233,
                     child: Row(
                       children: [
-                        SvgPicture.asset('images/chat.svg', width: 50, height: 50),
+                        SvgPicture.asset('images/chat.svg',
+                            width: 50, height: 50),
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 0, left: 10, bottom: 0, top: 0),
@@ -208,7 +226,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr("leftMenu.signIn"),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -220,7 +239,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                           width: 24, height: 24),
                       title: Text(
                         tr('leftMenu.settings'),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -228,11 +248,12 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       },
                     ),
                     ListTile(
-                      leading:
-                      SvgPicture.asset("images/about.svg", width: 24, height: 24),
+                      leading: SvgPicture.asset("images/about.svg",
+                          width: 24, height: 24),
                       title: Text(
                         tr("leftMenu.aboutUs"),
-                        style: const TextStyle(color: Colors.black, fontSize: 20),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
@@ -248,8 +269,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                   }),
                   child: Container(
                     padding: const EdgeInsets.all(10),
-                    margin:
-                    const EdgeInsets.only(bottom: 50, left: 0, right: 30, top: 0),
+                    margin: const EdgeInsets.only(
+                        bottom: 50, left: 0, right: 30, top: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.shade200,
@@ -258,7 +279,8 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     width: 233,
                     child: Row(
                       children: [
-                        SvgPicture.asset('images/chat.svg', width: 50, height: 50),
+                        SvgPicture.asset('images/chat.svg',
+                            width: 50, height: 50),
                         Padding(
                           padding: const EdgeInsets.only(
                               right: 0, left: 10, bottom: 0, top: 0),
