@@ -147,5 +147,6 @@
   "nearest_terminal_not_found": "The branch nearest to you has not been found",
   "nearest_terminals_is_closed": "The branch closest to you is closed",
   "youHave": "You have",
-  "sum": "sum"
+  "sum": "sum",
+  "reviewSaved": "Your review has been successfully accepted"
 }

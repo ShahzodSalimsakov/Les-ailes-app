@@ -141,5 +141,6 @@
   "nearest_terminal_not_found": "Ближайший к Вам филиал не найден",
   "nearest_terminals_is_closed": "Ближайший к Вам филиал закрыт",
   "youHave": "У Вас",
-  "sum": "сум"
+  "sum": "сум",
+  "reviewSaved": "Ваш отзыв успешно принят"
 }
