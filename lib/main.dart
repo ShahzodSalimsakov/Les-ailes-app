@@ -20,6 +20,7 @@ import 'models/delivery_time.dart';
 import 'models/delivery_type.dart';
 import 'models/pay_cash.dart';
 import 'models/pay_type.dart';
+import 'models/registered_review.dart';
 import 'models/stock.dart';
 import 'models/terminals.dart';
 import 'models/user.dart';
@@ -51,6 +52,7 @@ void main() async {
   Hive.registerAdapter(PayCashAdapter());
   Hive.registerAdapter(StockAdapter());
   Hive.registerAdapter(AdditionalPhoneNumberAdapter());
+  Hive.registerAdapter(RegisteredReviewAdapter());
   // Hive.registerAdapter(HomeIsScrolledAdapter());
   // Hive.registerAdapter(HomeScrollPositionAdapter());
 
@@ -70,6 +72,7 @@ void main() async {
   await Hive.openBox<PayCash>('payCash');
   await Hive.openBox<Stock>('stock');
   await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
+  await Hive.openBox<RegisteredReview>('registeredReview');
   // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
   // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 

@@ -11,10 +11,11 @@
 // ignore_for_file: type=lint
 
 import 'package:auto_route/auto_route.dart' as _i13;
+import 'package:flutter/cupertino.dart' as _i18;
 import 'package:flutter/material.dart' as _i17;
 
 import '../home_page.dart' as _i1;
-import '../models/yandex_geo_data.dart' as _i18;
+import '../models/yandex_geo_data.dart' as _i19;
 import '../pages/aboutUs.dart' as _i4;
 import '../pages/changeLang.dart' as _i6;
 import '../pages/delivery.dart' as _i10;
@@ -148,7 +149,7 @@ class HomePage extends _i13.PageRouteInfo<void> {
 /// generated route for
 /// [_i2.SignInPage]
 class SignInPage extends _i13.PageRouteInfo<SignInPageArgs> {
-  SignInPage({_i17.Key? key})
+  SignInPage({_i18.Key? key})
       : super(SignInPage.name, path: 'signIn', args: SignInPageArgs(key: key));
 
   static const String name = 'SignInPage';
@@ -157,7 +158,7 @@ class SignInPage extends _i13.PageRouteInfo<SignInPageArgs> {
 class SignInPageArgs {
   const SignInPageArgs({this.key});
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -193,7 +194,7 @@ class NotificationsPage extends _i13.PageRouteInfo<void> {
 /// generated route for
 /// [_i6.ChangeLang]
 class ChangeLang extends _i13.PageRouteInfo<ChangeLangArgs> {
-  ChangeLang({_i17.Key? key})
+  ChangeLang({_i18.Key? key})
       : super(ChangeLang.name,
             path: 'changeLang', args: ChangeLangArgs(key: key));
 
@@ -203,7 +204,7 @@ class ChangeLang extends _i13.PageRouteInfo<ChangeLangArgs> {
 class ChangeLangArgs {
   const ChangeLangArgs({this.key});
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   @override
   String toString() {
@@ -238,7 +239,7 @@ class Franchise extends _i13.PageRouteInfo<void> {
 /// generated route for
 /// [_i10.DeliveryPage]
 class Delivery extends _i13.PageRouteInfo<DeliveryArgs> {
-  Delivery({_i17.Key? key, _i18.YandexGeoData? geoData})
+  Delivery({_i18.Key? key, _i19.YandexGeoData? geoData})
       : super(Delivery.name,
             path: 'delivery', args: DeliveryArgs(key: key, geoData: geoData));
 
@@ -248,9 +249,9 @@ class Delivery extends _i13.PageRouteInfo<DeliveryArgs> {
 class DeliveryArgs {
   const DeliveryArgs({this.key, this.geoData});
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
-  final _i18.YandexGeoData? geoData;
+  final _i19.YandexGeoData? geoData;
 
   @override
   String toString() {
@@ -302,7 +303,7 @@ class MyOrders extends _i13.PageRouteInfo<void> {
 /// generated route for
 /// [_i16.OrderDetail]
 class OrderDetail extends _i13.PageRouteInfo<OrderDetailArgs> {
-  OrderDetail({_i17.Key? key, required String orderId})
+  OrderDetail({_i18.Key? key, required String orderId})
       : super(OrderDetail.name,
             path: ':orderId',
             args: OrderDetailArgs(key: key, orderId: orderId),
@@ -314,7 +315,7 @@ class OrderDetail extends _i13.PageRouteInfo<OrderDetailArgs> {
 class OrderDetailArgs {
   const OrderDetailArgs({this.key, required this.orderId});
 
-  final _i17.Key? key;
+  final _i18.Key? key;
 
   final String orderId;
 
