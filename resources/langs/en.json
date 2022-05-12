@@ -148,5 +148,6 @@
   "nearest_terminals_is_closed": "The branch closest to you is closed",
   "youHave": "You have",
   "sum": "sum",
-  "reviewSaved": "Your review has been successfully accepted"
+  "reviewSaved": "Your review has been successfully accepted",
+  "addressName": "Address name"
 }

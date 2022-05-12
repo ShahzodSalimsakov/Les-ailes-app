@@ -432,6 +432,7 @@ class OrderDetail extends HookWidget {
                                         height: 10,
                                       ),
                                       Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                               formatCurrency.format(
@@ -455,6 +456,21 @@ class OrderDetail extends HookWidget {
                                             style: const TextStyle(
                                                 color: AppColors.green),
                                           ),
+                                          const SizedBox(width: 10,),
+                                          Text(
+                                            double.parse(order.value!.basket!
+                                                        .lines![index].total) >
+                                                    0
+                                                ? (double.parse(order
+                                                            .value!
+                                                            .basket!
+                                                            .lines![index]
+                                                            .total) *
+                                lineItem.quantity).toStringAsFixed(0)
+                                                : '',
+                                            style: const TextStyle(
+                                                color: AppColors.green),
+                                          )
                                         ],
                                       )
                                     ],
@@ -605,10 +621,12 @@ class OrderDetail extends HookWidget {
                                               .showSnackBar(SnackBar(
                                                   content: Text(
                                                       tr("reviewSended"))));
-                                          RegisteredReview newRegisteredView = new RegisteredReview();
-                                          newRegisteredView.orderId = order.value!.id;
-                                          box.put(order.value!.id, newRegisteredView);
-
+                                          RegisteredReview newRegisteredView =
+                                              new RegisteredReview();
+                                          newRegisteredView.orderId =
+                                              order.value!.id;
+                                          box.put(order.value!.id,
+                                              newRegisteredView);
                                         }
                                       }
                                     },

@@ -825,23 +825,23 @@ class BasketWidget extends HookWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
-                                // Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         tr("deliveryOrPickup.delivery") + ':',
-                                //         style: TextStyle(
-                                //             fontSize: 20,
-                                //             color: Colors.grey.shade400),
-                                //       ),
-                                //       Text(
-                                //         '12 000',
-                                //         style: TextStyle(
-                                //             fontSize: 20,
-                                //             color: Colors.grey.shade400),
-                                //       )
-                                //     ]),
+                                Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        tr("deliveryOrPickup.delivery") + ':',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.grey.shade400),
+                                      ),
+                                      Text(
+                                        '12 000',
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.grey.shade400),
+                                      )
+                                    ]),
                                 Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,

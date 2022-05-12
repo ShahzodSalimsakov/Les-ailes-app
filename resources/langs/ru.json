@@ -125,7 +125,7 @@
   },
   "house": "Дом",
   "flat": "Квартира",
-  "entrance": "Вход",
+  "entrance": "Подъезд",
   "intercom": "Домофон",
   "additionalPhoneNumber": "Дополнительный номер телефона",
   "commentToOrder": "Комментарий к заказу",
@@ -142,5 +142,6 @@
   "nearest_terminals_is_closed": "Ближайший к Вам филиал закрыт",
   "youHave": "У Вас",
   "sum": "сум",
-  "reviewSaved": "Ваш отзыв успешно принят"
+  "reviewSaved": "Ваш отзыв успешно принят",
+  "addressName": "Название адреса"
 }

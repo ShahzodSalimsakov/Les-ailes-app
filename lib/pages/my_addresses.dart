@@ -101,83 +101,81 @@ class MyAddresses extends HookWidget {
                                     locale: 'ru_RU',
                                     symbol: 'сум',
                                     decimalDigits: 0);
-                                return Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 20),
-                                    // margin: const EdgeInsets.symmetric(
-                                    //     vertical: 10, horizontal: 15),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.bookmark_border_outlined),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.7,
-                                              child: Text(
-                                                  address.value[index]
-                                                          .address ??
-                                                      '',
-                                                  style: const TextStyle(
-                                                      fontSize: 18)),
-                                            ),
-                                            const SizedBox(
-                                              height: 6,
-                                            ),
-                                            Text(
-                                                address.value[index].label ??
+                                        address.value[index].label != null
+                                            ? Text(
+                                                address.value[index].label
+                                                        ?.toUpperCase() ??
                                                     '',
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color:
-                                                        Colors.grey.shade400)),
-                                          ],
+                                                style: const TextStyle(
+                                                    fontSize: 18))
+                                            : const SizedBox(),
+                                        SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7,
+                                          child: Text(
+                                              address.value[index].address ??
+                                                  '',
+                                              style: address
+                                                          .value[index].label !=
+                                                      null
+                                                  ? TextStyle(
+                                                      fontSize: 14,
+                                                      color:
+                                                          Colors.grey.shade400)
+                                                  : const TextStyle(
+                                                      fontSize: 18)),
                                         ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            print('deleted');
-                                            Future<void> deleteAddress() async {
-                                              Box box = Hive.box<User>('user');
-                                              User? currentUser =
-                                                  box.get('user');
-                                              if (currentUser != null) {
-                                                Map<String, String>
-                                                    requestHeaders = {
-                                                  'Content-type':
-                                                      'application/json',
-                                                  'Accept': 'application/json',
-                                                  'Authorization':
-                                                      'Bearer ${currentUser.userToken}'
-                                                };
-                                                var url = Uri.https(
-                                                    'api.lesailes.uz',
-                                                    '/api/address/${address.value[index].id}');
-                                                var response = await http
-                                                    .delete(url,
-                                                        headers:
-                                                            requestHeaders);
-                                                if (response.statusCode ==
-                                                    200) {
-                                                  getMyAddresses();
-                                                }
-                                              }
-                                            }
-
-                                            deleteAddress();
-                                          },
-                                          child: Image.asset(
-                                            'images/delete.png',
-                                            height: 25,
-                                            width: 30,
-                                          ),
-                                        )
                                       ],
-                                    ));
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        print('deleted');
+                                        Future<void> deleteAddress() async {
+                                          Box box = Hive.box<User>('user');
+                                          User? currentUser = box.get('user');
+                                          if (currentUser != null) {
+                                            Map<String, String> requestHeaders =
+                                                {
+                                              'Content-type':
+                                                  'application/json',
+                                              'Accept': 'application/json',
+                                              'Authorization':
+                                                  'Bearer ${currentUser.userToken}'
+                                            };
+                                            var url = Uri.https(
+                                                'api.lesailes.uz',
+                                                '/api/address/${address.value[index].id}');
+                                            var response = await http.delete(
+                                                url,
+                                                headers: requestHeaders);
+                                            if (response.statusCode == 200) {
+                                              getMyAddresses();
+                                            }
+                                          }
+                                        }
+
+                                        deleteAddress();
+                                      },
+                                      child: Image.asset(
+                                        'images/delete.png',
+                                        height: 25,
+                                        width: 30,
+                                      ),
+                                    )
+                                  ],
+                                );
                               }),
                           // Padding(
                           //   padding: const EdgeInsets.symmetric(vertical: 28),

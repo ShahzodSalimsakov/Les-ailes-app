@@ -13,6 +13,7 @@ import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
 import '../models/stock.dart';
 import '../models/terminals.dart';
+import '../models/user.dart';
 import '../models/yandex_geo_data.dart';
 import '../utils/colors.dart';
 
@@ -39,6 +40,7 @@ class DeliverFieldsModal extends HookWidget {
     final flatText = useState<String>('');
     final entranceText = useState<String>('');
     final doorCodeText = useState<String>('');
+    final addressLabel = useState<String>('');
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -139,6 +141,18 @@ class DeliverFieldsModal extends HookWidget {
                             fillColor: Colors.grey.shade100),
                         initialValue: doorCodeText.value,
                       ),
+                      FormBuilderTextField(
+                        name: 'addressLabel',
+                        // keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                            labelText: tr("addressName"),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                                borderSide: BorderSide.none),
+                            filled: true,
+                            fillColor: Colors.grey.shade100),
+                        initialValue: addressLabel.value,
+                      ),
                     ]),
               ),
             ),
@@ -162,6 +176,7 @@ class DeliverFieldsModal extends HookWidget {
                       flat: formValue['flat'] ?? '',
                       entrance: formValue['entrance'] ?? '',
                       doorCode: formValue['doorCode'] ?? '',
+                      label: formValue['label'] ?? '',
                       lat: double.parse(geoData.coordinates.lat),
                       lon: double.parse(geoData.coordinates.long),
                       address: geoData.formatted ?? '');
@@ -234,6 +249,38 @@ class DeliverFieldsModal extends HookWidget {
                     Navigator.of(context)
                       ..pop()
                       ..pop();
+                  }
+
+                  Box box = Hive.box<User>('user');
+                  User currentUser = box.get('user');
+                  if (currentUser != null) {
+                    Map<String, String> requestHeaders = {
+                      'Content-type': 'application/json',
+                      'Accept': 'application/json',
+                      'Authorization': 'Bearer ${currentUser.userToken}'
+                    };
+                    var url = Uri.https('api.lesailes.uz', '/api/address/new');
+                    var formData = {
+                      'lat': geoData.coordinates.lat,
+                      'lon': geoData.coordinates.long,
+                      "label": formValue['addressLabel'] ?? '',
+                      "addressId": '',
+                      "house": formValue['house'] ?? '',
+                      "flat": formValue['flat'] ?? '',
+                      "entrance": formValue['entrance'] ?? '',
+                      "door_code": formValue['doorCode'] ?? '',
+                      "address": geoData.formatted ?? '',
+                      "comments": "",
+                      "floor": ''
+                    };
+                    var response = await http.post(url,
+                        headers: requestHeaders, body: jsonEncode(formData));
+                    if (response.statusCode == 200) {
+                      var json = jsonDecode(response.body);
+                      print(json);
+                    } else {
+                      print(response.body);
+                    }
                   }
                 },
             ),

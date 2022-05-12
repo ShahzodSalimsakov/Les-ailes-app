@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -29,6 +30,7 @@ class AddressSearchModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final currentCity = Hive.box<City>('currentCity').get('currentCity');
     final suggestedData =
     useState<List<YandexGeoData>>(List<YandexGeoData>.empty());
@@ -98,7 +100,91 @@ class AddressSearchModal extends HookWidget {
                         latitude: double.parse(address.lat!),
                         longitude: double.parse(address.lon!),
                       ));
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
+                      DeliveryLocationData deliveryData = DeliveryLocationData(
+                          house: address.house ?? '',
+                          flat: address.flat ?? '',
+                          entrance: address.entrance ?? '',
+                          doorCode: address.doorCode ?? '',
+                          label: address.label ?? '',
+                          lat: double.parse(address.lat!),
+                          lon: double.parse(address.lon!),
+                          address: address.address ?? ''
+                    );
+                      // geoData.addressItems?.forEach((item) async {
+                      //   if (item.kind == 'province' || item.kind == 'area') {
+                      //     Map<String, String> requestHeaders = {
+                      //       'Content-type': 'application/json',
+                      //       'Accept': 'application/json'
+                      //     };
+                      //     var url =
+                      //     Uri.https('api.lesailes.uz', '/api/cities/public');
+                      //     var response =
+                      //     await http.get(url, headers: requestHeaders);
+                      //     if (response.statusCode == 200) {
+                      //       var json = jsonDecode(response.body);
+                      //       List<City> cityList = List<City>.from(
+                      //           json['data'].map((m) => City.fromJson(m)).toList());
+                      //       for (var element in cityList) {
+                      //         if (element.name == item.name) {
+                      //           Hive.box<City>('currentCity')
+                      //               .put('currentCity', element);
+                      //         }
+                      //       }
+                      //     }
+                      //   }
+                      // });
+                      final Box<DeliveryLocationData> deliveryLocationBox =
+                      Hive.box<DeliveryLocationData>('deliveryLocationData');
+                      deliveryLocationBox.put('deliveryLocationData', deliveryData);
+                      Map<String, String> requestHeaders = {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json'
+                      };
+
+                      var url = Uri.https(
+                          'api.lesailes.uz', 'api/terminals/find_nearest', {
+                        'lat': address.lat,
+                        'lon': address.lon
+                      });
+                      var response = await http.get(url, headers: requestHeaders);
+                      if (response.statusCode == 200) {
+                        var json = jsonDecode(response.body);
+                        List<Terminals> terminal = List<Terminals>.from(json['data']
+                        ['items']
+                            .map((m) => Terminals.fromJson(m))
+                            .toList());
+                        Box<Terminals> transaction =
+                        Hive.box<Terminals>('currentTerminal');
+                        transaction.put('currentTerminal', terminal[0]);
+
+                        var stockUrl = Uri.https(
+                            'api.lesailes.uz',
+                            'api/terminals/get_stock',
+                            {'terminal_id': terminal[0].id.toString()});
+                        var stockResponse =
+                        await http.get(stockUrl, headers: requestHeaders);
+                        if (stockResponse.statusCode == 200) {
+                          var json = jsonDecode(stockResponse.body);
+                          Stock newStockData = Stock(
+                              prodIds: List<int>.from(json[
+                              'data']) /* json['data'].map((id) => id as int).toList()*/);
+                          Box<Stock> box = Hive.box<Stock>('stock');
+                          box.put('stock', newStockData);
+                        }
+
+                        Box<DeliveryType> box =
+                        Hive.box<DeliveryType>('deliveryType');
+                        DeliveryType newDeliveryType = DeliveryType();
+                        newDeliveryType.value = DeliveryTypeEnum.deliver;
+                        box.put('deliveryType', newDeliveryType);
+
+                        Navigator.of(context)
+                          ..pop()
+                          ..pop();
+                      } else {
+                        print(response.body);
+                      }
                       // DeliveryLocationData deliveryData = DeliveryLocationData(
                       //     house: address.house ?? '',
                       //     flat: address.flat ?? '',
@@ -142,7 +228,7 @@ class AddressSearchModal extends HookWidget {
                       //     transaction.put('currentTerminal', terminal[0]);
                       //
                       //     var stockUrl = Uri.https(
-                      //         'api.choparpizza.uz',
+                      //         'api.lesailes.uz',
                       //         'api/terminals/get_stock',
                       //         {'terminal_id': terminal[0].id.toString()});
                       //     var stockResponse =
@@ -161,7 +247,34 @@ class AddressSearchModal extends HookWidget {
                       // }
                     }
                   },
-                  title: Text(myAddresses.value[index].address ?? ''),
+                  title: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.bookmark_border_outlined),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            myAddresses.value[index].label != null
+                                ? Text(
+                                myAddresses.value[index].label
+                                    ?.toUpperCase() ??
+                                    '',
+                                style: const TextStyle())
+                                : const SizedBox(height: 3),
+                            Text(myAddresses.value[index].address ?? '',
+                                style: TextStyle(
+                                    color:
+                                    myAddresses.value[index].label != null
+                                        ? Colors.grey
+                                        : Colors.black)),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
               separatorBuilder: (context, index) {

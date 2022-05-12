@@ -55,97 +55,103 @@ class MyOrders extends HookWidget {
           elevation: 0,
         ),
         body: SafeArea(
-            child: ListView.builder(
-                itemCount: orders.value.length,
-                itemBuilder: (BuildContext context, int index) {
-                  DateTime createdAt =
-                      DateTime.parse(orders.value[index].createdAt ?? '')
-                          .toLocal();
-                  DateFormat createdAtFormat = DateFormat('d MMMM. H:m', 'ru');
-                  Order order = orders.value[index];
+            child: orders.value.isNotEmpty
+                ? ListView.builder(
+                    itemCount: orders.value.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      DateTime createdAt =
+                          DateTime.parse(orders.value[index].createdAt ?? '')
+                              .toLocal();
+                      DateFormat createdAtFormat =
+                          DateFormat('d MMMM. H:m', 'ru');
+                      Order order = orders.value[index];
 
-                  final hashids = HashIds(
-                    salt: 'order',
-                    minHashLength: 15,
-                    alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
-                  );
+                      final hashids = HashIds(
+                        salt: 'order',
+                        minHashLength: 15,
+                        alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+                      );
 
-                  final formatCurrency = NumberFormat.currency(
-                      locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-                  return GestureDetector(
-                    onTap: () {
-                      context.router
-                          .pushNamed('my_orders/${hashids.encode(order.id)}');
-                    },
-                    child: Container(
-                      // margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(26)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 7,
-                            offset: const Offset(
-                                0, 3), // changes position of shadow
-                          ),
-                        ],
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 15),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                '${tr("order")} № ${order.id}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 20),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    color: order.status == 'cancelled'
-                                        ? AppColors.mainColor
-                                        : AppColors.green),
-                                child: Text(tr(order.status),
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16,
-                                        color: Colors.white)),
-                              )
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 17,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(createdAtFormat.format(createdAt),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                      color: Colors.grey)),
-                              Text(
-                                  '${tr("total")} : ${formatCurrency.format(order.orderTotal / 100)}',
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 18,
-                                      color: Colors.grey))
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                })));
+                      final formatCurrency = NumberFormat.currency(
+                          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+                      return GestureDetector(
+                          onTap: () {
+                            context.router.pushNamed(
+                                'my_orders/${hashids.encode(order.id)}');
+                          },
+                          child: Container(
+                            // margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(26)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 7,
+                                  offset: const Offset(
+                                      0, 3), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 16),
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '${tr("order")} № ${order.id}',
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          color: order.status == 'cancelled'
+                                              ? AppColors.mainColor
+                                              : AppColors.green),
+                                      child: Text(tr(order.status),
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.white)),
+                                    )
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 17,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(createdAtFormat.format(createdAt),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                            color: Colors.grey)),
+                                    Text(
+                                        '${tr("total")} : ${formatCurrency.format(order.orderTotal / 100)}',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                            color: Colors.grey))
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ));
+                    })
+                : const Center(child: CircularProgressIndicator(color: AppColors.mainColor,))));
   }
 }

@@ -241,7 +241,7 @@ class _TerminalModalState extends State<TerminalsModal> {
                   'Accept': 'application/json'
                 };
                 var url = Uri.https(
-                    'api.choparpizza.uz', 'api/terminals/find_nearest', {
+                    'api.lesailes.uz', 'api/terminals/find_nearest', {
                   'lat': currentPosition.latitude.toString(),
                   'lon': currentPosition.longitude.toString()
                 });
