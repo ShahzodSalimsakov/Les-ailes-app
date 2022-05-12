@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.gr.dart';
@@ -53,6 +54,7 @@ void main() async {
   Hive.registerAdapter(StockAdapter());
   Hive.registerAdapter(AdditionalPhoneNumberAdapter());
   Hive.registerAdapter(RegisteredReviewAdapter());
+  Hive.registerAdapter(BasketItemQuantityAdapter());
   // Hive.registerAdapter(HomeIsScrolledAdapter());
   // Hive.registerAdapter(HomeScrollPositionAdapter());
 
@@ -73,6 +75,7 @@ void main() async {
   await Hive.openBox<Stock>('stock');
   await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
   await Hive.openBox<RegisteredReview>('registeredReview');
+  await Hive.openBox<BasketItemQuantity>('basketItemQuantity');
   // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
   // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 
