@@ -143,5 +143,7 @@
   "youHave": "У Вас",
   "sum": "сум",
   "reviewSaved": "Ваш отзыв успешно принят",
-  "addressName": "Название адреса"
+  "addressName": "Название адреса",
+  "takenAway": "Забрали",
+  "shippingAmount": "Сумма доставки"
 }

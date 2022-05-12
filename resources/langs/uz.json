@@ -143,5 +143,7 @@
   "youHave": "Sizda",
   "sum": "so'm",
   "reviewSaved": "Sizning sharhingiz muvaffaqiyatli qabul qilindi",
-  "addressName": "Manzil nomi"
+  "addressName": "Manzil nomi",
+  "takenAway": "Olib ketilgan",
+  "shippingAmount": "Yetkazib berish narxi"
 }

@@ -149,5 +149,7 @@
   "youHave": "You have",
   "sum": "sum",
   "reviewSaved": "Your review has been successfully accepted",
-  "addressName": "Address name"
+  "addressName": "Address name",
+  "takenAway": "Taken away",
+  "shippingAmount": "Shipping amount"
 }

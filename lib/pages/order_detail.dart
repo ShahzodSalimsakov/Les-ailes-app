@@ -102,6 +102,7 @@ class OrderDetail extends HookWidget {
     final equipment = useState(0.0);
     final delivery = useState(0.0);
     const String toLaunch = 'https://t.me/lesaileshelpbot';
+    final deliveryPrice = useState(0.0);
 
     Future<void> loadOrder() async {
       Box<User> transaction = Hive.box<User>('user');
@@ -115,12 +116,37 @@ class OrderDetail extends HookWidget {
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
-        order.value = Order.fromJson(json);
+        var localOrder = Order.fromJson(json);
+        order.value = localOrder;
+
+        if (localOrder.deliveryType == 'deliver' && localOrder.lat != null) {
+          print({
+            'lat': localOrder.lat.toString(),
+            'lon': localOrder.lon.toString(),
+            'terminal_id': localOrder.terminalId,
+            "total_price": localOrder.orderTotal / 100
+          });
+          var urlDeliveryPrice =
+              Uri.https('api.lesailes.uz', '/api/orders/calc_basket_delivery', {
+            "lat": localOrder.lat.toString(),
+            "lon": localOrder.lon.toString(),
+            "terminal_id": localOrder.terminalId.toString(),
+            "total_price": localOrder.orderTotal.toString()
+          });
+          var deliveryPriceResponse =
+              await http.get(urlDeliveryPrice, headers: requestHeaders);
+          if (deliveryPriceResponse.statusCode == 200) {
+            print(deliveryPriceResponse.body);
+            var json = jsonDecode(deliveryPriceResponse.body);
+            deliveryPrice.value = json['totalPrice'];
+          }
+        }
       }
     }
 
     useEffect(() {
       loadOrder();
+      return null;
     }, []);
 
     if (order.value == null) {
@@ -231,7 +257,11 @@ class OrderDetail extends HookWidget {
                                     color: order.value!.status == 'cancelled'
                                         ? AppColors.mainColor
                                         : AppColors.green),
-                                child: Text(tr(order.value!.status),
+                                child: Text(
+                                    tr(order.value?.deliveryType == 'pickup' &&
+                                            order.value?.status == 'done'
+                                        ? 'takenAway'
+                                        : order.value?.status ?? ''),
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
@@ -394,18 +424,6 @@ class OrderDetail extends HookWidget {
                           vertical: 10, horizontal: 15),
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ${formatCurrency.format(order.value!.orderTotal / 100)}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 20,
-                                  ))
-                            ],
-                          ),
-                          const SizedBox(height: 30),
                           ListView.separated(
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
@@ -432,7 +450,8 @@ class OrderDetail extends HookWidget {
                                         height: 10,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
                                               formatCurrency.format(
@@ -456,7 +475,9 @@ class OrderDetail extends HookWidget {
                                             style: const TextStyle(
                                                 color: AppColors.green),
                                           ),
-                                          const SizedBox(width: 10,),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
                                           Text(
                                             double.parse(order.value!.basket!
                                                         .lines![index].total) >
@@ -466,7 +487,8 @@ class OrderDetail extends HookWidget {
                                                             .basket!
                                                             .lines![index]
                                                             .total) *
-                                lineItem.quantity).toStringAsFixed(0)
+                                                        lineItem.quantity)
+                                                    .toStringAsFixed(0)
                                                 : '',
                                             style: const TextStyle(
                                                 color: AppColors.green),
@@ -485,7 +507,49 @@ class OrderDetail extends HookWidget {
                                 return const Divider();
                               },
                               itemCount:
-                                  order.value!.basket?.lines?.length ?? 0)
+                                  order.value!.basket?.lines?.length ?? 0),
+                          const SizedBox(height: 30),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ${formatCurrency.format(order.value!.orderTotal / 100)}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                  ))
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          order.value?.deliveryType == 'deliver'
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        '${tr('shippingAmount')} : ${formatCurrency.format((deliveryPrice.value))}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        ))
+                                  ],
+                                )
+                              : const SizedBox(),
+                          const SizedBox(height: 10),
+                          order.value?.deliveryType == 'deliver'
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        '${tr('total')} : ${formatCurrency.format((deliveryPrice.value + order.value!.orderTotal / 100))}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        ))
+                                  ],
+                                )
+                              : const SizedBox()
                         ],
                       ),
                     ),

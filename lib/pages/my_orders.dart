@@ -120,7 +120,7 @@ class MyOrders extends HookWidget {
                                           color: order.status == 'cancelled'
                                               ? AppColors.mainColor
                                               : AppColors.green),
-                                      child: Text(tr(order.status),
+                                      child: Text(tr(order.deliveryType == 'pickup' && order.status == 'done' ? 'takenAway' : order.status),
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w400,
                                               fontSize: 16,
