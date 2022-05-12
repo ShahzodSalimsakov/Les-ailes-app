@@ -13,6 +13,7 @@ import 'package:niku/niku.dart' as n;
 
 import '../models/basket.dart';
 import '../models/basket_data.dart';
+import '../models/basket_item_quantity.dart';
 import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
 import '../models/productSection.dart';
@@ -23,9 +24,8 @@ import '../utils/colors.dart';
 
 class ProductCard extends HookWidget {
   final Items? product;
-  late BasketData? basketData;
 
-  ProductCard(this.product, this.basketData, {Key? key}) : super(key: key);
+  const ProductCard(this.product, {Key? key}) : super(key: key);
 
   Widget productImage(String? image) {
     if (image != null) {
@@ -65,8 +65,8 @@ class ProductCard extends HookWidget {
     productPrice = formatCurrency.format(double.tryParse(productPrice));
     final _isBasketLoading = useState<bool>(false);
 
-    Box<Basket> basketBox = Hive.box<Basket>('basket');
-    Basket? basket = basketBox.get('basket');
+    Box<BasketItemQuantity> basketItemQuantityBox = Hive.box<BasketItemQuantity>('basketItemQuantity');
+    BasketItemQuantity? basketItemQuantity = basketItemQuantityBox.get(product!.id);
 
 
 
@@ -76,24 +76,10 @@ class ProductCard extends HookWidget {
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
 
+    int? lineId;
 
-
-    Lines? productLine;
-
-    if (basket != null && basketData != null) {
-      if (basketData!.lines != null) {
-        if (basketData!.lines!.isNotEmpty) {
-          // print(basketData.value!.lines![3].variant!.id);
-          // if (basketData.value!.lines![3].variant!.id == 347) {
-          // print(product!.variants);
-          // }
-          for (var element in basketData!.lines!) {
-            if (product!.id == element.variant!.productId) {
-              productLine = element;
-            }
-          }
-        }
-      }
+    if (basketItemQuantity != null) {
+      lineId = basketItemQuantity.lineId;
     }
 
 
@@ -113,6 +99,8 @@ class ProductCard extends HookWidget {
           'Content-type': 'application/json',
           'Accept': 'application/json'
         };
+        Box<Basket> basketBox = Hive.box<Basket>('basket');
+        Basket? basket = basketBox.get('basket');
 
         url = Uri.https('api.lesailes.uz', '/api/baskets/${basket!.encodedId}');
         response = await http.get(url, headers: requestHeaders);
@@ -125,25 +113,31 @@ class ProductCard extends HookWidget {
             basket.lineCount = newBasket!.lines!.length ?? 0;
           }
           basket.totalPrice = newBasket.total;
+          basketItemQuantityBox.delete(product!.id);
           basketBox.put('basket', basket);
         }
       }
     }
 
-    Future<void> decreaseQuantity(Lines line) async {
-      if (line.quantity == 1) {
-        destroyLine(line.id);
+    Future<void> decreaseQuantity(int lineId) async {
+      if (basketItemQuantity!.quantity == 1) {
+        destroyLine(lineId);
         return;
       }
 
+      Box<Basket> basketBox = Hive.box<Basket>('basket');
+      Basket? basket = basketBox.get('basket');
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
-
+      BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
+      newBasketItemQuantity.lineId = lineId;
+      newBasketItemQuantity.quantity = basketItemQuantity!.quantity-1;
+      await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
       var url = Uri.https(
           'api.lesailes.uz',
-          '/api/v1/basket-lines/${hashids.encode(line.id.toString())}/remove',
+          '/api/v1/basket-lines/${hashids.encode(lineId.toString())}/remove',
           {'quantity': '1'});
       var response = await http.put(url, headers: requestHeaders);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -167,15 +161,21 @@ class ProductCard extends HookWidget {
       }
     }
 
-    Future<void> increaseQuantity(Lines line) async {
+    Future<void> increaseQuantity(int lineId) async {
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
         'Accept': 'application/json'
       };
 
+      Box<Basket> basketBox = Hive.box<Basket>('basket');
+      Basket? basket = basketBox.get('basket');
+      BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
+      newBasketItemQuantity.lineId = lineId;
+      newBasketItemQuantity.quantity = basketItemQuantity!.quantity + 1;
+      await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
       var url = Uri.https(
           'api.lesailes.uz',
-          '/api/v1/basket-lines/${hashids.encode(line.id.toString())}/add',
+          '/api/v1/basket-lines/${hashids.encode(lineId.toString())}/add',
           {'quantity': '1'});
       var response = await http.post(url, headers: requestHeaders);
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -239,11 +239,17 @@ class ProductCard extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
           BasketData basketLocalData = BasketData.fromJson(json['data']);
+          int lineId;
           Basket newBasket = Basket(
               encodedId: basketLocalData.encodedId ?? '',
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
+          Lines line = basketLocalData.lines!.firstWhere((element) => element.variant!.productId == product!.id);
+          BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
+          newBasketItemQuantity.lineId = line.id;
+          newBasketItemQuantity.quantity = 1;
+          await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
         }
       } else {
         Map<String, String> requestHeaders = {
@@ -275,17 +281,19 @@ class ProductCard extends HookWidget {
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
+          Lines line = basketLocalData.lines!.firstWhere((element) => element.variant!.productId == product!.id);
+          BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
+          newBasketItemQuantity.lineId = line.id;
+          newBasketItemQuantity.quantity = 1;
+          await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
         }
       }
-      _isBasketLoading.value = true;
+      _isBasketLoading.value = false;
 
       return;
     }
 
 
-    if (productLine != null) {
-      print(productLine);
-    }
 
     var locale = context.locale.toString();
     var attributeDataName = '';
@@ -339,7 +347,7 @@ class ProductCard extends HookWidget {
                   const Spacer(
                     flex: 1,
                   ),
-                  productLine != null
+                  lineId != null
                       ? Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -355,9 +363,9 @@ class ProductCard extends HookWidget {
                             ..rounded = 20
                             ..p = 0
                             ..onPressed = () {
-                              decreaseQuantity(productLine!);
+                              decreaseQuantity(lineId!);
                             }),
-                      n.NikuText(productLine.quantity.toString())
+                      n.NikuText(basketItemQuantity!.quantity.toString())
                         ..style = n.NikuTextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.w500),
@@ -373,7 +381,7 @@ class ProductCard extends HookWidget {
                             ..rounded = 20
                             ..p = 0
                             ..onPressed = () {
-                              increaseQuantity(productLine!);
+                              increaseQuantity(lineId!);
                             }),
                     ],
                   )
@@ -433,7 +441,7 @@ class ProductCard extends HookWidget {
 
                         addToBasket();
                       },
-                      child: Text(productPrice),
+                      child: _isBasketLoading.value ? const CircularProgressIndicator(color: Colors.white,) : Text(productPrice),
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all<
                             RoundedRectangleBorder>(
