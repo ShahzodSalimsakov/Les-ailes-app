@@ -127,18 +127,22 @@ class ChooseCity extends HookWidget {
               cityName = currentCity?.name ?? '';
               break;
           }
-          return ListTile(
-              contentPadding: const EdgeInsets.only(left: 2, top: 0, bottom: 0),
-              title: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    currentCity != null ? cityName : tr('yourCity'),
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                  const Icon(Icons.keyboard_arrow_down),
-                ],
+          return GestureDetector(
+              // contentPadding: const EdgeInsets.only(left: 2, top: 0, bottom: 0),
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 10),
+                width: double.infinity,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      currentCity != null ? cityName : tr('yourCity'),
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const Icon(Icons.keyboard_arrow_down),
+                  ],
+                ),
               ),
               onTap: () => showMaterialModalBottomSheet(
                     expand: false,
