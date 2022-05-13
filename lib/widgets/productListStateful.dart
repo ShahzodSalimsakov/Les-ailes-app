@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -9,7 +8,6 @@ import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
-
 import '../models/basket.dart';
 import '../models/productSection.dart';
 import '../utils/colors.dart';

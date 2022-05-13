@@ -9,8 +9,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../../models/basket.dart';
+import '../../models/delivery_type.dart';
 import '../../services/user_repository.dart';
 import '../../utils/colors.dart';
+import 'BasketListen.dart';
 
 class FixedBasket extends StatelessWidget {
   const FixedBasket({Key? key}) : super(key: key);
@@ -43,7 +45,8 @@ class FixedBasket extends StatelessWidget {
                             topRight: Radius.circular(25.0)),
                       ),
                       context: context,
-                      builder: (context) => const BasketWidget());
+                      builder: (context) =>
+                      const BasketListen());
                 } else {
                   context.router.pushNamed('signIn');
                 }

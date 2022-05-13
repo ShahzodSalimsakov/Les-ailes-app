@@ -246,41 +246,41 @@ class DeliverFieldsModal extends HookWidget {
                     newDeliveryType.value = DeliveryTypeEnum.deliver;
                     box.put('deliveryType', newDeliveryType);
 
+                    Box userBox = Hive.box<User>('user');
+                    User currentUser = userBox.get('user');
+                    if (currentUser != null) {
+                      Map<String, String> requestHeaders = {
+                        'Content-type': 'application/json',
+                        'Accept': 'application/json',
+                        'Authorization': 'Bearer ${currentUser.userToken}'
+                      };
+                      var url = Uri.https('api.lesailes.uz', '/api/address/new');
+                      var formData = {
+                        'lat': geoData.coordinates.lat,
+                        'lon': geoData.coordinates.long,
+                        "label": formValue['addressLabel'] ?? '',
+                        "addressId": '',
+                        "house": formValue['house'] ?? '',
+                        "flat": formValue['flat'] ?? '',
+                        "entrance": formValue['entrance'] ?? '',
+                        "door_code": formValue['doorCode'] ?? '',
+                        "address": geoData.formatted ?? '',
+                        "comments": "",
+                        "floor": ''
+                      };
+                      var response = await http.post(url,
+                          headers: requestHeaders, body: jsonEncode(formData));
+                      if (response.statusCode == 200) {
+                        var json = jsonDecode(response.body);
+                        print(json);
+                      } else {
+                        print(response.body);
+                      }
+                    }
+
                     Navigator.of(context)
                       ..pop()
                       ..pop();
-                  }
-
-                  Box box = Hive.box<User>('user');
-                  User currentUser = box.get('user');
-                  if (currentUser != null) {
-                    Map<String, String> requestHeaders = {
-                      'Content-type': 'application/json',
-                      'Accept': 'application/json',
-                      'Authorization': 'Bearer ${currentUser.userToken}'
-                    };
-                    var url = Uri.https('api.lesailes.uz', '/api/address/new');
-                    var formData = {
-                      'lat': geoData.coordinates.lat,
-                      'lon': geoData.coordinates.long,
-                      "label": formValue['addressLabel'] ?? '',
-                      "addressId": '',
-                      "house": formValue['house'] ?? '',
-                      "flat": formValue['flat'] ?? '',
-                      "entrance": formValue['entrance'] ?? '',
-                      "door_code": formValue['doorCode'] ?? '',
-                      "address": geoData.formatted ?? '',
-                      "comments": "",
-                      "floor": ''
-                    };
-                    var response = await http.post(url,
-                        headers: requestHeaders, body: jsonEncode(formData));
-                    if (response.statusCode == 200) {
-                      var json = jsonDecode(response.body);
-                      print(json);
-                    } else {
-                      print(response.body);
-                    }
                   }
                 },
             ),

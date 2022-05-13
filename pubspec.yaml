@@ -65,6 +65,7 @@ dependencies:
   map_launcher: ^2.2.1+2
   flutter_rating_bar: ^4.0.0
   scrollable_positioned_list: ^0.3.1
+  connectivity_plus: ^2.3.0
 
 dev_dependencies:
   flutter_test:

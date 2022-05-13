@@ -120,12 +120,6 @@ class OrderDetail extends HookWidget {
         order.value = localOrder;
 
         if (localOrder.deliveryType == 'deliver' && localOrder.lat != null) {
-          print({
-            'lat': localOrder.lat.toString(),
-            'lon': localOrder.lon.toString(),
-            'terminal_id': localOrder.terminalId,
-            "total_price": localOrder.orderTotal / 100
-          });
           var urlDeliveryPrice =
               Uri.https('api.lesailes.uz', '/api/orders/calc_basket_delivery', {
             "lat": localOrder.lat.toString(),

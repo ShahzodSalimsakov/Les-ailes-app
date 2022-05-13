@@ -53,6 +53,9 @@ class BasketWidget extends HookWidget {
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
     final _isBasketLoading = useState<bool>(false);
+    final deliveryPrice = useState(0.0);
+    Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+    DeliveryType? deliveryType = box.get('deliveryType');
 
     Future<void> destroyLine(int lineId) async {
       Map<String, String> requestHeaders = {
@@ -308,6 +311,23 @@ class BasketWidget extends HookWidget {
           ));
     }
 
+    String totalPrice = useMemoized(() {
+      String result = '0';
+      if (basketData.value != null) {
+        if (deliveryPrice.value > 0) {
+          result = (basketData.value!.total + deliveryPrice.value).toString();
+        } else {
+          result = basketData.value!.total.toString();
+        }
+      }
+
+      final formatCurrency = NumberFormat.currency(
+          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+
+      result = formatCurrency.format(double.tryParse(result));
+      return result;
+    }, [basketData.value, deliveryPrice.value]);
+
     Future<void> getBasket() async {
       if (basket != null) {
         Map<String, String> requestHeaders = {
@@ -324,6 +344,35 @@ class BasketWidget extends HookWidget {
           if (basketLocalData.lines != null) {
             basket.lineCount = basketLocalData.lines!.length;
             basketBox.put('basket', basket);
+
+            Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+            DeliveryType? deliveryType = box.get('deliveryType');
+
+            DeliveryLocationData? deliveryLocationData =
+                Hive.box<DeliveryLocationData>('deliveryLocationData')
+                    .get('deliveryLocationData');
+
+            Terminals? currentTerminal =
+                Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+
+            if (deliveryType?.value == DeliveryTypeEnum.deliver) {
+              var urlDeliveryPrice = Uri.https(
+                  'api.lesailes.uz', '/api/orders/calc_basket_delivery', {
+                "lat": deliveryLocationData?.lat.toString(),
+                "lon": deliveryLocationData?.lon.toString(),
+                "terminal_id": currentTerminal?.id.toString(),
+                "total_price": basketLocalData.total.toString()
+              });
+              var deliveryPriceResponse =
+                  await http.get(urlDeliveryPrice, headers: requestHeaders);
+              if (deliveryPriceResponse.statusCode == 200) {
+                print(deliveryPriceResponse.body);
+                var json = jsonDecode(deliveryPriceResponse.body);
+                deliveryPrice.value = json['totalPrice'];
+              }
+            } else {
+              deliveryPrice.value = 0;
+            }
           }
           basketData.value = basketLocalData;
         }
@@ -379,19 +428,6 @@ class BasketWidget extends HookWidget {
       }
     }
 
-    String totalPrice = useMemoized(() {
-      String result = '0';
-      if (basketData.value != null) {
-        result = basketData.value!.total.toString();
-      }
-
-      final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-
-      result = formatCurrency.format(double.tryParse(result));
-      return result;
-    }, [basketData.value]);
-
     String cashback = useMemoized(() {
       String result = '0';
       if (basketData.value != null) {
@@ -422,7 +458,7 @@ class BasketWidget extends HookWidget {
       getBasket();
       fetchRecomendedItems();
       return null;
-    }, []);
+    }, [deliveryType]);
 
     return Material(
         child: Scaffold(
@@ -481,10 +517,16 @@ class BasketWidget extends HookWidget {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
+                    Box<DeliveryType> box =
+                        Hive.box<DeliveryType>('deliveryType');
+                    DeliveryType? deliveryType = box.get('deliveryType');
+
+                    final formatCurrency = NumberFormat.currency(
+                        locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
                     return Column(
                       children: [
                         const SizedBox(height: 20),
-                        const WayToReceiveAnOrder(),
+                        // const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),
                         ListView.separated(
@@ -825,6 +867,26 @@ class BasketWidget extends HookWidget {
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
+                                deliveryType?.value == DeliveryTypeEnum.deliver
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('${tr('shippingAmount')} : ',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 20,
+                                              )),
+                                          Text(
+                                              formatCurrency.format(
+                                                  (deliveryPrice.value)),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 20,
+                                              ))
+                                        ],
+                                      )
+                                    : const SizedBox(),
                                 // Row(
                                 //     mainAxisAlignment:
                                 //         MainAxisAlignment.spaceBetween,
