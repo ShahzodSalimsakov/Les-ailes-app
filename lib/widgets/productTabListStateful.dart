@@ -250,7 +250,6 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
   Widget build(BuildContext context) {
     return ScrollsToTop(
       onScrollsToTop: (ScrollsToTopEvent event) async {
-        print('davr');
         scrollTo(0);
         DefaultTabController.of(tabContext!)!.animateTo(
           0,
