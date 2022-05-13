@@ -229,20 +229,18 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
   List<Widget> getSectionsList() {
     List<Widget> sections = [];
 
-    products.asMap().forEach((index,section) {
+    products.asMap().forEach((index, section) {
       sections.add(Padding(
         key: categories[index],
         padding: const EdgeInsets.symmetric(vertical: 5.0),
-        child:Text(
+        child: Text(
           section.attributeData?.name?.chopar?.ru ?? '',
-                        style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500),
-                      ),
+          style: const TextStyle(
+              color: Colors.black, fontSize: 30, fontWeight: FontWeight.w500),
+        ),
       ));
 
-        sections.add(ProductCardList(section.items));
+      sections.add(ProductCardList(section.items));
     });
 
     return sections;
@@ -252,6 +250,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
   Widget build(BuildContext context) {
     return ScrollsToTop(
       onScrollsToTop: (ScrollsToTopEvent event) async {
+        print('davr');
         scrollTo(0);
         DefaultTabController.of(tabContext!)!.animateTo(
           0,
@@ -270,8 +269,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
                     indicator: BoxDecoration(
                         border: Border.all(color: Colors.white),
                         borderRadius: BorderRadius.circular(20),
-                        color: AppColors.mainColor
-                    ),
+                        color: AppColors.mainColor),
                     labelColor: Colors.white,
                     unselectedLabelColor: Colors.black,
                     isScrollable: true,
@@ -284,7 +282,9 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
                   ),
                   height: 40,
                 ),
-                const SizedBox(height: 5,),
+                const SizedBox(
+                  height: 5,
+                ),
                 Expanded(
                     child: SingleChildScrollView(
                         controller: scrollCont,

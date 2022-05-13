@@ -189,31 +189,34 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 80,
-        title: const Header(),
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-            statusBarColor: AppColors.mainColor, // Status bar
-            statusBarBrightness: Brightness.light),
-      ),
+      // appBar: AppBar(
+      //   toolbarHeight: 80,
+      //   title: const Header(),
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   systemOverlayStyle: const SystemUiOverlayStyle(
+      //       statusBarColor: AppColors.mainColor, // Status bar
+      //       statusBarBrightness: Brightness.light),
+      // ),
+
       drawer: const LeftMenu(),
       body: SingleChildScrollView(
-          controller: _parentScrollController,
-          scrollDirection: Axis.vertical,
-          child: Container(
-              height: MediaQuery.of(context).size.height * 1.4,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-              child: Column(children: [
-                // const Header(),
-                const ChooseCity(),
-                const WayToReceiveAnOrder(),
-                SliderCarousel(),
-                ProductTabListStateful(parentScrollController: _parentScrollController)
-              ])),
-        ),
+        controller: _parentScrollController,
+        scrollDirection: Axis.vertical,
+        child: Container(
+            height: MediaQuery.of(context).size.height * 1.5,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+            margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+            child: Column(children: [
+              const Header(),
+              const ChooseCity(),
+              const WayToReceiveAnOrder(),
+              SliderCarousel(),
+              ProductTabListStateful(
+                  parentScrollController: _parentScrollController)
+            ])),
+      ),
       bottomNavigationBar: const FixedBasket(),
     );
   }
