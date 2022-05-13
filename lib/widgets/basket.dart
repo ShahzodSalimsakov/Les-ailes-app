@@ -21,6 +21,7 @@ import 'package:http/http.dart' as http;
 import '../models/additional_phone_number.dart';
 import '../models/basket.dart';
 import '../models/basket_data.dart';
+import '../models/basket_item_quantity.dart';
 import '../models/deliver_later_time.dart';
 import '../models/delivery_location_data.dart';
 import '../models/delivery_notes.dart';
@@ -421,6 +422,8 @@ class BasketWidget extends HookWidget {
           basket.totalPrice = newBasket.total;
           // await Future.delayed(Duration(milliseconds: 50));
           basketData.value = newBasket;
+          Box<BasketItemQuantity> basketItemQuantityBox = Hive.box<BasketItemQuantity>('basketItemQuantity');
+          await basketItemQuantityBox.clear();
           if (basket.lineCount == 0) {
             Navigator.of(context).pop();
           }
