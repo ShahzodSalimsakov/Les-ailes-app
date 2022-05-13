@@ -13,6 +13,7 @@ import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:les_ailes/widgets/productList.dart';
 import 'package:les_ailes/widgets/productListStateful.dart';
+import 'package:les_ailes/widgets/productTabListStateful.dart';
 import 'package:les_ailes/widgets/slider.dart';
 import 'package:les_ailes/widgets/ui/fixed_basket.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
@@ -210,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                 const ChooseCity(),
                 const WayToReceiveAnOrder(),
                 SliderCarousel(),
-                ProductListStateful(parentScrollController: _parentScrollController)
+                ProductTabListStateful(parentScrollController: _parentScrollController)
               ])),
         ),
       bottomNavigationBar: const FixedBasket(),
