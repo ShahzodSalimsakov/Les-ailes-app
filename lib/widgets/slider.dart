@@ -42,8 +42,8 @@ class SliderCarousel extends HookWidget {
           return Builder(
             builder: (BuildContext context) {
               return Container(
-                height: 240,
-                margin: const EdgeInsets.only(top: 40),
+                height: 220,
+                margin: const EdgeInsets.only(top: 20),
                 child: ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(25.0)),
                     child: Stack(
@@ -62,7 +62,7 @@ class SliderCarousel extends HookWidget {
         }).toList(),
         carouselController: _controller,
         options: CarouselOptions(
-            height: 220,
+            height: 200,
             viewportFraction: 1.0,
             autoPlay: true,
             enlargeCenterPage: true,

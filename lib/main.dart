@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.gr.dart';
+import 'package:les_ailes/utils/colors.dart';
 import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
 import 'package:niku/niku.dart' as n;
@@ -82,11 +84,7 @@ void main() async {
   runApp(
     EasyLocalization(
       child: MyApp(),
-      supportedLocales: const [
-        Locale('en'),
-        Locale('ru'),
-        Locale('uz')
-      ],
+      supportedLocales: const [Locale('en'), Locale('ru'), Locale('uz')],
       path: 'resources/langs',
       fallbackLocale: const Locale('ru'),
       startLocale: const Locale('ru'),
@@ -101,6 +99,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: AppColors.mainColor, // Color for Android
+        statusBarBrightness:
+            Brightness.light // Dark == white status bar -- for IOS.
+        ));
     return MaterialApp.router(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
