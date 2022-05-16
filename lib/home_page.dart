@@ -201,23 +201,52 @@ class _HomePageState extends State<HomePage> {
       // ),
 
       drawer: const LeftMenu(),
-      body: SingleChildScrollView(
+      body: /*SingleChildScrollView(
         controller: _parentScrollController,
         scrollDirection: Axis.vertical,
-        child: Container(
-            height: MediaQuery.of(context).size.height * 1.5,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-            margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Column(children: [
-              const Header(),
-              const ChooseCity(),
-              const WayToReceiveAnOrder(),
-              SliderCarousel(),
-              ProductTabListStateful(
-                  parentScrollController: _parentScrollController)
-            ])),
-      ),
-      bottomNavigationBar: const FixedBasket(),
+        child: Expanded(
+          child: Container(
+              height: MediaQuery.of(context).size.height * 1.5,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+              child: Column(children: [
+                const Header(),
+                const ChooseCity(),
+                const WayToReceiveAnOrder(),
+                SliderCarousel(),
+                ProductTabListStateful(
+                    parentScrollController: _parentScrollController)
+              ])),
+        ),
+      ),*/
+          Stack(children: [
+           SingleChildScrollView(
+              controller: _parentScrollController,
+              scrollDirection: Axis.vertical,
+              child: Container(
+                  // height: double.maxFinite,
+                  // width: double.maxFinite,
+                  height: MediaQuery.of(context).size.height * 1.55,
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                  margin:
+                  EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: Column(children: [
+                    const Header(),
+                    const ChooseCity(),
+                    const WayToReceiveAnOrder(),
+                    SliderCarousel(),
+                    ProductTabListStateful(
+                        parentScrollController: _parentScrollController)
+                  ]))),
+        const Positioned(
+          child:  Align(
+        alignment: Alignment.bottomCenter,
+    child:  FixedBasket(),
+    )
+        ),
+      ]),
+      // bottomNavigationBar: const FixedBasket(),
     );
   }
 }
