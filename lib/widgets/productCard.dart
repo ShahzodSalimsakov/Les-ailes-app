@@ -324,7 +324,7 @@ class ProductCard extends HookWidget {
 
       return Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          margin: const EdgeInsets.symmetric(horizontal: 1),
+          margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
             color: Colors.white,

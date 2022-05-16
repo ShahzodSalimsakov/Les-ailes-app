@@ -302,7 +302,8 @@ class _HomePageState extends State<HomePage> {
                               SliderCarousel(),
                               ProductTabListStateful(
                                   parentScrollController:
-                                      _parentScrollController)
+                                      _parentScrollController),
+                              const SizedBox(height: 100,)
                             ]))),
                     const Positioned(
                         child: Align(

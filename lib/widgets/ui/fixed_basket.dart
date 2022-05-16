@@ -50,8 +50,10 @@ class FixedBasket extends StatelessWidget {
                   context.router.pushNamed('signIn');
                 }
               },
-              child: SizedBox(
-                  height: 100,
+              child: Container(
+                  color: Colors.white.withOpacity(0),
+                  margin: const EdgeInsets.all(20),
+                  height: 60,
                   width: double.infinity,
                   child: n.NikuButton.elevated(Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -62,8 +64,6 @@ class FixedBasket extends StatelessWidget {
                   ))
                     ..bg = AppColors.mainColor
                     ..color = Colors.white
-                    ..mx = 20
-                    ..my = 20
                     ..rounded = 25),
             );
           }
