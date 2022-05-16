@@ -145,5 +145,6 @@
   "reviewSaved": "Sizning sharhingiz muvaffaqiyatli qabul qilindi",
   "addressName": "Manzil nomi",
   "takenAway": "Olib ketilgan",
-  "shippingAmount": "Yetkazib berish narxi"
+  "shippingAmount": "Yetkazib berish narxi",
+  "checkInet": "Internet ulanishlarini tekshiring"
 }

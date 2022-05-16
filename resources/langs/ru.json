@@ -145,5 +145,6 @@
   "reviewSaved": "Ваш отзыв успешно принят",
   "addressName": "Название адреса",
   "takenAway": "Забрали",
-  "shippingAmount": "Сумма доставки"
+  "shippingAmount": "Сумма доставки",
+  "checkInet": "Проверьте подключения к интернету"
 }

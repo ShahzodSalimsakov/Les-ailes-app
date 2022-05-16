@@ -18,7 +18,7 @@ class BasketListen extends StatelessWidget {
             .listenable(),
         builder: (context, box, _) {
           print('deliveryType Listen');
-          return BasketWidget();
+          return const BasketWidget();
         });
   }
 }
