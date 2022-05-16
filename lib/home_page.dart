@@ -219,18 +219,19 @@ class _HomePageState extends State<HomePage> {
               ])),
         ),
       ),*/
-          Stack(children: [
-           SingleChildScrollView(
+          SafeArea(
+        child: Stack(children: [
+          SingleChildScrollView(
               controller: _parentScrollController,
               scrollDirection: Axis.vertical,
               child: Container(
                   // height: double.maxFinite,
                   // width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 1.55,
+                  height: MediaQuery.of(context).size.height * 1.45,
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-                  margin:
-                  EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                  // margin:
+                  // EdgeInsets.only(top: MediaQuery.of(context).padding.top),
                   child: Column(children: [
                     const Header(),
                     const ChooseCity(),
@@ -239,13 +240,13 @@ class _HomePageState extends State<HomePage> {
                     ProductTabListStateful(
                         parentScrollController: _parentScrollController)
                   ]))),
-        const Positioned(
-          child:  Align(
-        alignment: Alignment.bottomCenter,
-    child:  FixedBasket(),
-    )
-        ),
-      ]),
+          const Positioned(
+              child: Align(
+            alignment: Alignment.bottomCenter,
+            child: FixedBasket(),
+          )),
+        ]),
+      ),
       // bottomNavigationBar: const FixedBasket(),
     );
   }
