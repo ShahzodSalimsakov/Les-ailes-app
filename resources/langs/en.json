@@ -152,5 +152,7 @@
   "addressName": "Address name",
   "takenAway": "Taken away",
   "shippingAmount": "Shipping amount",
-  "checkInet": "Check internet connections"
+  "checkInet": "Check internet connections",
+  "update": "Update",
+  "nextTime" : "Next time"
 }

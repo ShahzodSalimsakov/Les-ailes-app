@@ -54,7 +54,7 @@ class BasketWidget extends HookWidget {
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
     final _isBasketLoading = useState<bool>(false);
-    final deliveryPrice = useState(0.0);
+    final deliveryPrice = useState(0);
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? deliveryType = box.get('deliveryType');
 
@@ -367,7 +367,6 @@ class BasketWidget extends HookWidget {
               var deliveryPriceResponse =
                   await http.get(urlDeliveryPrice, headers: requestHeaders);
               if (deliveryPriceResponse.statusCode == 200) {
-                print(deliveryPriceResponse.body);
                 var json = jsonDecode(deliveryPriceResponse.body);
                 deliveryPrice.value = json['totalPrice'];
               }

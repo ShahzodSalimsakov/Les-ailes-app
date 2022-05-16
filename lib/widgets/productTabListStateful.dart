@@ -80,6 +80,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
     late RenderBox box;
     int scrolledIndex = 0;
     late Offset position;
+    double maxHeight = 0;
     for (var i = 0; i < categories.length; i++) {
       box = categories[i].currentContext!.findRenderObject() as RenderBox;
       position = box.localToGlobal(Offset.zero);
@@ -90,6 +91,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
         scrolledIndex = i;
         position = box.localToGlobal(Offset.zero);
       }
+      maxHeight += box.size.height;
     }
     // print(scrolledIndex);
     // print(scrollCont.offset);
@@ -97,12 +99,19 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
     if (scrolledIndex == 0) {
       if (scrollCont.offset == 0) {
         widget.parentScrollController.animateTo(0.0,
-            duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
       } else {
-        widget.parentScrollController.animateTo(
-            widget.parentScrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 100),
-            curve: Curves.easeIn);
+        // if (position.dy < 250) {
+          widget.parentScrollController.animateTo(
+              widget.parentScrollController.position.maxScrollExtent * (scrollCont.offset/maxHeight),
+              duration: const Duration(milliseconds: 50),
+              curve: Curves.easeInOut);
+        // } else {
+        //   widget.parentScrollController.animateTo(
+        //       widget.parentScrollController.position.maxScrollExtent,
+        //       duration: const Duration(milliseconds: 100),
+        //       curve: Curves.easeIn);
+        // }
       }
     }
     DefaultTabController.of(tabContext!)!.animateTo(
@@ -300,7 +309,12 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
                 //   ),
                 //   height: 40,
                 // ),
-                const SizedBox(height: 24),
+                Container(
+                  height: 100,
+                  width: double.infinity,
+                  color: Colors.white.withOpacity(0),
+                  child: const SizedBox(),
+                )
                 // Expanded(
                 //     child: ScrollablePositionedList.builder(
                 //   shrinkWrap: true,

@@ -22,7 +22,6 @@ class AdditionalPhoneNumberWidget extends HookWidget {
     final additionalPhones = useState<List<String>>([]);
     final selectedAdditionalPhone = useState<String?>(null);
 
-    print('davr');
     Future<void> getAdditionalPhones() async {
       Box userBox = Hive.box<User>('user');
       User? user = userBox.get('user');
@@ -38,7 +37,6 @@ class AdditionalPhoneNumberWidget extends HookWidget {
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200 || response.statusCode == 201) {
         var json = jsonDecode(response.body);
-        print(json);
         additionalPhones.value = List<String>.from(json.map((m) => m).toList());
       }
     }

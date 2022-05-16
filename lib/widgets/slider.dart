@@ -64,7 +64,7 @@ class SliderCarousel extends HookWidget {
         options: CarouselOptions(
             height: 200,
             viewportFraction: 1.0,
-            autoPlay: true,
+            autoPlay: banner.value.length > 1 ? true : false,
             enlargeCenterPage: true,
             onPageChanged: (index, reason) {
               _current.value = index;
