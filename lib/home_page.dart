@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -30,6 +33,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   ScrollController _parentScrollController = ScrollController();
+
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  final Connectivity _connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   // Future<void> setLocation(LocationData location,
   //     DeliveryLocationData deliveryData, String house) async {
@@ -86,6 +93,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    super.initState();
+    initConnectivity();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     // () async {
     //   Location location = Location();
     //
@@ -187,6 +198,39 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    late ConnectivityResult result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await _connectivity.checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e);
+      return;
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) {
+      return Future.value(null);
+    }
+
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+      print(_connectionStatus.toString());
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       // appBar: AppBar(
@@ -201,22 +245,40 @@ class _HomePageState extends State<HomePage> {
       // ),
 
       drawer: const LeftMenu(),
-      body: SingleChildScrollView(
-        controller: _parentScrollController,
-        scrollDirection: Axis.vertical,
-        child: Container(
-            height: MediaQuery.of(context).size.height * 1.5,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-            margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-            child: Column(children: [
-              const Header(),
-              const ChooseCity(),
-              const WayToReceiveAnOrder(),
-              SliderCarousel(),
-              ProductTabListStateful(
-                  parentScrollController: _parentScrollController)
-            ])),
-      ),
+      body: _connectionStatus.toString() == 'ConnectivityResult.none'
+          ? Center(
+              child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
+                const SizedBox(
+                  height: 50,
+                ),
+                const Icon(
+                  Icons.wifi_off_outlined,
+                  color: AppColors.mainColor,
+                  size: 100,
+                )
+              ],
+            ))
+          : SingleChildScrollView(
+              controller: _parentScrollController,
+              scrollDirection: Axis.vertical,
+              child: Container(
+                  height: MediaQuery.of(context).size.height * 1.5,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                  margin:
+                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                  child: Column(children: [
+                    const Header(),
+                    const ChooseCity(),
+                    const WayToReceiveAnOrder(),
+                    SliderCarousel(),
+                    ProductTabListStateful(
+                        parentScrollController: _parentScrollController)
+                  ])),
+            ),
       bottomNavigationBar: const FixedBasket(),
     );
   }
