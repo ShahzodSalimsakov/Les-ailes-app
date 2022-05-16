@@ -20,6 +20,7 @@ import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'models/delivery_location_data.dart';
+import 'dart:io' show Platform;
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -219,33 +220,35 @@ class _HomePageState extends State<HomePage> {
               ])),
         ),
       ),*/
-          Stack(children: [
-           SingleChildScrollView(
-              controller: _parentScrollController,
-              scrollDirection: Axis.vertical,
-              child: Container(
-                  // height: double.maxFinite,
-                  // width: double.maxFinite,
-                  height: MediaQuery.of(context).size.height * 1.55,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-                  margin:
-                  EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: Column(children: [
-                    const Header(),
-                    const ChooseCity(),
-                    const WayToReceiveAnOrder(),
-                    SliderCarousel(),
-                    ProductTabListStateful(
-                        parentScrollController: _parentScrollController)
-                  ]))),
+          SafeArea(
+            child: Stack(children: [
+             SingleChildScrollView(
+                controller: _parentScrollController,
+                scrollDirection: Axis.vertical,
+                child: Container(
+                    // height: double.maxFinite,
+                    // width: double.maxFinite,
+                    height: Platform.isAndroid ? MediaQuery.of(context).size.height * 1.55 : MediaQuery.of(context).size.height * 1.45,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                    // margin:
+                    // EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+                    child: Column(children: [
+                      const Header(),
+                      const ChooseCity(),
+                      const WayToReceiveAnOrder(),
+                      SliderCarousel(),
+                      ProductTabListStateful(
+                          parentScrollController: _parentScrollController)
+                    ]))),
         const Positioned(
-          child:  Align(
+            child:  Align(
         alignment: Alignment.bottomCenter,
     child:  FixedBasket(),
     )
         ),
       ]),
+          ),
       // bottomNavigationBar: const FixedBasket(),
     );
   }
