@@ -245,41 +245,67 @@ class _HomePageState extends State<HomePage> {
       // ),
 
       drawer: const LeftMenu(),
-      body: _connectionStatus.toString() == 'ConnectivityResult.none'
-          ? Center(
-              child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
-                const SizedBox(
-                  height: 50,
-                ),
-                const Icon(
-                  Icons.wifi_off_outlined,
-                  color: AppColors.mainColor,
-                  size: 100,
-                )
-              ],
-            ))
-          : SingleChildScrollView(
-              controller: _parentScrollController,
-              scrollDirection: Axis.vertical,
-              child: Container(
-                  height: MediaQuery.of(context).size.height * 1.5,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-                  margin:
-                      EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-                  child: Column(children: [
-                    const Header(),
-                    const ChooseCity(),
-                    const WayToReceiveAnOrder(),
-                    SliderCarousel(),
-                    ProductTabListStateful(
-                        parentScrollController: _parentScrollController)
-                  ])),
-            ),
-      bottomNavigationBar: const FixedBasket(),
+      body: /*SingleChildScrollView(
+        controller: _parentScrollController,
+        scrollDirection: Axis.vertical,
+        child: Expanded(
+          child: Container(
+              height: MediaQuery.of(context).size.height * 1.5,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+              child: Column(children: [
+                const Header(),
+                const ChooseCity(),
+                const WayToReceiveAnOrder(),
+                SliderCarousel(),
+                ProductTabListStateful(
+                    parentScrollController: _parentScrollController)
+              ])),
+        ),
+      ),*/
+          _connectionStatus.toString() == 'ConnectivityResult.none'
+              ? Center(
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    const Icon(
+                      Icons.wifi_off_outlined,
+                      color: AppColors.mainColor,
+                      size: 100,
+                    )
+                  ],
+                ))
+              : Stack(children: [
+                  SingleChildScrollView(
+                      controller: _parentScrollController,
+                      scrollDirection: Axis.vertical,
+                      child: Container(
+                          // height: double.maxFinite,
+                          // width: double.maxFinite,
+                          height: MediaQuery.of(context).size.height * 1.55,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 1),
+                          margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).padding.top),
+                          child: Column(children: [
+                            const Header(),
+                            const ChooseCity(),
+                            const WayToReceiveAnOrder(),
+                            SliderCarousel(),
+                            ProductTabListStateful(
+                                parentScrollController: _parentScrollController)
+                          ]))),
+                  const Positioned(
+                      child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: FixedBasket(),
+                  )),
+                ]),
+      // bottomNavigationBar: const FixedBasket(),
     );
   }
 }

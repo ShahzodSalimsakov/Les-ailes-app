@@ -45,8 +45,7 @@ class FixedBasket extends StatelessWidget {
                             topRight: Radius.circular(25.0)),
                       ),
                       context: context,
-                      builder: (context) =>
-                      const BasketListen());
+                      builder: (context) => const BasketListen());
                 } else {
                   context.router.pushNamed('signIn');
                 }
@@ -68,7 +67,12 @@ class FixedBasket extends StatelessWidget {
                     ..rounded = 25),
             );
           }
-          return const SizedBox(height: 0);
+          return Container(
+              height: 100,
+              width: double.infinity,
+              color: Colors.white.withOpacity(0),
+              child: const SizedBox(),
+            );
         });
   }
 }
