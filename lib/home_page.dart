@@ -231,39 +231,27 @@ class _HomePageState extends State<HomePage> {
       _connectionStatus = result;
     });
   }
+
   Future<void> checkVersion() async {
     /// For example: You got status code of 412 from the
     /// response of HTTP request.
     /// Let's say the statusCode 412 requires you to force update
-    int statusCode = 412;
+    //int statusCode = 412;
 
     /// This could be kept in our local
-    int localVersion = 9;
+    //int localVersion = 9;
 
     /// This could get from the API
-    int serverLatestVersion = 10;
+    //int serverLatestVersion = 10;
 
     Future.delayed(Duration.zero, () {
-      if (statusCode == 412) {
-        NativeUpdater.displayUpdateAlert(
-            context,
-            forceUpdate: true,
-            appStoreUrl: 'https://apps.apple.com/uz/app/les-ailes-uzb/id1616011426',
-            iOSUpdateButtonLabel: 'Upgrade',
-            iOSCloseButtonLabel: 'Exit',
-            errorText: "Error",
-            errorCloseButtonLabel: "Close",
-            errorSubtitle: "This version of the app isn't legit"
-        );
-      } else if (serverLatestVersion > localVersion) {
-        NativeUpdater.displayUpdateAlert(
-          context,
-          forceUpdate: true,
-          appStoreUrl: 'https://apps.apple.com/uz/app/les-ailes-uzb/id1616011426',
-          iOSUpdateButtonLabel: tr("update"),
-          iOSIgnoreButtonLabel: tr("nextTime"),
-        );
-      }
+      NativeUpdater.displayUpdateAlert(
+        context,
+        forceUpdate: false,
+        appStoreUrl: 'https://apps.apple.com/uz/app/les-ailes-uzb/id1616011426',
+        iOSUpdateButtonLabel: tr("update"),
+        iOSIgnoreButtonLabel: tr("nextTime"),
+      );
     });
   }
 
