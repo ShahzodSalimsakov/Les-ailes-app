@@ -7,60 +7,32 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
+import 'package:les_ailes/widgets/slider.dart';
+import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
+import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
 
 import '../models/basket.dart';
 import '../models/productSection.dart';
 import '../utils/colors.dart';
+import 'ChooseCity.dart';
+import 'header.dart';
 
 class ProductTabListStateful extends StatefulWidget {
-  final ScrollController parentScrollController;
-
-  const ProductTabListStateful({Key? key, required this.parentScrollController})
-      : super(key: key);
+  List<ProductSection> products;
+  ProductTabListStateful({Key? key, required this.products}) : super(key: key);
 
   @override
   State<ProductTabListStateful> createState() => _ProductListStatefulState();
 }
 
-class _ProductListStatefulState extends State<ProductTabListStateful> {
-  List<GlobalKey> categories = [];
-  late ScrollController scrollCont;
-  BuildContext? tabContext;
-
-  // ItemScrollController itemScrollController = ItemScrollController();
-  // ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
-  // ItemScrollController verticalScrollController = ItemScrollController();
-  // ItemPositionsListener verticalPositionsListener =
-  //     ItemPositionsListener.create();
-  List<ProductSection> products = List<ProductSection>.empty();
+class _ProductListStatefulState extends State<ProductTabListStateful>
+    with TickerProviderStateMixin {
+  late TabController _tabController;
   int scrolledIndex = 0;
 
-  Future<void> getProducts() async {
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': 'application/json'
-    };
-    var url = Uri.https(
-        'api.lesailes.uz', '/api/products/public', {'perSection': '1'});
-    var response = await http.get(url, headers: requestHeaders);
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      List<ProductSection> productSections = List<ProductSection>.from(
-          json['data'].map((m) => ProductSection.fromJson(m)).toList());
-      List<GlobalKey> localCategories = [];
-      for (var i = 0; i < productSections.length; i++) {
-        localCategories.add(GlobalKey());
-      }
-      setState(() {
-        products = productSections;
-        categories = localCategories;
-        scrollCont.addListener(changeTabs);
-      });
-    }
-  }
 
   double getProductHeight(ProductSection section) {
     double height = 200;
@@ -68,7 +40,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
     if (section.halfMode == 1) {
       height = 260;
     } else {
-      if (section.items != null && section.items!.length > 0) {
+      if (section.items != null && section.items!.isNotEmpty) {
         height = ((section.items!.length * 330) / 2) + 250;
       }
     }
@@ -76,123 +48,21 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
     return height;
   }
 
-  changeTabs() {
-    late RenderBox box;
-    int scrolledIndex = 0;
-    late Offset position;
-    double maxHeight = 0;
-    for (var i = 0; i < categories.length; i++) {
-      box = categories[i].currentContext!.findRenderObject() as RenderBox;
-      position = box.localToGlobal(Offset.zero);
-      // print('Scroll ${scrollCont.offset}');
-      // print('Position ${position.dy}');
-      // Scrollable.of(tabContext!).v
-      if (scrollCont.offset >= position.dy && position.dy < 250) {
-        scrolledIndex = i;
-        position = box.localToGlobal(Offset.zero);
-      }
-      maxHeight += box.size.height;
-    }
-    // print(scrolledIndex);
-    // print(scrollCont.offset);
-    // print(widget.parentScrollController.position.maxScrollExtent);
-    if (scrolledIndex == 0) {
-      if (scrollCont.offset == 0) {
-        widget.parentScrollController.animateTo(0.0,
-            duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
-      } else {
-        // if (position.dy < 250) {
-          widget.parentScrollController.animateTo(
-              widget.parentScrollController.position.maxScrollExtent * (scrollCont.offset/maxHeight),
-              duration: const Duration(milliseconds: 50),
-              curve: Curves.easeInOut);
-        // } else {
-        //   widget.parentScrollController.animateTo(
-        //       widget.parentScrollController.position.maxScrollExtent,
-        //       duration: const Duration(milliseconds: 100),
-        //       curve: Curves.easeIn);
-        // }
-      }
-    }
-    DefaultTabController.of(tabContext!)!.animateTo(
-      scrolledIndex,
-      duration: Duration(milliseconds: 100),
-    );
-  }
-
-  scrollTo(int index) async {
-    scrollCont.removeListener(changeTabs);
-    final category = categories[index].currentContext!;
-    await Scrollable.ensureVisible(
-      category,
-      duration: Duration(milliseconds: 600),
-    );
-    scrollCont.addListener(changeTabs);
-  }
-
-  // scrollListening() {
-  //   // print('listened');
-  //   // print(verticalPositionsListener.itemPositions.value);
-  //   verticalPositionsListener.itemPositions.addListener(() {
-  //     ItemPosition min;
-  //     // print(verticalPositionsListener.itemPositions.value);
-  //     if (verticalPositionsListener.itemPositions.value.isNotEmpty) {
-  //       min = verticalPositionsListener.itemPositions.value.first;
-  //       // print('Min Index $min');
-  //       // print('Products count ${products.length}');
-  //       // print(widget.parentScrollController.position.pixels);
-  //       // print(widget.parentScrollController.position.maxScrollExtent);
-  //       if (min.itemLeadingEdge < 0 &&
-  //           widget.parentScrollController.position.maxScrollExtent !=
-  //               widget.parentScrollController.position.pixels) {
-  //         widget.parentScrollController.animateTo(
-  //             widget.parentScrollController.position.maxScrollExtent,
-  //             duration: const Duration(milliseconds: 200),
-  //             curve: Curves.easeIn);
-  //       } else if (min.itemLeadingEdge == 0 && min.index == 0 &&
-  //           widget.parentScrollController.position.pixels != 0.0) {
-  //         widget.parentScrollController.animateTo(0.0,
-  //             duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
-  //       }
-  //
-  //       itemScrollController.scrollTo(
-  //           index: min.index,
-  //           duration: const Duration(milliseconds: 200),
-  //           curve: Curves.easeInOutCubic,
-  //           alignment: 0.02);
-  //
-  //       if (scrolledIndex != min.index) {
-  //         Future.delayed(const Duration(milliseconds: 200), () {
-  //           setState(() {
-  //             scrolledIndex = min.index;
-  //           });
-  //         });
-  //       }
-  //     }
-  //   });
-  // }
-
   @override
   void initState() {
-    getProducts();
-    scrollCont = ScrollController();
+    _tabController = TabController(length: widget.products.length, vsync: this, initialIndex: 0);
     // TODO: implement initState
     super.initState();
-    // itemScrollController = ItemScrollController();
-    // itemPositionsListener = ItemPositionsListener.create();
-    // verticalScrollController = ItemScrollController();
-    // verticalPositionsListener = ItemPositionsListener.create();
-    // scrollListening();
   }
 
   @override
   void dispose() {
-    // verticalPositionsListener.itemPositions.removeListener(() {});
+    _tabController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
 
-  Widget productSection(BuildContext context, int index) {
+  Widget getProductSection(ProductSection section, BuildContext context) {
     var locale = context.locale.toString();
     var attributeDataName = '';
     switch (locale) {
@@ -200,165 +70,100 @@ class _ProductListStatefulState extends State<ProductTabListStateful> {
       //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
       //   break;
       case 'uz':
-        attributeDataName =
-            products[index].attributeData?.name?.chopar?.uz ?? '';
+        attributeDataName = section.attributeData?.name?.chopar?.uz ?? '';
         break;
       default:
-        attributeDataName =
-            products[index].attributeData?.name?.chopar?.ru ?? '';
+        attributeDataName = section.attributeData?.name?.chopar?.ru ?? '';
         break;
     }
-    return GestureDetector(
-      onTap: () {
-        // verticalScrollController.scrollTo(
-        //     index: index,
-        //     duration: const Duration(milliseconds: 300),
-        //     curve: Curves.easeInOutCubic,
-        //     alignment: 0.0005);
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-        margin: const EdgeInsets.only(right: 6),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color:
-                scrolledIndex == index ? AppColors.mainColor : AppColors.grey),
-        child: Center(
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5.0),
             child: Text(
-          attributeDataName,
-          style: TextStyle(
-              fontSize: 18,
-              color: scrolledIndex == index ? Colors.white : Colors.black,
-              fontWeight: FontWeight.w500),
-        )),
+              attributeDataName,
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+          ProductCardList(section.items)
+        ],
       ),
     );
   }
 
-  List<Widget> getSectionsList() {
-    List<Widget> sections = [];
-
-    products.asMap().forEach((index, section) {
-      sections.add(Padding(
-        key: categories[index],
-        padding: const EdgeInsets.symmetric(vertical: 5.0),
-        child: Text(
-          section.attributeData?.name?.chopar?.ru ?? '',
-          style: const TextStyle(
-              color: Colors.black, fontSize: 30, fontWeight: FontWeight.w500),
-        ),
-      ));
-
-      sections.add(ProductCardList(section.items));
-    });
-
-    return sections;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return ScrollsToTop(
-      onScrollsToTop: (ScrollsToTopEvent event) async {
-        scrollTo(0);
-        DefaultTabController.of(tabContext!)!.animateTo(
-          0,
-          duration: const Duration(milliseconds: 100),
-        );
-      },
-      child: DefaultTabController(
-          length: products.length,
-          child: Builder(builder: (BuildContext context) {
-            tabContext = context;
-            return Expanded(
-              child: Column(children: [
-                const SizedBox(height: 24),
-                SizedBox(
-                  child: TabBar(
-                    indicator: BoxDecoration(
-                        border: Border.all(color: Colors.white),
-                        borderRadius: BorderRadius.circular(20),
-                        color: AppColors.mainColor),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.black,
-                    isScrollable: true,
-                    tabs: products.map((section) {
-                      return Text(
-                        section.attributeData?.name?.chopar?.ru ?? '',
-                      );
-                    }).toList(),
-                    onTap: (int index) => scrollTo(index),
+    return SafeArea(
+      child: ScrollsToTop(
+        onScrollsToTop: (ScrollsToTopEvent event) async {
+          _tabController.animateTo(
+            0,
+            duration: const Duration(milliseconds: 100),
+          );
+        },
+        child: VerticalScrollableTabView(
+            tabController: _tabController,
+            listItemData: widget.products,
+            verticalScrollPosition: VerticalScrollPosition.begin,
+            slivers: [
+              SliverAppBar(
+                pinned: true,
+                // floating: false,
+                expandedHeight: 450.0,
+                backgroundColor: Colors.white,
+                automaticallyImplyLeading: false,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const Header(),
+                  titlePadding: const EdgeInsets.all(0),
+                  centerTitle: true,
+                  collapseMode: CollapseMode.pin,
+                  background: Container(
+                    margin: const EdgeInsets.only(top: 55, left: 10, right: 10),
+                    child: Column(
+                      children: [
+                        const ChooseCity(),
+                        const WayToReceiveAnOrder(),
+                        SliderCarousel(),
+                      ],
+                    ),
                   ),
-                  height: 40,
+                  expandedTitleScale: 1,
                 ),
-                const SizedBox(
-                  height: 5,
+                bottom: TabBar(
+                  controller: _tabController,
+                  indicator: BoxDecoration(
+                      border: Border.all(color: Colors.white),
+                      borderRadius: BorderRadius.circular(20),
+                      color: AppColors.mainColor),
+                  labelColor: Colors.white,
+                  unselectedLabelColor: Colors.black,
+                  isScrollable: true,
+                  padding: const EdgeInsets.all(5),
+                  tabs: widget.products.map((section) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 10),
+                      child: Text(
+                        section.attributeData?.name?.chopar?.ru ?? '',
+                      ),
+                    );
+                  }).toList(),
+                  onTap: (index) {
+                    VerticalScrollableTabBarStatus.setIndex(index);
+                  },
                 ),
-                Expanded(
-                    child: SingleChildScrollView(
-                        controller: scrollCont,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: getSectionsList()))),
-                // SizedBox(
-                //   child: ScrollablePositionedList.builder(
-                //     itemCount: products.length,
-                //     itemBuilder: productSection,
-                //     itemScrollController: itemScrollController,
-                //     itemPositionsListener: itemPositionsListener,
-                //     scrollDirection: Axis.horizontal,
-                //   ),
-                //   height: 40,
-                // ),
-                Container(
-                  height: 100,
-                  width: double.infinity,
-                  color: Colors.white.withOpacity(0),
-                  child: const SizedBox(),
-                )
-                // Expanded(
-                //     child: ScrollablePositionedList.builder(
-                //   shrinkWrap: true,
-                //   itemCount: products.length,
-                //   itemBuilder: (context, index) {
-                //     var locale = context.locale.toString();
-                //     var attributeDataName = '';
-                //     switch (locale) {
-                //       // case 'en':
-                //       //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
-                //       //   break;
-                //       case 'uz':
-                //         attributeDataName =
-                //             products[index].attributeData?.name?.chopar?.uz ?? '';
-                //         break;
-                //       default:
-                //         attributeDataName =
-                //             products[index].attributeData?.name?.chopar?.ru ?? '';
-                //         break;
-                //     }
-                //     return SizedBox(
-                //         height: getProductHeight(products[index]),
-                //         width: double.infinity,
-                //         child: Column(
-                //             crossAxisAlignment: CrossAxisAlignment.start,
-                //             children: [
-                //               Text(
-                //                 products[index].attributeData?.name?.chopar?.ru ?? '',
-                //                 style: const TextStyle(
-                //                     color: Colors.black,
-                //                     fontSize: 30,
-                //                     fontWeight: FontWeight.w500),
-                //               ),
-                //               const SizedBox(height: 10,),
-                //               ProductCardList(products[index].items),
-                //             ]));
-                //   },
-                //   itemScrollController: verticalScrollController,
-                //   itemPositionsListener: verticalPositionsListener,
-                //   scrollDirection: Axis.vertical,
-                // ))
-              ]),
-            );
-          })),
+              ),
+            ],
+            eachItemChild: (object, index) =>
+                getProductSection(object as ProductSection, context)),
+      ),
     );
   }
 }

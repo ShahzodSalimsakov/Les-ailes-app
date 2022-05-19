@@ -67,12 +67,14 @@ class FixedBasket extends StatelessWidget {
                     ..rounded = 25),
             );
           }
-          return Container(
-              height: 100,
-              width: double.infinity,
-              color: Colors.white.withOpacity(0),
-              child: const SizedBox(),
-            );
+          // return Container(
+          //     height: 100,
+          //     width: double.infinity,
+          //     color: Colors.white.withOpacity(0),
+          //     child: const SizedBox(),
+          //   );
+
+          return SizedBox();
         });
   }
 }

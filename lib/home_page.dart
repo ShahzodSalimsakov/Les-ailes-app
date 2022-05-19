@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -26,6 +27,8 @@ import 'package:native_updater/native_updater.dart';
 import 'models/delivery_location_data.dart';
 import 'dart:io' show Platform;
 
+import 'models/productSection.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -39,6 +42,40 @@ class _HomePageState extends State<HomePage> {
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  List<ProductSection> products = List<ProductSection>.empty();
+  bool isProductsLoading = true;
+
+
+  Future<void> getProducts() async {
+    setState(() {
+      isProductsLoading = true;
+    });
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    };
+    var url = Uri.https(
+        'api.lesailes.uz', '/api/products/public', {'perSection': '1'});
+    var response = await http.get(url, headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      List<ProductSection> productSections = List<ProductSection>.from(
+          json['data'].map((m) => ProductSection.fromJson(m)).toList());
+      // _tabController.dispose();
+      // _tabController = TabController(
+      //     length: productSections.length, vsync: this, initialIndex: 0);
+      setState(() {
+        products = productSections;
+        isProductsLoading = false;
+        // scrollCont.addListener(changeTabs);
+      });
+      // Future.delayed(const Duration(milliseconds: 200), (){
+      //   _tabController.dispose();
+      //   _tabController = TabController(
+      //       length: productSections.length, vsync: this, initialIndex: 0);
+      // });
+    }
+  }
 
   // Future<void> setLocation(LocationData location,
   //     DeliveryLocationData deliveryData, String house) async {
@@ -100,6 +137,7 @@ class _HomePageState extends State<HomePage> {
     checkVersion();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+    getProducts();
     // () async {
     //   Location location = Location();
     //
@@ -254,23 +292,29 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
-
+  late double pinnedHeaderHeight;
   @override
   Widget build(BuildContext context) {
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
+  pinnedHeaderHeight =
+  //statusBar height
+  statusBarHeight +
+      //pinned SliverAppBar height in header
+      kToolbarHeight;
     return Scaffold(
-      // appBar: AppBar(
-      //   toolbarHeight: 80,
-      //   title: const Header(),
-      //   automaticallyImplyLeading: false,
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   systemOverlayStyle: const SystemUiOverlayStyle(
-      //       statusBarColor: AppColors.mainColor, // Status bar
-      //       statusBarBrightness: Brightness.light),
-      // ),
+        // appBar: AppBar(
+        //   toolbarHeight: 80,
+        //   title: const Header(),
+        //   automaticallyImplyLeading: false,
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   systemOverlayStyle: const SystemUiOverlayStyle(
+        //       statusBarColor: AppColors.mainColor, // Status bar
+        //       statusBarBrightness: Brightness.light),
+        // ),
 
-      drawer: const LeftMenu(),
-      body: /*SingleChildScrollView(
+        drawer: const LeftMenu(),
+        body: /*SingleChildScrollView(
         controller: _parentScrollController,
         scrollDirection: Axis.vertical,
         child: Expanded(
@@ -288,54 +332,177 @@ class _HomePageState extends State<HomePage> {
               ])),
         ),
       ),*/
-          _connectionStatus.toString() == 'ConnectivityResult.none'
-              ? Center(
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
-                    const SizedBox(
-                      height: 50,
-                    ),
-                    const Icon(
-                      Icons.wifi_off_outlined,
-                      color: AppColors.mainColor,
-                      size: 100,
-                    )
-                  ],
-                ))
-              : SafeArea(
-                  child: Stack(children: [
-                    SingleChildScrollView(
-                        controller: _parentScrollController,
-                        scrollDirection: Axis.vertical,
-                        child: Container(
-                            // height: double.maxFinite,
-                            // width: double.maxFinite,
-                            height: Platform.isAndroid
-                                ? MediaQuery.of(context).size.height * 1.50
-                                : MediaQuery.of(context).size.height * 1.45,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 1),
-                            // margin: EdgeInsets.only(
-                            //     top: MediaQuery.of(context).padding.top),
-                            child: Column(children: [
-                              const Header(),
-                              const ChooseCity(),
-                              const WayToReceiveAnOrder(),
-                              SliderCarousel(),
-                              ProductTabListStateful(
-                                  parentScrollController:
-                                      _parentScrollController),
-                            ]))),
-                    const Positioned(
-                        child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: FixedBasket(),
-                    )),
-                  ]),
-                ),
-      // bottomNavigationBar: const FixedBasket(),
-    );
+            _connectionStatus.toString() == 'ConnectivityResult.none'
+                ? Center(
+                    child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(tr('checkInet'),
+                          style: const TextStyle(fontSize: 20)),
+                      const SizedBox(
+                        height: 50,
+                      ),
+                      const Icon(
+                        Icons.wifi_off_outlined,
+                        color: AppColors.mainColor,
+                        size: 100,
+                      )
+                    ],
+                  ))
+                :
+            isProductsLoading ? Container(width: double.infinity, height: double.infinity, color: AppColors.mainColor,child: const Center(child: CircularProgressIndicator(color: Colors.white,),)) :  ProductTabListStateful(products: products),
+                // SafeArea(
+                //         child: Stack(children: [
+                //           SingleChildScrollView(
+                //               controller: _parentScrollController,
+                //               scrollDirection: Axis.vertical,
+                //               child: Container(
+                //                   // height: double.maxFinite,
+                //                   // width: double.maxFinite,
+                //                   height: Platform.isAndroid
+                //                       ? MediaQuery.of(context).size.height * 1.50
+                //                       : MediaQuery.of(context).size.height * 1.45,
+                //                   padding: const EdgeInsets.symmetric(
+                //                       horizontal: 16, vertical: 1),
+                //                   // margin: EdgeInsets.only(
+                //                   //     top: MediaQuery.of(context).padding.top),
+                //                   child: Column(children: [
+                //                     const Header(),
+                //                     const ChooseCity(),
+                //                     const WayToReceiveAnOrder(),
+                //                     SliderCarousel(),
+                //                     ProductTabListStateful(
+                //                         parentScrollController:
+                //                             _parentScrollController),
+                //                   ]))),
+                //           const Positioned(
+                //               child: Align(
+                //             alignment: Alignment.bottomCenter,
+                //             child: FixedBasket(),
+                //           )),
+                //         ]),
+                //       ),
+      // SafeArea(child: Stack(children: [
+      //   ExtendedNestedScrollView(headerSliverBuilder: (context, innerBoxIsScrolled) => [SliverAppBar(title: Text('davr'),aut)],
+      //       body: Container(
+      //                         // height: double.maxFinite,
+      //                         // width: double.maxFinite,
+      //                         height: Platform.isAndroid
+      //                             ? MediaQuery.of(context).size.height * 1.50
+      //                             : MediaQuery.of(context).size.height * 1.45,
+      //                         padding: const EdgeInsets.symmetric(
+      //                             horizontal: 16, vertical: 1),
+      //                         // margin: EdgeInsets.only(
+      //                         //     top: MediaQuery.of(context).padding.top),
+      //                         child: Column(children: [
+      //                           const Header(),
+      //                           const ChooseCity(),
+      //                           const WayToReceiveAnOrder(),
+      //                           SliderCarousel(),
+      //                           // ProductTabListStateful(
+      //                           //     parentScrollController:
+      //                           //         _parentScrollController),
+      //                         ]))),
+      //     Positioned(
+      //         child: Align(
+      //       alignment: Alignment.bottomCenter,
+      //       child: FixedBasket(),
+      //     )),
+      // ],))
+                // Scaffold(
+                //     body: CustomScrollView(
+                //       slivers: <Widget>[
+                //         SliverAppBar(
+                //           pinned: true,
+                //           snap: false,
+                //           floating: false,
+                //           stretch: false,
+                //           expandedHeight: 500.0,
+                //           // backgroundColor: Colors.transparent,
+                //           // stretchTriggerOffset: 200,
+                //           // toolbarHeight: 200,
+                //           // backgroundColor: Colors.transparent,
+                //           flexibleSpace: FlexibleSpaceBar(
+                //             title: const Text('SliverAppBar'),
+                //             background: SafeArea(
+                //               child: Padding(
+                //                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                //                 child: Column(
+                //                   children: [
+                //                     const Header(),
+                //                     const ChooseCity(),
+                //                     const WayToReceiveAnOrder(),
+                //                     SliderCarousel(),
+                //                   ],
+                //                 ),
+                //               ),
+                //             ),
+                //           ),
+                //           // actions: [
+                //           //   Column(
+                //           //     children: [
+                //           //       Header(),
+                //           //       ChooseCity(),
+                //           //     ],
+                //           //   )
+                //           // ],
+                //         ),
+                //         const SliverToBoxAdapter(
+                //           child: SizedBox(
+                //             height: 20,
+                //             child: Center(
+                //               child: Text(
+                //                   'Scroll to see the SliverAppBar in effect.'),
+                //             ),
+                //           ),
+                //         ),
+                //         SliverList(
+                //           delegate: SliverChildBuilderDelegate(
+                //             (BuildContext context, int index) {
+                //               return Container(
+                //                 color:
+                //                     index.isOdd ? Colors.white : Colors.black12,
+                //                 height: 100.0,
+                //                 child: Center(
+                //                   child: Text('$index', textScaleFactor: 5),
+                //                 ),
+                //               );
+                //             },
+                //             childCount: 20,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //     bottomNavigationBar: BottomAppBar(
+                //       child: Padding(
+                //         padding: const EdgeInsets.all(8),
+                //         child: OverflowBar(
+                //           overflowAlignment: OverflowBarAlignment.center,
+                //           children: <Widget>[
+                //             Row(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: <Widget>[
+                //                 const Text('pinned'),
+                //               ],
+                //             ),
+                //             Row(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: <Widget>[
+                //                 const Text('snap'),
+                //               ],
+                //             ),
+                //             Row(
+                //               mainAxisSize: MainAxisSize.min,
+                //               children: <Widget>[
+                //                 const Text('floating'),
+                //               ],
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   )
+        bottomNavigationBar: Container(color: Colors.transparent,child: const FixedBasket(),),
+        );
   }
 }

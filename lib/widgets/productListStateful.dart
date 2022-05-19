@@ -53,7 +53,7 @@ class _ProductListStatefulState extends State<ProductListStateful> {
     if (section.halfMode == 1) {
       height = 260;
     } else {
-      if (section.items != null && section.items!.length > 0) {
+      if (section.items != null && section.items!.isNotEmpty) {
         height = ((section.items!.length * 330)/2) + 250;
       }
     }
