@@ -340,6 +340,7 @@ class BasketWidget extends HookWidget {
             Uri.https('api.lesailes.uz', '/api/baskets/${basket.encodedId}');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
+          _isBasketLoading.value = true;
           var json = jsonDecode(response.body);
           BasketData basketLocalData = BasketData.fromJson(json['data']);
           if (basketLocalData.lines != null) {
@@ -375,6 +376,7 @@ class BasketWidget extends HookWidget {
             }
           }
           basketData.value = basketLocalData;
+          _isBasketLoading.value = false;
         }
       }
     }
@@ -421,7 +423,8 @@ class BasketWidget extends HookWidget {
           basket.totalPrice = newBasket.total;
           // await Future.delayed(Duration(milliseconds: 50));
           basketData.value = newBasket;
-          Box<BasketItemQuantity> basketItemQuantityBox = Hive.box<BasketItemQuantity>('basketItemQuantity');
+          Box<BasketItemQuantity> basketItemQuantityBox =
+              Hive.box<BasketItemQuantity>('basketItemQuantity');
           await basketItemQuantityBox.clear();
           if (basket.lineCount == 0) {
             Navigator.of(context).pop();
@@ -531,49 +534,54 @@ class BasketWidget extends HookWidget {
                         // const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),
-                        ListView.separated(
-                            padding: const EdgeInsets.only(top: 0),
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.vertical,
-                            itemCount: basketData.value?.lines?.length ?? 0,
-                            separatorBuilder: (context, index) {
-                              return const Divider();
-                            },
-                            itemBuilder: (context, index) {
-                              final item = basketData.value!.lines![index];
-                              return item.bonusId != null
-                                  ? basketItems(item)
-                                  : Dismissible(
-                                      direction: DismissDirection.endToStart,
-                                      key: Key(item.id.toString()),
-                                      child: basketItems(item),
-                                      background: Container(
-                                        color: Colors.red,
-                                      ),
-                                      onDismissed:
-                                          (DismissDirection direction) {
-                                        destroyLine(item.id);
-                                      },
-                                      secondaryBackground: Container(
-                                        color: Colors.red,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(15),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: const [
-                                              Icon(Icons.delete,
-                                                  color: Colors.white),
-                                              Text('Удалить',
-                                                  style: TextStyle(
-                                                      color: Colors.white)),
-                                            ],
+                        _isBasketLoading.value != false
+                            ? const CircularProgressIndicator(
+                                color: AppColors.mainColor,
+                              )
+                            : ListView.separated(
+                                padding: const EdgeInsets.only(top: 0),
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                scrollDirection: Axis.vertical,
+                                itemCount: basketData.value?.lines?.length ?? 0,
+                                separatorBuilder: (context, index) {
+                                  return const Divider();
+                                },
+                                itemBuilder: (context, index) {
+                                  final item = basketData.value!.lines![index];
+                                  return item.bonusId != null
+                                      ? basketItems(item)
+                                      : Dismissible(
+                                          direction:
+                                              DismissDirection.endToStart,
+                                          key: Key(item.id.toString()),
+                                          child: basketItems(item),
+                                          background: Container(
+                                            color: Colors.red,
                                           ),
-                                        ),
-                                      ),
-                                    );
-                            }),
+                                          onDismissed:
+                                              (DismissDirection direction) {
+                                            destroyLine(item.id);
+                                          },
+                                          secondaryBackground: Container(
+                                            color: Colors.red,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(15),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: const [
+                                                  Icon(Icons.delete,
+                                                      color: Colors.white),
+                                                  Text('Удалить',
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                }),
                         relatedData.value.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(
@@ -831,7 +839,7 @@ class BasketWidget extends HookWidget {
                                                               }
                                                             }
                                                             _isBasketLoading
-                                                                .value = true;
+                                                                .value = false;
 
                                                             return;
                                                           },

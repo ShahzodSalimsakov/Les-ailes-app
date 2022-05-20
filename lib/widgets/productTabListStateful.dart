@@ -82,8 +82,8 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 20),
             child: Text(
               attributeDataName,
               style: const TextStyle(
