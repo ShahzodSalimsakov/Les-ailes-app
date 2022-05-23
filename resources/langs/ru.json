@@ -134,7 +134,7 @@
   "product": "Продукт",
   "equipment": "Комплектация",
   "delivery": "Доставка",
-  "leaveAReview" : "Оставьте отзыв",
+  "leaveAReview": "Оставьте отзыв",
   "send": "Отправить",
   "reviewSended": "Отзыв отправлен",
   "selectFirst": "Сначала выберите",
@@ -148,5 +148,13 @@
   "shippingAmount": "Сумма доставки",
   "checkInet": "Проверьте подключения к интернету",
   "update": "Обновить",
-  "nextTime" : "Потом"
+  "nextTime": "Потом",
+  "cashback": "Кэшбэк",
+  "cashbackHistory": "История начислений и списаний кешбек баллов",
+  "accrued": "Начислено",
+  "decommissioned": "Списана",
+  "wrongNumber": "Неверный номер",
+  "sentCodeToNumber": "Отправлен код на номер",
+  "chooseDate": "Выберите дату",
+  "day": "День"
 }

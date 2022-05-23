@@ -2,7 +2,7 @@ class SalesBanner {
   late int id;
   late bool active;
   late String title;
-  late Null link;
+  late String? link;
   late Null buttonTitle;
   late Null description;
   late int sort;

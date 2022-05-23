@@ -154,5 +154,11 @@
   "shippingAmount": "Shipping amount",
   "checkInet": "Check internet connections",
   "update": "Update",
-  "nextTime" : "Next time"
+  "nextTime" : "Next time",
+  "cashback": "Cashback",
+  "cashbackHistory": "Accrual history and write-offs of cashback points",
+  "accrued": "Accrued",
+  "decommissioned": "Decommissioned",
+  "chooseDate": "Choose date",
+  "day": "Day"
 }

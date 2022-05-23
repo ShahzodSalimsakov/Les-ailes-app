@@ -134,7 +134,7 @@
   "product": "Mahsulot",
   "equipment": "To'plam",
   "delivery": "Yetkazish xizmati",
-  "leaveAReview" : "Sharh qoldiring",
+  "leaveAReview": "Sharh qoldiring",
   "send": "Yuborish",
   "reviewSended": "Sharh yuborildi",
   "selectFirst": "Avval tanlang",
@@ -148,5 +148,13 @@
   "shippingAmount": "Yetkazib berish narxi",
   "checkInet": "Internet ulanishlarini tekshiring",
   "update": "Yangilash",
-  "nextTime" : "Keyingi safar"
+  "nextTime": "Keyingi safar",
+  "cashback": "Keshbek",
+  "cashbackHistory": "Keshbek qo'shilgan va yechilgan tarixi",
+  "accrued": "Qo'shilgan",
+  "decommissioned": "Yechilgan",
+  "wrongNumber": "Noto'g'ri raqam",
+  "sentCodeToNumber": "Raqamga kod yuborildi",
+  "chooseDate": "Sanani tanlang",
+  "day": "Kun"
 }

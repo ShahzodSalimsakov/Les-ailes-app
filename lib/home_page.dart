@@ -37,13 +37,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   List<ProductSection> products = List<ProductSection>.empty();
   bool isProductsLoading = true;
-
 
   Future<void> getProducts() async {
     setState(() {
@@ -292,29 +290,31 @@ class _HomePageState extends State<HomePage> {
       );
     });
   }
+
   late double pinnedHeaderHeight;
+
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
-  pinnedHeaderHeight =
-  //statusBar height
-  statusBarHeight +
-      //pinned SliverAppBar height in header
-      kToolbarHeight;
+    pinnedHeaderHeight =
+        //statusBar height
+        statusBarHeight +
+            //pinned SliverAppBar height in header
+            kToolbarHeight;
     return Scaffold(
-        // appBar: AppBar(
-        //   toolbarHeight: 80,
-        //   title: const Header(),
-        //   automaticallyImplyLeading: false,
-        //   backgroundColor: Colors.transparent,
-        //   elevation: 0,
-        //   systemOverlayStyle: const SystemUiOverlayStyle(
-        //       statusBarColor: AppColors.mainColor, // Status bar
-        //       statusBarBrightness: Brightness.light),
-        // ),
+      // appBar: AppBar(
+      //   toolbarHeight: 80,
+      //   title: const Header(),
+      //   automaticallyImplyLeading: false,
+      //   backgroundColor: Colors.transparent,
+      //   elevation: 0,
+      //   systemOverlayStyle: const SystemUiOverlayStyle(
+      //       statusBarColor: AppColors.mainColor, // Status bar
+      //       statusBarBrightness: Brightness.light),
+      // ),
 
-        drawer: const LeftMenu(),
-        body: /*SingleChildScrollView(
+      drawer: const LeftMenu(),
+      body: /*SingleChildScrollView(
         controller: _parentScrollController,
         scrollDirection: Axis.vertical,
         child: Expanded(
@@ -332,56 +332,64 @@ class _HomePageState extends State<HomePage> {
               ])),
         ),
       ),*/
-            _connectionStatus.toString() == 'ConnectivityResult.none'
-                ? Center(
-                    child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(tr('checkInet'),
-                          style: const TextStyle(fontSize: 20)),
-                      const SizedBox(
-                        height: 50,
-                      ),
-                      const Icon(
-                        Icons.wifi_off_outlined,
-                        color: AppColors.mainColor,
-                        size: 100,
-                      )
-                    ],
-                  ))
-                :
-            isProductsLoading ? Container(width: double.infinity, height: double.infinity, color: AppColors.mainColor,child: const Center(child: CircularProgressIndicator(color: Colors.white,),)) :  ProductTabListStateful(products: products),
-                // SafeArea(
-                //         child: Stack(children: [
-                //           SingleChildScrollView(
-                //               controller: _parentScrollController,
-                //               scrollDirection: Axis.vertical,
-                //               child: Container(
-                //                   // height: double.maxFinite,
-                //                   // width: double.maxFinite,
-                //                   height: Platform.isAndroid
-                //                       ? MediaQuery.of(context).size.height * 1.50
-                //                       : MediaQuery.of(context).size.height * 1.45,
-                //                   padding: const EdgeInsets.symmetric(
-                //                       horizontal: 16, vertical: 1),
-                //                   // margin: EdgeInsets.only(
-                //                   //     top: MediaQuery.of(context).padding.top),
-                //                   child: Column(children: [
-                //                     const Header(),
-                //                     const ChooseCity(),
-                //                     const WayToReceiveAnOrder(),
-                //                     SliderCarousel(),
-                //                     ProductTabListStateful(
-                //                         parentScrollController:
-                //                             _parentScrollController),
-                //                   ]))),
-                //           const Positioned(
-                //               child: Align(
-                //             alignment: Alignment.bottomCenter,
-                //             child: FixedBasket(),
-                //           )),
-                //         ]),
-                //       ),
+          _connectionStatus.toString() == 'ConnectivityResult.none'
+              ? Center(
+                  child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    const Icon(
+                      Icons.wifi_off_outlined,
+                      color: AppColors.mainColor,
+                      size: 100,
+                    )
+                  ],
+                ))
+              : isProductsLoading
+                  ? Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: AppColors.mainColor,
+                      child: const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                        ),
+                      ))
+                  : ProductTabListStateful(products: products),
+      // SafeArea(
+      //         child: Stack(children: [
+      //           SingleChildScrollView(
+      //               controller: _parentScrollController,
+      //               scrollDirection: Axis.vertical,
+      //               child: Container(
+      //                   // height: double.maxFinite,
+      //                   // width: double.maxFinite,
+      //                   height: Platform.isAndroid
+      //                       ? MediaQuery.of(context).size.height * 1.50
+      //                       : MediaQuery.of(context).size.height * 1.45,
+      //                   padding: const EdgeInsets.symmetric(
+      //                       horizontal: 16, vertical: 1),
+      //                   // margin: EdgeInsets.only(
+      //                   //     top: MediaQuery.of(context).padding.top),
+      //                   child: Column(children: [
+      //                     const Header(),
+      //                     const ChooseCity(),
+      //                     const WayToReceiveAnOrder(),
+      //                     SliderCarousel(),
+      //                     ProductTabListStateful(
+      //                         parentScrollController:
+      //                             _parentScrollController),
+      //                   ]))),
+      //           const Positioned(
+      //               child: Align(
+      //             alignment: Alignment.bottomCenter,
+      //             child: FixedBasket(),
+      //           )),
+      //         ]),
+      //       ),
       // SafeArea(child: Stack(children: [
       //   ExtendedNestedScrollView(headerSliverBuilder: (context, innerBoxIsScrolled) => [SliverAppBar(title: Text('davr'),aut)],
       //       body: Container(
@@ -409,100 +417,103 @@ class _HomePageState extends State<HomePage> {
       //       child: FixedBasket(),
       //     )),
       // ],))
-                // Scaffold(
-                //     body: CustomScrollView(
-                //       slivers: <Widget>[
-                //         SliverAppBar(
-                //           pinned: true,
-                //           snap: false,
-                //           floating: false,
-                //           stretch: false,
-                //           expandedHeight: 500.0,
-                //           // backgroundColor: Colors.transparent,
-                //           // stretchTriggerOffset: 200,
-                //           // toolbarHeight: 200,
-                //           // backgroundColor: Colors.transparent,
-                //           flexibleSpace: FlexibleSpaceBar(
-                //             title: const Text('SliverAppBar'),
-                //             background: SafeArea(
-                //               child: Padding(
-                //                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                //                 child: Column(
-                //                   children: [
-                //                     const Header(),
-                //                     const ChooseCity(),
-                //                     const WayToReceiveAnOrder(),
-                //                     SliderCarousel(),
-                //                   ],
-                //                 ),
-                //               ),
-                //             ),
-                //           ),
-                //           // actions: [
-                //           //   Column(
-                //           //     children: [
-                //           //       Header(),
-                //           //       ChooseCity(),
-                //           //     ],
-                //           //   )
-                //           // ],
-                //         ),
-                //         const SliverToBoxAdapter(
-                //           child: SizedBox(
-                //             height: 20,
-                //             child: Center(
-                //               child: Text(
-                //                   'Scroll to see the SliverAppBar in effect.'),
-                //             ),
-                //           ),
-                //         ),
-                //         SliverList(
-                //           delegate: SliverChildBuilderDelegate(
-                //             (BuildContext context, int index) {
-                //               return Container(
-                //                 color:
-                //                     index.isOdd ? Colors.white : Colors.black12,
-                //                 height: 100.0,
-                //                 child: Center(
-                //                   child: Text('$index', textScaleFactor: 5),
-                //                 ),
-                //               );
-                //             },
-                //             childCount: 20,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //     bottomNavigationBar: BottomAppBar(
-                //       child: Padding(
-                //         padding: const EdgeInsets.all(8),
-                //         child: OverflowBar(
-                //           overflowAlignment: OverflowBarAlignment.center,
-                //           children: <Widget>[
-                //             Row(
-                //               mainAxisSize: MainAxisSize.min,
-                //               children: <Widget>[
-                //                 const Text('pinned'),
-                //               ],
-                //             ),
-                //             Row(
-                //               mainAxisSize: MainAxisSize.min,
-                //               children: <Widget>[
-                //                 const Text('snap'),
-                //               ],
-                //             ),
-                //             Row(
-                //               mainAxisSize: MainAxisSize.min,
-                //               children: <Widget>[
-                //                 const Text('floating'),
-                //               ],
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //     ),
-                //   )
-        bottomNavigationBar: Container(color: Colors.transparent,child: const FixedBasket(),),
-        );
+      // Scaffold(
+      //     body: CustomScrollView(
+      //       slivers: <Widget>[
+      //         SliverAppBar(
+      //           pinned: true,
+      //           snap: false,
+      //           floating: false,
+      //           stretch: false,
+      //           expandedHeight: 500.0,
+      //           // backgroundColor: Colors.transparent,
+      //           // stretchTriggerOffset: 200,
+      //           // toolbarHeight: 200,
+      //           // backgroundColor: Colors.transparent,
+      //           flexibleSpace: FlexibleSpaceBar(
+      //             title: const Text('SliverAppBar'),
+      //             background: SafeArea(
+      //               child: Padding(
+      //                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      //                 child: Column(
+      //                   children: [
+      //                     const Header(),
+      //                     const ChooseCity(),
+      //                     const WayToReceiveAnOrder(),
+      //                     SliderCarousel(),
+      //                   ],
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //           // actions: [
+      //           //   Column(
+      //           //     children: [
+      //           //       Header(),
+      //           //       ChooseCity(),
+      //           //     ],
+      //           //   )
+      //           // ],
+      //         ),
+      //         const SliverToBoxAdapter(
+      //           child: SizedBox(
+      //             height: 20,
+      //             child: Center(
+      //               child: Text(
+      //                   'Scroll to see the SliverAppBar in effect.'),
+      //             ),
+      //           ),
+      //         ),
+      //         SliverList(
+      //           delegate: SliverChildBuilderDelegate(
+      //             (BuildContext context, int index) {
+      //               return Container(
+      //                 color:
+      //                     index.isOdd ? Colors.white : Colors.black12,
+      //                 height: 100.0,
+      //                 child: Center(
+      //                   child: Text('$index', textScaleFactor: 5),
+      //                 ),
+      //               );
+      //             },
+      //             childCount: 20,
+      //           ),
+      //         ),
+      //       ],
+      //     ),
+      //     bottomNavigationBar: BottomAppBar(
+      //       child: Padding(
+      //         padding: const EdgeInsets.all(8),
+      //         child: OverflowBar(
+      //           overflowAlignment: OverflowBarAlignment.center,
+      //           children: <Widget>[
+      //             Row(
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: <Widget>[
+      //                 const Text('pinned'),
+      //               ],
+      //             ),
+      //             Row(
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: <Widget>[
+      //                 const Text('snap'),
+      //               ],
+      //             ),
+      //             Row(
+      //               mainAxisSize: MainAxisSize.min,
+      //               children: <Widget>[
+      //                 const Text('floating'),
+      //               ],
+      //             ),
+      //           ],
+      //         ),
+      //       ),
+      //     ),
+      //   )
+      bottomNavigationBar: Container(
+        color: Colors.transparent,
+        child: const FixedBasket(),
+      ),
+    );
   }
 }

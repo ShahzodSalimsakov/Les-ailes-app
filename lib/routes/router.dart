@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:les_ailes/home_page.dart';
 import 'package:les_ailes/pages/aboutUs.dart';
+import 'package:les_ailes/pages/cashback_detail.dart';
 import 'package:les_ailes/pages/changeLang.dart';
 import 'package:les_ailes/pages/delivery.dart';
 import 'package:les_ailes/pages/franchise.dart';
@@ -44,6 +45,7 @@ import '../pages/profile.dart';
         AutoRoute(path: '', page: MyOrders),
         AutoRoute(path: ':orderId', page: OrderDetail)
       ]),
-  AutoRoute(path: 'my_addresses', name: 'MyAddresses', page: MyAddresses)
+  AutoRoute(path: 'my_addresses', name: 'MyAddresses', page: MyAddresses),
+  AutoRoute(path: 'cashback_detail', name: 'CashbackDetail', page: CashbackDetail)
 ])
 class $AppRouter {}
