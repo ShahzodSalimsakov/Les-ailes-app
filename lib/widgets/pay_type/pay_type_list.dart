@@ -79,25 +79,25 @@ class PayTypeListWidget extends HookWidget {
                   builder: (context) => OnlinePayments());
 
                 },
-              n.NikuButton(ListTile(
-                leading: Image.asset('images/pay_type_les_coin.png', width: 30, height: 30,),
-                title: n.NikuText(
-                  tr('payType.cashback'),
-                  style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
-                ),
-                trailing: Container(
-                  height: 24,
-                  width: 24,
-                  decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 1, color: Colors.grey)),
-                ),
-              ))
-                ..onPressed = () {
-                  PayType newPayType = PayType();
-                  newPayType.value = 'cashback';
-                  Hive.box<PayType>('payType').put('payType', newPayType);
-                  Navigator.of(context).pop();;
-                },
+              // n.NikuButton(ListTile(
+              //   leading: Image.asset('images/pay_type_les_coin.png', width: 30, height: 30,),
+              //   title: n.NikuText(
+              //     tr('payType.cashback'),
+              //     style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
+              //   ),
+              //   trailing: Container(
+              //     height: 24,
+              //     width: 24,
+              //     decoration:
+              //     BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 1, color: Colors.grey)),
+              //   ),
+              // ))
+              //   ..onPressed = () {
+              //     PayType newPayType = PayType();
+              //     newPayType.value = 'cashback';
+              //     Hive.box<PayType>('payType').put('payType', newPayType);
+              //     Navigator.of(context).pop();;
+              //   },
             ],
           )
         ]));
