@@ -78,16 +78,16 @@ class _HomePageState extends State<HomePage> {
       DeliveryLocationData deliveryData, String house) async {
     final Box<DeliveryLocationData> deliveryLocationBox =
         Hive.box<DeliveryLocationData>('deliveryLocationData');
-    deliveryLocationBox.put('deliveryLocationData', deliveryData);
+    // deliveryLocationBox.put('deliveryLocationData', deliveryData);
 
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? currentDeliver = box.get('deliveryType');
-    if (currentDeliver == null) {
-      DeliveryType deliveryType = DeliveryType();
-      deliveryType.value = DeliveryTypeEnum.deliver;
-      Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
-      box.put('deliveryType', deliveryType);
-    }
+    // if (currentDeliver == null) {
+    //   DeliveryType deliveryType = DeliveryType();
+    //   deliveryType.value = DeliveryTypeEnum.deliver;
+    //   Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+    //   box.put('deliveryType', deliveryType);
+    // }
     // else if (currentDeliver.value != DeliveryTypeEnum.pickup) {
     //   DeliveryType deliveryType = DeliveryType();
     //   deliveryType.value = DeliveryTypeEnum.pickup;
@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
           json['data']['items'].map((m) => Terminals.fromJson(m)).toList());
       Box<Terminals> transaction = Hive.box<Terminals>('currentTerminal');
       if (terminal.isNotEmpty) {
-        transaction.put('currentTerminal', terminal[0]);
+        // transaction.put('currentTerminal', terminal[0]);
 
         var stockUrl = Uri.https('api.lesailes.uz', 'api/terminals/get_stock',
             {'terminal_id': terminal[0].id.toString()});

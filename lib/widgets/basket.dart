@@ -630,7 +630,7 @@ class BasketWidget extends HookWidget {
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(30),
-                                                  color: AppColors.grey,
+                                                  color: Colors.white,
                                                 ),
                                                 child: Column(
                                                     mainAxisAlignment:
