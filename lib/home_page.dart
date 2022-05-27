@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -85,6 +86,10 @@ class _HomePageState extends State<HomePage> {
   //   }
   // }
 
+  void _instanceId() async {
+    var token = await FirebaseMessaging.instance.getToken();
+    print("Print Instance Token ID: " + token!);
+  }
   @override
   void initState() {
     // () async {
@@ -185,6 +190,9 @@ class _HomePageState extends State<HomePage> {
     //     }
     //   });
     // }();
+    super.initState();
+    _instanceId();
+
   }
 
   @override
