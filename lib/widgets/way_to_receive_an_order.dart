@@ -176,7 +176,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
               String entrance = deliveryLocationData.entrance != null
                   ? ', подъезд: ${deliveryLocationData.entrance}'
                   : '';
-              deliveryText = '${deliveryText}${house}${flat}${entrance}';
+              deliveryText = '$deliveryText$house$flat$entrance';
             }
           }
 

@@ -485,7 +485,6 @@ class _BasketStateFullWidgetState extends State<BasketStateFullWidget> {
   @override
   void initState() {
     // TODO: implement initState
-    print('davr');
     getBasket();
     fetchRecomendedItems();
     super.initState();

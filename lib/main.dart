@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/basket_item_quantity.dart';
@@ -35,13 +37,15 @@ import './firebase_options.dart';
 //   runApp(const MyApp());
 // }
 
+GetIt getIt = GetIt.instance;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await EasyLocalization.ensureInitialized();
-
+  getIt.registerSingleton<AppRouter>(AppRouter());
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(CityAdapter());
@@ -108,8 +112,10 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
         statusBarColor: AppColors.mainColor, // Color for Android
         statusBarBrightness:
-            Brightness.light // Dark == white status bar -- for IOS.
+            Brightness.light, // Dark == white status bar -- for IOS.
+      // systemNavigationBarColor: Colors.transparent
         ));
+    final router = getIt<AppRouter>();
     return MaterialApp.router(
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
@@ -117,8 +123,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Les Ailes',
       theme: ThemeData(fontFamily: 'ProximaSoft'),
-      routerDelegate: _appRouter.delegate(),
-      routeInformationParser: _appRouter.defaultRouteParser(),
+      routerDelegate: AutoRouterDelegate(router),
+      routeInformationParser: router.defaultRouteParser(),
     );
   }
 }

@@ -65,10 +65,10 @@ class ProductCard extends HookWidget {
     productPrice = formatCurrency.format(double.tryParse(productPrice));
     final _isBasketLoading = useState<bool>(false);
 
-    Box<BasketItemQuantity> basketItemQuantityBox = Hive.box<BasketItemQuantity>('basketItemQuantity');
-    BasketItemQuantity? basketItemQuantity = basketItemQuantityBox.get(product!.id);
-
-
+    Box<BasketItemQuantity> basketItemQuantityBox =
+        Hive.box<BasketItemQuantity>('basketItemQuantity');
+    BasketItemQuantity? basketItemQuantity =
+        basketItemQuantityBox.get(product!.id);
 
     final hashids = HashIds(
       salt: 'basket',
@@ -81,7 +81,6 @@ class ProductCard extends HookWidget {
     if (basketItemQuantity != null) {
       lineId = basketItemQuantity.lineId;
     }
-
 
     Future<void> destroyLine(int lineId) async {
       Map<String, String> requestHeaders = {
@@ -133,7 +132,7 @@ class ProductCard extends HookWidget {
       };
       BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
       newBasketItemQuantity.lineId = lineId;
-      newBasketItemQuantity.quantity = basketItemQuantity!.quantity-1;
+      newBasketItemQuantity.quantity = basketItemQuantity!.quantity - 1;
       await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
       var url = Uri.https(
           'api.lesailes.uz',
@@ -245,7 +244,8 @@ class ProductCard extends HookWidget {
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
-          Lines line = basketLocalData.lines!.firstWhere((element) => element.variant!.productId == product!.id);
+          Lines line = basketLocalData.lines!.firstWhere(
+              (element) => element.variant!.productId == product!.id);
           BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
           newBasketItemQuantity.lineId = line.id;
           newBasketItemQuantity.quantity = 1;
@@ -281,7 +281,8 @@ class ProductCard extends HookWidget {
               lineCount: basketLocalData.lines?.length ?? 0,
               totalPrice: basketLocalData.total);
           basketBox.put('basket', newBasket);
-          Lines line = basketLocalData.lines!.firstWhere((element) => element.variant!.productId == product!.id);
+          Lines line = basketLocalData.lines!.firstWhere(
+              (element) => element.variant!.productId == product!.id);
           BasketItemQuantity newBasketItemQuantity = BasketItemQuantity();
           newBasketItemQuantity.lineId = line.id;
           newBasketItemQuantity.quantity = 1;
@@ -292,8 +293,6 @@ class ProductCard extends HookWidget {
 
       return;
     }
-
-
 
     var locale = context.locale.toString();
     var attributeDataName = '';
@@ -325,9 +324,17 @@ class ProductCard extends HookWidget {
 
       return Container(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          margin: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            color: AppColors.grey,
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 0.0), //(x,y)
+                blurRadius: 1.0,
+              ),
+            ],
           ),
           child: Opacity(
             opacity: isInStock ? 0.3 : 1,
@@ -349,114 +356,117 @@ class ProductCard extends HookWidget {
                   ),
                   lineId != null
                       ? Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: n.NikuButton.elevated(const Icon(
-                            Icons.remove,
-                            color: Colors.white,
-                            size: 40,
-                          ))
-                            ..bg = AppColors.mainColor
-                            ..rounded = 20
-                            ..p = 0
-                            ..onPressed = () {
-                              decreaseQuantity(lineId!);
-                            }),
-                      n.NikuText(basketItemQuantity!.quantity.toString())
-                        ..style = n.NikuTextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500),
-                      SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: n.NikuButton.elevated(const Icon(
-                            Icons.add,
-                            color: Colors.white,
-                            size: 40,
-                          ))
-                            ..bg = AppColors.mainColor
-                            ..rounded = 20
-                            ..p = 0
-                            ..onPressed = () {
-                              increaseQuantity(lineId!);
-                            }),
-                    ],
-                  )
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: n.NikuButton.elevated(const Icon(
+                                  Icons.remove,
+                                  color: Colors.white,
+                                  size: 40,
+                                ))
+                                  ..bg = AppColors.mainColor
+                                  ..rounded = 20
+                                  ..p = 0
+                                  ..onPressed = () {
+                                    decreaseQuantity(lineId!);
+                                  }),
+                            n.NikuText(basketItemQuantity!.quantity.toString())
+                              ..style = n.NikuTextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
+                            SizedBox(
+                                height: 50,
+                                width: 50,
+                                child: n.NikuButton.elevated(const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                  size: 40,
+                                ))
+                                  ..bg = AppColors.mainColor
+                                  ..rounded = 20
+                                  ..p = 0
+                                  ..onPressed = () {
+                                    increaseQuantity(lineId!);
+                                  }),
+                          ],
+                        )
                       : SizedBox(
-                    height: 50,
-                    width: 144,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Box<DeliveryType> box =
-                        Hive.box<DeliveryType>('deliveryType');
-                        DeliveryType? deliveryType =
-                        box.get('deliveryType');
-                        Terminals? currentTerminal =
-                        Hive.box<Terminals>('currentTerminal')
-                            .get('currentTerminal');
-                        DeliveryLocationData? deliveryLocationData =
-                        Hive.box<DeliveryLocationData>(
-                            'deliveryLocationData')
-                            .get('deliveryLocationData');
+                          height: 50,
+                          width: 144,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Box<DeliveryType> box =
+                                  Hive.box<DeliveryType>('deliveryType');
+                              DeliveryType? deliveryType =
+                                  box.get('deliveryType');
+                              Terminals? currentTerminal =
+                                  Hive.box<Terminals>('currentTerminal')
+                                      .get('currentTerminal');
+                              DeliveryLocationData? deliveryLocationData =
+                                  Hive.box<DeliveryLocationData>(
+                                          'deliveryLocationData')
+                                      .get('deliveryLocationData');
 
-                        //Check pickup terminal
-                        if (deliveryType != null &&
-                            deliveryType.value ==
-                                DeliveryTypeEnum.pickup) {
-                          if (currentTerminal == null) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content: Text(
-                                    'Не выбран филиал самовывоза')));
-                            return;
-                          }
-                        }
+                              //Check pickup terminal
+                              if (deliveryType != null &&
+                                  deliveryType.value ==
+                                      DeliveryTypeEnum.pickup) {
+                                if (currentTerminal == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Не выбран филиал самовывоза')));
+                                  return;
+                                }
+                              }
 
-                        // Check delivery address
-                        if (deliveryType != null &&
-                            deliveryType.value ==
-                                DeliveryTypeEnum.deliver) {
-                          if (deliveryLocationData == null) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content: Text(
-                                    'Не указан адрес доставки')));
-                            return;
-                          } else if (deliveryLocationData.address ==
-                              null) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(
-                                content: Text(
-                                    'Не указан адрес доставки')));
-                            return;
-                          }
-                        }
+                              // Check delivery address
+                              if (deliveryType != null &&
+                                  deliveryType.value ==
+                                      DeliveryTypeEnum.deliver) {
+                                if (deliveryLocationData == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Не указан адрес доставки')));
+                                  return;
+                                } else if (deliveryLocationData.address ==
+                                    null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Не указан адрес доставки')));
+                                  return;
+                                }
+                              }
 
-                        if (isInStock) {
-                          return;
-                        }
+                              if (isInStock) {
+                                return;
+                              }
 
-                        addToBasket();
-                      },
-                      child: _isBasketLoading.value ? const CircularProgressIndicator(color: Colors.white,) : Text(productPrice),
-                      style: ButtonStyle(
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            )),
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(
-                            AppColors.mainColor),
-                      ),
-                    ),
-                  )
+                              addToBasket();
+                            },
+                            child: _isBasketLoading.value
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Text(productPrice),
+                            style: ButtonStyle(
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0),
+                              )),
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  AppColors.mainColor),
+                            ),
+                          ),
+                        )
                 ]),
           ));
     }
+
     return ValueListenableBuilder<Box<Stock>>(
         valueListenable: Hive.box<Stock>('stock').listenable(),
         builder: (context, box, _) {

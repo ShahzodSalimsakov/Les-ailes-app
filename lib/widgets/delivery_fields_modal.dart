@@ -41,6 +41,7 @@ class DeliverFieldsModal extends HookWidget {
     final entranceText = useState<String>('');
     final doorCodeText = useState<String>('');
     final addressLabel = useState<String>('');
+    final isLoading = useState<bool>(false);
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
@@ -159,131 +160,141 @@ class DeliverFieldsModal extends HookWidget {
             const SizedBox(
               height: 20,
             ),
-            Container(
-              width: double.infinity,
-              height: 60,
-              child: n.NikuButton(n.NikuText(
-                tr('deliveryBottomSheet.continue'),
-                style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
-              ))
-                ..bg = AppColors.mainColor
-                ..rounded = 20
-                ..onPressed = () async {
-                  _formKey.currentState!.save();
-                  var formValue = _formKey.currentState!.value;
-                  DeliveryLocationData deliveryData = DeliveryLocationData(
-                      house: formValue['house'] ?? '',
-                      flat: formValue['flat'] ?? '',
-                      entrance: formValue['entrance'] ?? '',
-                      doorCode: formValue['doorCode'] ?? '',
-                      label: formValue['label'] ?? '',
-                      lat: double.parse(geoData.coordinates.lat),
-                      lon: double.parse(geoData.coordinates.long),
-                      address: geoData.formatted ?? '');
-                  geoData.addressItems?.forEach((item) async {
-                    if (item.kind == 'province' || item.kind == 'area') {
-                      Map<String, String> requestHeaders = {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json'
-                      };
-                      var url =
-                          Uri.https('api.lesailes.uz', '/api/cities/public');
-                      var response =
-                          await http.get(url, headers: requestHeaders);
-                      if (response.statusCode == 200) {
-                        var json = jsonDecode(response.body);
-                        List<City> cityList = List<City>.from(
-                            json['data'].map((m) => City.fromJson(m)).toList());
-                        for (var element in cityList) {
-                          if (element.name == item.name) {
-                            Hive.box<City>('currentCity')
-                                .put('currentCity', element);
+            isLoading.value != false
+                ? const CircularProgressIndicator(color: AppColors.mainColor,)
+                : SizedBox(
+                    width: double.infinity,
+                    height: 60,
+                    child: n.NikuButton(n.NikuText(
+                      tr('deliveryBottomSheet.continue'),
+                      style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
+                    ))
+                      ..bg = AppColors.mainColor
+                      ..rounded = 20
+                      ..onPressed = () async {
+                        isLoading.value = true;
+                        _formKey.currentState!.save();
+                        var formValue = _formKey.currentState!.value;
+                        DeliveryLocationData deliveryData =
+                            DeliveryLocationData(
+                                house: formValue['house'] ?? '',
+                                flat: formValue['flat'] ?? '',
+                                entrance: formValue['entrance'] ?? '',
+                                doorCode: formValue['doorCode'] ?? '',
+                                label: formValue['label'] ?? '',
+                                lat: double.parse(geoData.coordinates.lat),
+                                lon: double.parse(geoData.coordinates.long),
+                                address: geoData.formatted ?? '');
+                        geoData.addressItems?.forEach((item) async {
+                          if (item.kind == 'province' || item.kind == 'area') {
+                            Map<String, String> requestHeaders = {
+                              'Content-type': 'application/json',
+                              'Accept': 'application/json'
+                            };
+                            var url = Uri.https(
+                                'api.lesailes.uz', '/api/cities/public');
+                            var response =
+                                await http.get(url, headers: requestHeaders);
+                            if (response.statusCode == 200) {
+                              var json = jsonDecode(response.body);
+                              List<City> cityList = List<City>.from(json['data']
+                                  .map((m) => City.fromJson(m))
+                                  .toList());
+                              for (var element in cityList) {
+                                if (element.name == item.name) {
+                                  Hive.box<City>('currentCity')
+                                      .put('currentCity', element);
+                                }
+                              }
+                            }
                           }
+                        });
+                        deliveryLocationBox.put(
+                            'deliveryLocationData', deliveryData);
+                        Map<String, String> requestHeaders = {
+                          'Content-type': 'application/json',
+                          'Accept': 'application/json'
+                        };
+
+                        var url = Uri.https(
+                            'api.lesailes.uz', 'api/terminals/find_nearest', {
+                          'lat': geoData.coordinates.lat,
+                          'lon': geoData.coordinates.long
+                        });
+                        var response =
+                            await http.get(url, headers: requestHeaders);
+                        if (response.statusCode == 200) {
+                          var json = jsonDecode(response.body);
+                          List<Terminals> terminal = List<Terminals>.from(
+                              json['data']['items']
+                                  .map((m) => Terminals.fromJson(m))
+                                  .toList());
+                          Box<Terminals> transaction =
+                              Hive.box<Terminals>('currentTerminal');
+                          transaction.put('currentTerminal', terminal[0]);
+
+                          var stockUrl = Uri.https(
+                              'api.lesailes.uz',
+                              'api/terminals/get_stock',
+                              {'terminal_id': terminal[0].id.toString()});
+                          var stockResponse =
+                              await http.get(stockUrl, headers: requestHeaders);
+                          if (stockResponse.statusCode == 200) {
+                            var json = jsonDecode(stockResponse.body);
+                            Stock newStockData = Stock(
+                                prodIds: List<int>.from(json[
+                                    'data']) /* json['data'].map((id) => id as int).toList()*/);
+                            Box<Stock> box = Hive.box<Stock>('stock');
+                            box.put('stock', newStockData);
+                          }
+
+                          Box<DeliveryType> box =
+                              Hive.box<DeliveryType>('deliveryType');
+                          DeliveryType newDeliveryType = DeliveryType();
+                          newDeliveryType.value = DeliveryTypeEnum.deliver;
+                          box.put('deliveryType', newDeliveryType);
+
+                          Box userBox = Hive.box<User>('user');
+                          User? currentUser = userBox.get('user');
+                          if (currentUser != null) {
+                            Map<String, String> requestHeaders = {
+                              'Content-type': 'application/json',
+                              'Accept': 'application/json',
+                              'Authorization': 'Bearer ${currentUser.userToken}'
+                            };
+                            var url = Uri.https(
+                                'api.lesailes.uz', '/api/address/new');
+                            var formData = {
+                              'lat': geoData.coordinates.lat,
+                              'lon': geoData.coordinates.long,
+                              "label": formValue['addressLabel'] ?? '',
+                              "addressId": '',
+                              "house": formValue['house'] ?? '',
+                              "flat": formValue['flat'] ?? '',
+                              "entrance": formValue['entrance'] ?? '',
+                              "door_code": formValue['doorCode'] ?? '',
+                              "address": geoData.formatted ?? '',
+                              "comments": "",
+                              "floor": ''
+                            };
+                            var response = await http.post(url,
+                                headers: requestHeaders,
+                                body: jsonEncode(formData));
+                            if (response.statusCode == 200) {
+                              var json = jsonDecode(response.body);
+                              print(json);
+                            } else {
+                              print(response.body);
+                            }
+                          }
+                          isLoading.value = false;
+
+                          Navigator.of(context)
+                            ..pop()
+                            ..pop();
                         }
-                      }
-                    }
-                  });
-                  deliveryLocationBox.put('deliveryLocationData', deliveryData);
-                  Map<String, String> requestHeaders = {
-                    'Content-type': 'application/json',
-                    'Accept': 'application/json'
-                  };
-
-                  var url = Uri.https(
-                      'api.lesailes.uz', 'api/terminals/find_nearest', {
-                    'lat': geoData.coordinates.lat,
-                    'lon': geoData.coordinates.long
-                  });
-                  var response = await http.get(url, headers: requestHeaders);
-                  if (response.statusCode == 200) {
-                    var json = jsonDecode(response.body);
-                    List<Terminals> terminal = List<Terminals>.from(json['data']
-                            ['items']
-                        .map((m) => Terminals.fromJson(m))
-                        .toList());
-                    Box<Terminals> transaction =
-                        Hive.box<Terminals>('currentTerminal');
-                    transaction.put('currentTerminal', terminal[0]);
-
-                    var stockUrl = Uri.https(
-                        'api.lesailes.uz',
-                        'api/terminals/get_stock',
-                        {'terminal_id': terminal[0].id.toString()});
-                    var stockResponse =
-                        await http.get(stockUrl, headers: requestHeaders);
-                    if (stockResponse.statusCode == 200) {
-                      var json = jsonDecode(stockResponse.body);
-                      Stock newStockData = Stock(
-                          prodIds: List<int>.from(json[
-                              'data']) /* json['data'].map((id) => id as int).toList()*/);
-                      Box<Stock> box = Hive.box<Stock>('stock');
-                      box.put('stock', newStockData);
-                    }
-
-                    Box<DeliveryType> box =
-                        Hive.box<DeliveryType>('deliveryType');
-                    DeliveryType newDeliveryType = DeliveryType();
-                    newDeliveryType.value = DeliveryTypeEnum.deliver;
-                    box.put('deliveryType', newDeliveryType);
-
-                    Box userBox = Hive.box<User>('user');
-                    User currentUser = userBox.get('user');
-                    if (currentUser != null) {
-                      Map<String, String> requestHeaders = {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json',
-                        'Authorization': 'Bearer ${currentUser.userToken}'
-                      };
-                      var url = Uri.https('api.lesailes.uz', '/api/address/new');
-                      var formData = {
-                        'lat': geoData.coordinates.lat,
-                        'lon': geoData.coordinates.long,
-                        "label": formValue['addressLabel'] ?? '',
-                        "addressId": '',
-                        "house": formValue['house'] ?? '',
-                        "flat": formValue['flat'] ?? '',
-                        "entrance": formValue['entrance'] ?? '',
-                        "door_code": formValue['doorCode'] ?? '',
-                        "address": geoData.formatted ?? '',
-                        "comments": "",
-                        "floor": ''
-                      };
-                      var response = await http.post(url,
-                          headers: requestHeaders, body: jsonEncode(formData));
-                      if (response.statusCode == 200) {
-                        var json = jsonDecode(response.body);
-                        print(json);
-                      } else {
-                        print(response.body);
-                      }
-                    }
-
-                    Navigator.of(context)
-                      ..pop()
-                      ..pop();
-                  }
-                },
-            ),
+                      },
+                  ),
           ],
         ),
       ),

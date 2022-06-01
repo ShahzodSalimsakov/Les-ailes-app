@@ -11,7 +11,8 @@
   },
   "main": {
     "deliveryOrPickup": "Закажите доставку или заберите",
-    "newsAndPromotions": "Новости и акции"
+    "newsAndPromotions": "Новости и акции",
+    "readMore": "Подробнее"
   },
   "deliveryOrPickup": {
     "chooseType": "Выберите способ получения заказа",
@@ -134,7 +135,7 @@
   "product": "Продукт",
   "equipment": "Комплектация",
   "delivery": "Доставка",
-  "leaveAReview" : "Оставьте отзыв",
+  "leaveAReview": "Оставьте отзыв",
   "send": "Отправить",
   "reviewSended": "Отзыв отправлен",
   "selectFirst": "Сначала выберите",
@@ -145,5 +146,16 @@
   "reviewSaved": "Ваш отзыв успешно принят",
   "addressName": "Название адреса",
   "takenAway": "Забрали",
-  "shippingAmount": "Сумма доставки"
+  "shippingAmount": "Сумма доставки",
+  "checkInet": "Проверьте подключения к интернету",
+  "update": "Обновить",
+  "nextTime": "Потом",
+  "cashback": "Кэшбэк",
+  "cashbackHistory": "История начислений и списаний кешбек баллов",
+  "accrued": "Начислено",
+  "decommissioned": "Списана",
+  "wrongNumber": "Неверный номер",
+  "sentCodeToNumber": "Отправлен код на номер",
+  "chooseDate": "Выберите дату",
+  "day": "День"
 }

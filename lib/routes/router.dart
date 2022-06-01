@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:les_ailes/home_page.dart';
 import 'package:les_ailes/pages/aboutUs.dart';
+import 'package:les_ailes/pages/cashback_detail.dart';
 import 'package:les_ailes/pages/changeLang.dart';
 import 'package:les_ailes/pages/delivery.dart';
 import 'package:les_ailes/pages/franchise.dart';
@@ -14,10 +14,12 @@ import 'package:les_ailes/pages/settings.dart';
 import 'package:les_ailes/pages/signIn.dart';
 import 'package:les_ailes/pages/terms.dart';
 
+import '../message_handler.dart';
+import '../pages/notifications_detail.dart';
 import '../pages/profile.dart';
 
 @MaterialAutoRouter(replaceInRouteName: 'Page,Route', routes: [
-  AutoRoute(path: '/', name: 'HomePage', page: HomePage),
+  AutoRoute(path: '/', name: 'Home', page: MessageHandler),
   AutoRoute(path: 'signIn', name: 'SignInPage', page: SignInPage),
   AutoRoute(
     path: 'settings',
@@ -28,7 +30,17 @@ import '../pages/profile.dart';
   AutoRoute(
       path: 'notifications',
       name: 'NotificationsPage',
-      page: NotificationsPage),
+      page: EmptyRouterPage,
+      children: [
+        AutoRoute(
+          path: '',
+          page: NotificationsPage,
+        ),
+        AutoRoute(
+          path: ':id',
+          page: NotificationDetailPage,
+        )
+      ]),
   AutoRoute(path: 'changeLang', name: 'changeLang', page: ChangeLang),
   AutoRoute(path: 'privacy', name: 'PrivacyPolicy', page: Privacy),
   AutoRoute(path: 'terms', name: 'Termsofuse', page: Terms),
@@ -44,6 +56,8 @@ import '../pages/profile.dart';
         AutoRoute(path: '', page: MyOrders),
         AutoRoute(path: ':orderId', page: OrderDetail)
       ]),
-  AutoRoute(path: 'my_addresses', name: 'MyAddresses', page: MyAddresses)
+  AutoRoute(path: 'my_addresses', name: 'MyAddresses', page: MyAddresses),
+  AutoRoute(
+      path: 'cashback_detail', name: 'CashbackDetail', page: CashbackDetail)
 ])
 class $AppRouter {}

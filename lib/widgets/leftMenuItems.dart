@@ -83,7 +83,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),
-                const Cashback(),
+                // const Cashback(),
                 // const Spacer(flex: 1),
                 ListView(
                   shrinkWrap: true,

@@ -1,28 +1,52 @@
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/utils/colors.dart';
+import 'package:niku/niku.dart' as n;
 
-class NotificationsPage extends StatelessWidget {
+import '../routes/router.gr.dart';
+
+class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
 
-  Future<void> fetchNews() async {
-      Map<String, String> requestHeaders = {
-        'Content-type': 'application/json',
-        'Accept': 'application/json'
-      };
+  @override
+  State<NotificationsPage> createState() => _NotificationsPageState();
+}
 
-      var url = Uri.https(
-          'api.lesailes.uz', '/api/');
-      var response = await http.get(url, headers: requestHeaders);
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body);
-        // List<RelatedProduct> localRelatedProduct = List<RelatedProduct>.from(
-        //     json['data'].map((m) => RelatedProduct.fromJson(m)).toList());
-        // localRelatedProduct;
-        // relatedData.value = localRelatedProduct;
-      }
+class _NotificationsPageState extends State<NotificationsPage> {
+  List<Map<String, dynamic>> _notifications = [];
+  bool isLoading = false;
+
+  Future<void> fetchNotifications() async {
+    setState(() {
+      isLoading = true;
+    });
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json'
+    };
+
+    var url = Uri.https('api.lesailes.uz', '/api/mobile_push_events', {
+      'op_<=_start_date': DateFormat('yyyy-MM-dd H:m:s').format(DateTime.now())
+    });
+    var response = await http.get(url, headers: requestHeaders);
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      var json = jsonDecode(response.body);
+      setState(() {
+        // json data to list of Map<String, dynamic>
+        _notifications = json['data'].cast<Map<String, dynamic>>();
+        isLoading = false;
+      });
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    fetchNotifications();
   }
 
   @override
@@ -31,7 +55,9 @@ class NotificationsPage extends StatelessWidget {
       appBar: AppBar(
         actions: [
           GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () {
+                context.router.pop();
+              },
               child: const Padding(
                 padding: EdgeInsets.only(right: 28),
                 child: Center(
@@ -54,50 +80,105 @@ class NotificationsPage extends StatelessWidget {
       body: Container(
         color: Colors.grey.shade100,
         child: SafeArea(
-          child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
-              child: ListView.builder(
-                  itemCount: 1,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        elevation: 0,
-                        margin: const EdgeInsets.only(bottom: 20),
-                        child: Column(
-                          children: [
-                            Stack(
-                              alignment: Alignment.topCenter,
+          child: isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(color: AppColors.mainColor),
+                )
+              : Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 36),
+                  child: ListView.builder(
+                      itemCount: _notifications.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            elevation: 0,
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Column(
                               children: [
-                                Ink.image(
-                                  image: const NetworkImage(
-                                    'https://api.lesailes.uz/storage/sliders/2022/04/02/ZSEMqH8dwGJoLCrwGuAXNekhkc4TySsSvnO49X7q.jpg',
+                                // show image if asset exists
+                                _notifications[index]['asset'] != null
+                                    ? Stack(
+                                        alignment: Alignment.topCenter,
+                                        children: [
+                                          Ink.image(
+                                            image: NetworkImage(
+                                              _notifications[index]['asset'][0]
+                                                  ['link'],
+                                            ),
+                                            height: 200,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ],
+                                      )
+                                    : Container(),
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      _notifications[index]['title'] != null &&
+                                              _notifications[index]['title'] !=
+                                                  ''
+                                          ? Text(
+                                              _notifications[index]['title'],
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w500),
+                                            )
+                                          : Container(),
+                                      _notifications[index]['title'] != null
+                                          ? const SizedBox(height: 10)
+                                          : Container(),
+                                      // show truncated text if text is too long
+                                      _notifications[index]['text'] != null
+                                          ? Text(
+                                              _notifications[index]['text'],
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w500),
+                                            )
+                                          : Container(),
+                                      // router push to detail page widget
+                                      _notifications[index]['title'] != null
+                                          ? const SizedBox(height: 10)
+                                          : Container(),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          n.NikuButton(n.NikuText(
+                                            tr("main.readMore"),
+                                            style: n.NikuTextStyle(
+                                                color: AppColors.mainColor,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500),
+                                          ))
+                                            ..onPressed = () => context.router
+                                                .push(NotificationDetailRoute(
+                                                    id: _notifications[index]
+                                                            ['id']
+                                                        .toString(),
+                                                    notification:
+                                                        _notifications[index])),
+                                        ],
+                                      )
+                                    ],
                                   ),
-                                  height: 244,
-                                  fit: BoxFit.cover,
                                 ),
                               ],
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 30),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: const [
-                                  Text(
-                                      "Аномальная температура не помеха, доставим вкусности прямо до дома🚗 Также напоминаем про супер предложение - Ramadan Set’s. Закажи домой любимое от Лэса и порадуй близких ❤️",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14,
-                                          height: 1.6))
-                                ],
-                              ),
-                            )
-                          ],
-                        ));
-                  })),
+                            ));
+                      })),
         ),
       ),
     );
