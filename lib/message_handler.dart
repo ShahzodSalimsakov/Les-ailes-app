@@ -5,6 +5,7 @@ import 'package:les_ailes/routes/router.gr.dart';
 import './home_page.dart';
 
 GetIt getIt = GetIt.instance;
+
 class MessageHandler extends StatefulWidget {
   const MessageHandler({Key? key}) : super(key: key);
 
@@ -16,7 +17,6 @@ class MessageHandlerState extends State<MessageHandler> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   void checkNotificationRouter(RemoteMessage message) {
-    print("onMessage: ${message.data['screen']}");
     String? route = message.data['route'];
     if (route != null) {
       getIt<AppRouter>().pushNamed(route);
@@ -36,20 +36,22 @@ class MessageHandlerState extends State<MessageHandler> {
 
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null && message.notification != null) {
+        print("getInitialMessage");
         checkNotificationRouter(message);
       }
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      checkNotificationRouter(message);
+      print("onMessage");
+      // checkNotificationRouter(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       if (message != null && message.notification != null) {
+        print("onMessageOpenedApp");
         checkNotificationRouter(message);
       }
     });
-
 
     // FirebaseMessaging.on
     // messaging.configure(
