@@ -11,7 +11,8 @@
   },
   "main": {
     "deliveryOrPickup": "Закажите доставку или заберите",
-    "newsAndPromotions": "Новости и акции"
+    "newsAndPromotions": "Новости и акции",
+    "readMore": "Подробнее"
   },
   "deliveryOrPickup": {
     "chooseType": "Выберите способ получения заказа",

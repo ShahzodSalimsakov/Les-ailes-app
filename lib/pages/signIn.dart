@@ -42,12 +42,12 @@ class SignInPage extends HookWidget {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${otpToken.value}'
       };
-      // String? token = await FirebaseMessaging.instance.getToken();
+      String? token = await FirebaseMessaging.instance.getToken();
       var url = Uri.https('api.lesailes.uz', '/api/auth_otp');
       var formData = {'phone': phoneNumber.value, 'code': otpCode.value};
-      // if (token != null) {
-      //   formData['token'] = token;
-      // }
+      if (token != null) {
+        formData['token'] = token;
+      }
       var response = await http.post(url,
           headers: requestHeaders, body: jsonEncode(formData));
       if (response.statusCode == 200) {
@@ -133,7 +133,7 @@ class SignInPage extends HookWidget {
                               height: 20,
                             ),
                             Row(
-                              children:  [
+                              children: [
                                 Text(
                                   tr("sentCodeToNumber"),
                                   textAlign: TextAlign.center,

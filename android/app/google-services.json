@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1047213993186",
+    "project_id": "les-ailes-9fa76",
+    "storage_bucket": "les-ailes-9fa76.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047213993186:android:934d58d34b25fd2e7942bb",
+        "android_client_info": {
+          "package_name": "com.havoqandpeople.les"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047213993186-bgdduekvr6j8u6u585c2hqmrj9ogjesa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4PheEMHkqvKa_OJy5GhvEG81GqlinAnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047213993186-bgdduekvr6j8u6u585c2hqmrj9ogjesa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

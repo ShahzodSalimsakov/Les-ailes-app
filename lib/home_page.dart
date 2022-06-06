@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
@@ -128,11 +129,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void _instanceId() async {
+    var token = await FirebaseMessaging.instance.getToken();
+    print("Print Instance Token ID: " + token!);
+  }
   @override
   void initState() {
     super.initState();
     initConnectivity();
     checkVersion();
+    _instanceId();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     getProducts();

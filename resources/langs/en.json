@@ -11,7 +11,8 @@
   },
   "main": {
     "deliveryOrPickup": "Schedule delivery or pick up",
-    "newsAndPromotions": "News and promotions"
+    "newsAndPromotions": "News and promotions",
+    "readMore": "Read more"
   },
   "deliveryOrPickup": {
     "chooseType": "Choose how to receive order",
@@ -140,7 +141,7 @@
   "product": "Product",
   "equipment": "Equipment",
   "delivery": "Delivery",
-  "leaveAReview" : "Leave a review",
+  "leaveAReview": "Leave a review",
   "send": "Send",
   "reviewSended": "Review sended",
   "selectFirst": "Select first",
@@ -154,7 +155,7 @@
   "shippingAmount": "Shipping amount",
   "checkInet": "Check internet connections",
   "update": "Update",
-  "nextTime" : "Next time",
+  "nextTime": "Next time",
   "cashback": "Cashback",
   "cashbackHistory": "Accrual history and write-offs of cashback points",
   "accrued": "Accrued",

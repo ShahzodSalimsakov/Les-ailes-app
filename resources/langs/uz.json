@@ -11,7 +11,8 @@
   },
   "main": {
     "deliveryOrPickup": "Buyurtma bering yoki olib keting",
-    "newsAndPromotions": "Yangiliklar va aktsiyalar"
+    "newsAndPromotions": "Yangiliklar va aktsiyalar",
+    "readMore": "Batafsil"
   },
   "deliveryOrPickup": {
     "chooseType": "Buyurtmani qanday qabul qilishni tanlang",
