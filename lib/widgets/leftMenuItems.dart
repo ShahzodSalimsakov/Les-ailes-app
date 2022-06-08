@@ -13,6 +13,7 @@ import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
 
 import '../models/basket.dart';
+import '../models/basket_item_quantity.dart';
 import '../models/user.dart';
 import '../services/user_repository.dart';
 
@@ -55,6 +56,9 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
     transaction.delete('user');
     Box<Basket> basketBox = Hive.box<Basket>('basket');
     basketBox.delete('basket');
+    Box<BasketItemQuantity> basketItemQuantityBox =
+        Hive.box<BasketItemQuantity>('basketItemQuantity');
+    await basketItemQuantityBox.clear();
   }
 
   @override
