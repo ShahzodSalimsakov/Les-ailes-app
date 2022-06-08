@@ -1242,6 +1242,11 @@ class BasketWidget extends HookWidget {
                           await Hive.box<DeliveryNotes>('deliveryNotes')
                               .delete('deliveryNotes');
 
+                                  Box<BasketItemQuantity>
+                                      basketItemQuantityBox =
+                                      Hive.box<BasketItemQuantity>(
+                                          'basketItemQuantity');
+                                  await basketItemQuantityBox.clear();
                           Navigator.of(context).pop();
                           showBarModalBottomSheet(
                               expand: false,
