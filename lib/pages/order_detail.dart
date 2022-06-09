@@ -132,7 +132,7 @@ class OrderDetail extends HookWidget {
           if (deliveryPriceResponse.statusCode == 200) {
             print(deliveryPriceResponse.body);
             var json = jsonDecode(deliveryPriceResponse.body);
-            deliveryPrice.value = json['totalPrice'];
+            deliveryPrice.value = double.parse(json['totalPrice'].toString());
           }
         }
       }
