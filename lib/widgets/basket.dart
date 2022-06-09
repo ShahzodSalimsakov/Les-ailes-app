@@ -628,7 +628,7 @@ class BasketWidget extends HookWidget {
                         relatedBiData.value.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(
-                                  top: 45,
+                                  top: 10,
                                   bottom: 10,
                                 ),
                                 child: Align(
@@ -917,7 +917,7 @@ class BasketWidget extends HookWidget {
                         topProducts.value.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(
-                                  top: 45,
+                                  top: 10,
                                   bottom: 10,
                                 ),
                                 child: Align(
