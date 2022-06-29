@@ -7,10 +7,10 @@ PODS:
   - Firebase/Messaging (8.15.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 8.15.0)
-  - firebase_core (1.16.0):
+  - firebase_core (1.18.0):
     - Firebase/CoreOnly (= 8.15.0)
     - Flutter
-  - firebase_messaging (11.3.0):
+  - firebase_messaging (11.4.2):
     - Firebase/Messaging (= 8.15.0)
     - firebase_core
     - Flutter
@@ -43,9 +43,9 @@ PODS:
   - FMDB/standard (2.7.5)
   - geolocator_apple (1.2.0):
     - Flutter
-  - GoogleDataTransport (9.1.2):
-    - GoogleUtilities/Environment (~> 7.2)
-    - nanopb (~> 2.30908.0)
+  - GoogleDataTransport (9.1.4):
+    - GoogleUtilities/Environment (~> 7.7)
+    - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/AppDelegateSwizzler (7.7.0):
     - GoogleUtilities/Environment
@@ -91,7 +91,7 @@ PODS:
     - Flutter
     - PhoneNumberKit/PhoneNumberKitCore (= 3.3.4)
   - PhoneNumberKit/PhoneNumberKitCore (3.3.4)
-  - PromisesObjC (2.1.0)
+  - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
   - shared_preferences_ios (0.0.1):
     - Flutter
@@ -99,6 +99,8 @@ PODS:
     - Flutter
     - FMDB (>= 2.7.5)
   - url_launcher_ios (0.0.1):
+    - Flutter
+  - vertical_scrollable_tabview (0.0.1):
     - Flutter
   - yandex_mapkit (0.0.1):
     - Flutter
@@ -122,6 +124,7 @@ DEPENDENCIES:
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - vertical_scrollable_tabview (from `.symlinks/plugins/vertical_scrollable_tabview/ios`)
   - yandex_mapkit (from `.symlinks/plugins/yandex_mapkit/ios`)
 
 SPEC REPOS:
@@ -174,14 +177,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  vertical_scrollable_tabview:
+    :path: ".symlinks/plugins/vertical_scrollable_tabview/ios"
   yandex_mapkit:
     :path: ".symlinks/plugins/yandex_mapkit/ios"
 
 SPEC CHECKSUMS:
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   Firebase: 5f8193dff4b5b7c5d5ef72ae54bb76c08e2b841d
-  firebase_core: 6ef152b7d6a361e24105e2cc56ab458f1f8367fe
-  firebase_messaging: 09caf4347b3a73deb37ed31f284ca11cc6039541
+  firebase_core: b14c1cfa29b9eb316345f74d1489328283825d6d
+  firebase_messaging: 5374d57b2ca7a5efe1a150500b9a2451ca9ff5af
   FirebaseCore: 5743c5785c074a794d35f2fff7ecc254a91e08b1
   FirebaseCoreDiagnostics: 92e07a649aeb66352b319d43bdd2ee3942af84cb
   FirebaseInstallations: 40bd9054049b2eae9a2c38ef1c3dd213df3605cd
@@ -189,7 +194,7 @@ SPEC CHECKSUMS:
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: cc556e6844d508c95df1e87e3ea6fa4e58c50401
-  GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
+  GoogleDataTransport: 5fffe35792f8b96ec8d6775f5eccd83c998d5a3b
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
   libphonenumber: bd14d5abfc5939ab0b0767234e2d8e2593af258e
   libPhoneNumber-iOS: 0a32a9525cf8744fe02c5206eb30d571e38f7d75
@@ -202,11 +207,12 @@ SPEC CHECKSUMS:
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   phone_number: 7e56d6e4e43fbe37507512a3aab3f11cf082af69
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
-  PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  vertical_scrollable_tabview: 6e6f25411f226cc077ac4d915c8cd407a1317587
   yandex_mapkit: 2d9da6e13f6f1a03395debbbbb7845eaefa24a8b
   YandexMapsMobile: 0f3d8c92fad685dc33d07f83eed4eb0166089743
 
