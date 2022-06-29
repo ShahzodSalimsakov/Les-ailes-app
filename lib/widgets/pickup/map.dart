@@ -48,16 +48,16 @@ class PickupMapView extends HookWidget {
     TempTerminals? selectedTerminal = box.get('tempTerminal');
 
     useEffect(() {
-      List<Placemark> mapsList = <Placemark>[];
+      List<PlacemarkMapObject> mapsList = <PlacemarkMapObject>[];
       Box<TempTerminals> box = Hive.box<TempTerminals>('tempTerminal');
       TempTerminals? selectedTerminal = box.get('tempTerminal');
       for (var element in terminals) {
-        var _placemark = Placemark(
+        var _placemark = PlacemarkMapObject(
             mapId: MapObjectId(element.id!),
             point: Point(
                 latitude: double.parse(element.latitude!),
                 longitude: double.parse(element.longitude!)),
-            onTap: (Placemark self, Point point) {
+            onTap: (PlacemarkMapObject self, Point point) {
               Box<TempTerminals> transaction =
                   Hive.box<TempTerminals>('tempTerminal');
               transaction.put('tempTerminal', element);
@@ -123,21 +123,21 @@ class PickupMapView extends HookWidget {
               // height: 50,
               // width: 50,
               child: n.NikuButton.elevated(const Icon(
-                Icons.close,
-                color: Colors.black,
-                size: 30,
-              ))
+            Icons.close,
+            color: Colors.black,
+            size: 30,
+          ))
                 ..bg = Colors.white
                 ..rounded = 40
-          ..elevation = 3
-          ..px = 3
-          ..py = 15
-          ..onPressed = () {
-            Box<PickupType> transaction =
-            Hive.box<PickupType>('pickupType');
-            transaction.delete('pickupType');
-            Navigator.of(context).pop();
-          }),
+                ..elevation = 3
+                ..px = 3
+                ..py = 15
+                ..onPressed = () {
+                  Box<PickupType> transaction =
+                      Hive.box<PickupType>('pickupType');
+                  transaction.delete('pickupType');
+                  Navigator.of(context).pop();
+                }),
           top: 15,
           right: 15,
         )

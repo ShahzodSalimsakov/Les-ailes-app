@@ -24,7 +24,7 @@ import 'package:les_ailes/widgets/ui/fixed_basket.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:native_updater/native_updater.dart';
+// import 'package:native_updater/native_updater.dart';
 import 'models/delivery_location_data.dart';
 import 'dart:io' show Platform;
 
@@ -286,15 +286,15 @@ class _HomePageState extends State<HomePage> {
     /// This could get from the API
     //int serverLatestVersion = 10;
 
-    Future.delayed(Duration.zero, () {
-      NativeUpdater.displayUpdateAlert(
-        context,
-        forceUpdate: false,
-        appStoreUrl: 'https://apps.apple.com/uz/app/les-ailes-uzb/id1616011426',
-        iOSUpdateButtonLabel: tr("update"),
-        iOSIgnoreButtonLabel: tr("nextTime"),
-      );
-    });
+    // Future.delayed(Duration.zero, () {
+    //   NativeUpdater.displayUpdateAlert(
+    //     context,
+    //     forceUpdate: false,
+    //     appStoreUrl: 'https://apps.apple.com/uz/app/les-ailes-uzb/id1616011426',
+    //     iOSUpdateButtonLabel: tr("update"),
+    //     iOSIgnoreButtonLabel: tr("nextTime"),
+    //   );
+    // });
   }
 
   late double pinnedHeaderHeight;
