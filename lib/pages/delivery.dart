@@ -48,34 +48,34 @@ class DeliveryPage extends HookWidget {
       }
       Position currentPosition;
       // if (!isLocationSet) {
-        bool serviceEnabled;
-        LocationPermission permission;
+      bool serviceEnabled;
+      LocationPermission permission;
 
-        // Test if location services are enabled.
-        serviceEnabled = await Geolocator.isLocationServiceEnabled();
-        if (!serviceEnabled) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Недостаточно прав для получения локации')));
-          return;
-        }
+      // Test if location services are enabled.
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Недостаточно прав для получения локации')));
+        return;
+      }
 
-        permission = await Geolocator.checkPermission();
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
         if (permission == LocationPermission.denied) {
-          permission = await Geolocator.requestPermission();
-          if (permission == LocationPermission.denied) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Недостаточно прав для получения локации')));
-            return;
-          }
-        }
-
-        if (permission == LocationPermission.deniedForever) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Недостаточно прав для получения локации')));
           return;
         }
+      }
 
-        currentPosition = await Geolocator.getCurrentPosition();
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('Недостаточно прав для получения локации')));
+        return;
+      }
+
+      currentPosition = await Geolocator.getCurrentPosition();
       // } else {
       //   currentPosition = Position(
       //       longitude: deliveryData!.lon!,
@@ -87,7 +87,7 @@ class DeliveryPage extends HookWidget {
       //       speed: 0,
       //       speedAccuracy: 0);
       // }
-      var _placemark = Placemark(
+      var _placemark = PlacemarkMapObject(
           mapId: placemarkId,
           point: Point(
               latitude: currentPosition.latitude,
@@ -122,7 +122,7 @@ class DeliveryPage extends HookWidget {
     }
 
     void changeLocation(Point point) async {
-      var _placemark = Placemark(
+      var _placemark = PlacemarkMapObject(
           mapId: placemarkId,
           point: point,
           // onTap: (Placemark self, Point point) =>
@@ -171,7 +171,7 @@ class DeliveryPage extends HookWidget {
                   animation: animation);
 
               if (geoData != null) {
-                var _placemark = Placemark(
+                var _placemark = PlacemarkMapObject(
                     mapId: placemarkId,
                     point: Point(
                         latitude: double.parse(geoData!.coordinates.lat),
@@ -223,7 +223,7 @@ class DeliveryPage extends HookWidget {
                 if (hasPermission) {
                   Position currentPosition =
                       await Geolocator.getCurrentPosition();
-                  var _placemark = Placemark(
+                  var _placemark = PlacemarkMapObject(
                       mapId: placemarkId,
                       point: Point(
                           latitude: currentPosition.latitude,
@@ -266,7 +266,7 @@ class DeliveryPage extends HookWidget {
               isLookingLocation.value = false;
             },
             onMapTap: (point) async {
-              var _placemark = Placemark(
+              var _placemark = PlacemarkMapObject(
                   mapId: placemarkId,
                   point: point,
                   opacity: 0.9,

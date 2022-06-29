@@ -65,7 +65,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                         validator:
                                             FormBuilderValidators.compose([
                                           FormBuilderValidators.required(
-                                              context,
                                               errorText:
                                                   'Поле обязательно для заполнения')
                                         ]),
@@ -120,11 +119,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                         validator:
                                             FormBuilderValidators.compose([
                                           FormBuilderValidators.required(
-                                              context,
                                               errorText:
                                                   'Поле обязательно для заполнения'),
-                                          FormBuilderValidators.minLength(
-                                              context, 13,
+                                          FormBuilderValidators.minLength(13,
                                               errorText: 'Заполнено неверно')
                                         ]),
                                         decoration: InputDecoration(
