@@ -158,6 +158,11 @@
   "sentCodeToNumber": "Raqamga kod yuborildi",
   "chooseDate": "Sanani tanlang",
   "day": "Kun",
-  "buyWithTheseProducts" : "Ushbu mahsulotlar bilan xarid qiling",
-  "featuredProducts": "Mashhur mahsulotlar"
+  "buyWithTheseProducts": "Ushbu mahsulotlar bilan xarid qiling",
+  "featuredProducts": "Mashhur mahsulotlar",
+  "enterYourName": "Ismingizni kiriting",
+  "yourName": "Ismingiz",
+  "incorrectCode": "Kiritilgan kod noto'g'ri yoki kod muddati tugagan",
+  "sentCodeToNumber": "Raqamga kod yuborildi",
+  "getNewCode": "Yangi kodni oling"
 }
