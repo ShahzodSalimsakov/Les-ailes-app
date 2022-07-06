@@ -102,7 +102,7 @@ class OrderDetail extends HookWidget {
     final equipment = useState(0.0);
     final delivery = useState(0.0);
     const String toLaunch = 'https://t.me/lesaileshelpbot';
-    final deliveryPrice = useState(0.0);
+    final deliveryPrice = useState<int?>(0);
 
     Future<void> loadOrder() async {
       Box<User> transaction = Hive.box<User>('user');
@@ -118,23 +118,7 @@ class OrderDetail extends HookWidget {
         var json = jsonDecode(response.body);
         var localOrder = Order.fromJson(json);
         order.value = localOrder;
-
-        if (localOrder.deliveryType == 'deliver' && localOrder.lat != null) {
-          var urlDeliveryPrice =
-              Uri.https('api.lesailes.uz', '/api/orders/calc_basket_delivery', {
-            "lat": localOrder.lat.toString(),
-            "lon": localOrder.lon.toString(),
-            "terminal_id": localOrder.terminalId.toString(),
-            "total_price": localOrder.orderTotal.toString()
-          });
-          var deliveryPriceResponse =
-              await http.get(urlDeliveryPrice, headers: requestHeaders);
-          if (deliveryPriceResponse.statusCode == 200) {
-            print(deliveryPriceResponse.body);
-            var json = jsonDecode(deliveryPriceResponse.body);
-            deliveryPrice.value = json['totalPrice'];
-          }
-        }
+        deliveryPrice.value = localOrder.deliveryPrice;
       }
     }
 
@@ -142,6 +126,14 @@ class OrderDetail extends HookWidget {
       loadOrder();
       return null;
     }, []);
+
+    int deliveryPriceReady = useMemoized(() {
+      int result = 0;
+      if (deliveryPrice.value != null) {
+        result = deliveryPrice.value!;
+      }
+      return result;
+    }, [deliveryPrice.value]);
 
     if (order.value == null) {
       return Scaffold(
@@ -536,7 +528,7 @@ class OrderDetail extends HookWidget {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        '${tr('total')} : ${formatCurrency.format((deliveryPrice.value + order.value!.orderTotal / 100))}',
+                                        '${tr('total')} : ${formatCurrency.format((deliveryPriceReady + order.value!.orderTotal / 100))}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 20,

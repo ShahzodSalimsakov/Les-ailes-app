@@ -64,6 +64,7 @@ class Order {
   String? deliveryDay;
   String? deliveryTime;
   String? deliveryType;
+  int? deliveryPrice;
   int? isPayed;
   String? iikoId;
   String? laterTime;
@@ -72,73 +73,74 @@ class Order {
 
   Order(
       {required this.id,
-        required this.basketId,
-        required this.userId,
-        required this.subTotal,
-        required this.deliveryTotal,
-        required this.discountTotal,
-        required this.taxTotal,
-        required this.orderTotal,
-        this.shippingMethod,
-        this.shippingPreference,
-        required this.status,
-        required this.type,
-        this.notes,
-        required this.currency,
-        this.billingPhone,
-        this.billingEmail,
-        this.shippingCompanyName,
-        this.billingCompanyName,
-        this.billingFirstname,
-        this.billingLastname,
-        this.billingAddress,
-        this.billingAddressTwo,
-        this.billingAddressThree,
-        this.billingCity,
-        this.billingCounty,
-        this.billingState,
-        this.billingCountry,
-        this.billingZip,
-        this.shippingPhone,
-        this.shippingEmail,
-        this.shippingFirstname,
-        this.shippingLastname,
-        this.shippingAddress,
-        this.shippingAddressTwo,
-        this.shippingAddressThree,
-        this.shippingCity,
-        this.shippingCounty,
-        this.shippingState,
-        this.shippingCountry,
-        this.shippingZip,
-        this.createdAt,
-        this.updatedAt,
-        this.contactEmail,
-        this.contactPhone,
-        this.vatNo,
-        this.trackingNo,
-        this.dispatchedAt,
-        this.reference,
-        this.customerReference,
-        this.placedAt,
-        this.conversion,
-        // required this.meta,
-        this.terminalId,
-        this.lat,
-        this.lon,
-        this.flat,
-        this.house,
-        this.entrance,
-        this.doorCode,
-        this.deliverySchedule,
-        this.deliveryDay,
-        this.deliveryTime,
-        this.deliveryType,
-        this.isPayed,
-        this.iikoId,
-        this.laterTime,
-        required this.basket,
-        required this.terminalData});
+      required this.basketId,
+      required this.userId,
+      required this.subTotal,
+      required this.deliveryTotal,
+      required this.discountTotal,
+      required this.taxTotal,
+      required this.orderTotal,
+      this.shippingMethod,
+      this.shippingPreference,
+      required this.status,
+      required this.type,
+      this.notes,
+      required this.currency,
+      this.billingPhone,
+      this.billingEmail,
+      this.shippingCompanyName,
+      this.billingCompanyName,
+      this.billingFirstname,
+      this.billingLastname,
+      this.billingAddress,
+      this.billingAddressTwo,
+      this.billingAddressThree,
+      this.billingCity,
+      this.billingCounty,
+      this.billingState,
+      this.billingCountry,
+      this.billingZip,
+      this.shippingPhone,
+      this.shippingEmail,
+      this.shippingFirstname,
+      this.shippingLastname,
+      this.shippingAddress,
+      this.shippingAddressTwo,
+      this.shippingAddressThree,
+      this.shippingCity,
+      this.shippingCounty,
+      this.shippingState,
+      this.shippingCountry,
+      this.shippingZip,
+      this.createdAt,
+      this.updatedAt,
+      this.contactEmail,
+      this.contactPhone,
+      this.vatNo,
+      this.trackingNo,
+      this.dispatchedAt,
+      this.reference,
+      this.customerReference,
+      this.placedAt,
+      this.conversion,
+      // required this.meta,
+      this.terminalId,
+      this.lat,
+      this.lon,
+      this.flat,
+      this.house,
+      this.entrance,
+      this.doorCode,
+      this.deliverySchedule,
+      this.deliveryDay,
+      this.deliveryTime,
+      this.deliveryType,
+      this.deliveryPrice,
+      this.isPayed,
+      this.iikoId,
+      this.laterTime,
+      required this.basket,
+      required this.terminalData});
 
   Order.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -159,26 +161,41 @@ class Order {
     billingEmail = json['billing_email'];
     shippingCompanyName = json['shipping_company_name'];
     billingCompanyName = json['billing_company_name'];
-    billingFirstname = json['billing_firstname'] != null ? json['billing_firstname'] : '';
-    billingLastname = json['billing_lastname'] != null ? json['billing_lastname'] : '';
-    billingAddress = json['billing_address'] != null ? json['billing_address'] : '';
-    billingAddressTwo = json['billing_address_two'] != null ? json['billing_address_two'] : '';
-    billingAddressThree = json['billing_address_three'] != null ? json['billing_address_three'] : '';
+    billingFirstname =
+        json['billing_firstname'] != null ? json['billing_firstname'] : '';
+    billingLastname =
+        json['billing_lastname'] != null ? json['billing_lastname'] : '';
+    billingAddress =
+        json['billing_address'] != null ? json['billing_address'] : '';
+    billingAddressTwo =
+        json['billing_address_two'] != null ? json['billing_address_two'] : '';
+    billingAddressThree = json['billing_address_three'] != null
+        ? json['billing_address_three']
+        : '';
     billingCity = json['billing_city'] != null ? json['billing_city'] : '';
     billingCounty = json['billing_county'];
     billingState = json['billing_state'] != null ? json['billing_state'] : '';
     billingCountry = json['billing_country'];
     billingZip = json['billing_zip'];
-    shippingPhone = json['shipping_phone'] != null ? json['shipping_phone'] : '';
+    shippingPhone =
+        json['shipping_phone'] != null ? json['shipping_phone'] : '';
     shippingEmail = json['shipping_email'];
-    shippingFirstname = json['shipping_firstname'] != null ? json['shipping_firstname'] : '';
-    shippingLastname = json['shipping_lastname'] != null ? json['shipping_lastname'] : '';
-    shippingAddress = json['shipping_address'] != null ? json['shipping_address'] : '';
-    shippingAddressTwo = json['shipping_address_two'] != null ? json['shipping_address_two'] : '';
-    shippingAddressThree = json['shipping_address_three'] != null ? json['shipping_address_three'] : '';
+    shippingFirstname =
+        json['shipping_firstname'] != null ? json['shipping_firstname'] : '';
+    shippingLastname =
+        json['shipping_lastname'] != null ? json['shipping_lastname'] : '';
+    shippingAddress =
+        json['shipping_address'] != null ? json['shipping_address'] : '';
+    shippingAddressTwo = json['shipping_address_two'] != null
+        ? json['shipping_address_two']
+        : '';
+    shippingAddressThree = json['shipping_address_three'] != null
+        ? json['shipping_address_three']
+        : '';
     shippingCity = json['shipping_city'] != null ? json['shipping_city'] : '';
     shippingCounty = json['shipping_county'];
-    shippingState = json['shipping_state'] != null ? json['shipping_state'] : '';
+    shippingState =
+        json['shipping_state'] != null ? json['shipping_state'] : '';
     shippingCountry = json['shipping_country'];
     shippingZip = json['shipping_zip'];
     createdAt = json['created_at'] != null ? json['created_at'] : '';
@@ -205,15 +222,18 @@ class Order {
     house = json['house'] != null ? json['house'] : '';
     entrance = json['entrance'] != null ? json['entrance'] : '';
     doorCode = json['door_code'] != null ? json['door_code'] : '';
-    deliverySchedule = json['delivery_schedule'] != null ? json['delivery_schedule'] : '';
+    deliverySchedule =
+        json['delivery_schedule'] != null ? json['delivery_schedule'] : '';
     deliveryDay = json['delivery_day'] != null ? json['delivery_day'] : '';
     deliveryTime = json['delivery_time'] != null ? json['delivery_time'] : '';
     deliveryType = json['delivery_type'] != null ? json['delivery_type'] : '';
+    deliveryPrice = json['delivery_price'];
     isPayed = json['is_payed'] != null ? json['is_payed'] : 0;
     iikoId = json['iiko_id'] != null ? json['iiko_id'] : '';
     laterTime = json['later_time'] != null ? json['later_time'] : '';
-    basket =
-    json['basket'] != null ? new OrderBasket.fromJson(json['basket']) : null;
+    basket = json['basket'] != null
+        ? new OrderBasket.fromJson(json['basket'])
+        : null;
     terminalData = json['terminalData'] != null
         ? TerminalData.fromJson(json['terminalData'])
         : null;
@@ -286,6 +306,7 @@ class Order {
     data['delivery_day'] = this.deliveryDay;
     data['delivery_time'] = this.deliveryTime;
     data['delivery_type'] = this.deliveryType;
+    data['delivery_price'] = this.deliveryPrice;
     data['is_payed'] = this.isPayed;
     data['iiko_id'] = this.iikoId;
     data['later_time'] = this.laterTime;
@@ -313,14 +334,14 @@ class OrderBasket {
 
   OrderBasket(
       {required this.id,
-        this.userId,
-        this.mergedId,
-        this.completedAt,
-        required this.currency,
-        required this.createdAt,
-        required this.updatedAt,
-        this.otp,
-        this.lines});
+      this.userId,
+      this.mergedId,
+      this.completedAt,
+      required this.currency,
+      required this.createdAt,
+      required this.updatedAt,
+      this.otp,
+      this.lines});
 
   OrderBasket.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -332,7 +353,9 @@ class OrderBasket {
     updatedAt = json['updated_at'];
     otp = json['otp'] != null ? json['otp'] : '';
     if (json['lines'] != null) {
-      lines = json['lines'].map<OrderLines>((m) => new OrderLines.fromJson(m)).toList();
+      lines = json['lines']
+          .map<OrderLines>((m) => new OrderLines.fromJson(m))
+          .toList();
     }
   }
 
@@ -368,16 +391,16 @@ class OrderLines {
 
   OrderLines(
       {required this.id,
-        required this.basketId,
-        required this.productVariantId,
-        required this.quantity,
-        required this.total,
-        required this.createdAt,
-        required this.updatedAt,
-        this.modifiers,
-        this.parentId,
-        this.variant,
-        this.child});
+      required this.basketId,
+      required this.productVariantId,
+      required this.quantity,
+      required this.total,
+      required this.createdAt,
+      required this.updatedAt,
+      this.modifiers,
+      this.parentId,
+      this.variant,
+      this.child});
 
   OrderLines.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -391,16 +414,20 @@ class OrderLines {
       if (json['modifiers'] is String) {
         modifiers = List<Modifiers>.empty();
       } else {
-        modifiers = json['modifiers'].map<Modifiers>((m) => new Modifiers.fromJson(m)).toList();
+        modifiers = json['modifiers']
+            .map<Modifiers>((m) => new Modifiers.fromJson(m))
+            .toList();
       }
     } else {
       modifiers = List<Modifiers>.empty();
     }
     parentId = json['parent_id'];
     variant =
-    json['variant'] != null ? new Variant.fromJson(json['variant']) : null;
+        json['variant'] != null ? new Variant.fromJson(json['variant']) : null;
     if (json['child'] != null) {
-      child = json['child'].map<OrderChild>((m) => new OrderChild.fromJson(m)).toList();
+      child = json['child']
+          .map<OrderChild>((m) => new OrderChild.fromJson(m))
+          .toList();
     }
   }
 
@@ -440,14 +467,14 @@ class Modifiers {
 
   Modifiers(
       {required this.id,
-        required this.createdAt,
-        required this.updatedAt,
-        required this.name,
-        required this.xmlId,
-        required this.price,
-        required this.weight,
-        required this.groupId,
-        required this.nameUz});
+      required this.createdAt,
+      required this.updatedAt,
+      required this.name,
+      required this.xmlId,
+      required this.price,
+      required this.weight,
+      required this.groupId,
+      required this.nameUz});
 
   Modifiers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -475,7 +502,6 @@ class Modifiers {
     return data;
   }
 }
-
 
 class Variant {
   late int id;
@@ -511,35 +537,35 @@ class Variant {
 
   Variant(
       {required this.id,
-        required this.productId,
-        required this.sku,
-        required this.price,
-        required this.unitQty,
-        required this.minQty,
-        required this.minBatch,
-        required this.maxQty,
-        required this.stock,
-        required this.incoming,
-        required this.backorder,
-        required this.requiresShipping,
-        required this.weightValue,
-        required this.weightUnit,
-        required this.heightValue,
-        required this.heightUnit,
-        required this.widthValue,
-        required this.widthUnit,
-        required this.depthValue,
-        required this.depthUnit,
-        required this.volumeValue,
-        required this.volumeUnit,
-        required this.createdAt,
-        required this.updatedAt,
-        this.assetId,
-        required this.taxId,
-        required this.groupPricing,
-        this.draftedAt,
-        this.draftParentId,
-        this.product});
+      required this.productId,
+      required this.sku,
+      required this.price,
+      required this.unitQty,
+      required this.minQty,
+      required this.minBatch,
+      required this.maxQty,
+      required this.stock,
+      required this.incoming,
+      required this.backorder,
+      required this.requiresShipping,
+      required this.weightValue,
+      required this.weightUnit,
+      required this.heightValue,
+      required this.heightUnit,
+      required this.widthValue,
+      required this.widthUnit,
+      required this.depthValue,
+      required this.depthUnit,
+      required this.volumeValue,
+      required this.volumeUnit,
+      required this.createdAt,
+      required this.updatedAt,
+      this.assetId,
+      required this.taxId,
+      required this.groupPricing,
+      this.draftedAt,
+      this.draftParentId,
+      this.product});
 
   Variant.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -572,7 +598,7 @@ class Variant {
     draftedAt = json['drafted_at'];
     draftParentId = json['draft_parent_id'];
     product =
-    json['product'] != null ? new Product.fromJson(json['product']) : null;
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -633,21 +659,21 @@ class Assets {
 
   Assets(
       {required this.id,
-        required this.assetSourceId,
-        required this.location,
-        required this.kind,
-        required this.subKind,
-        this.width,
-        this.height,
-        required this.title,
-        required this.originalFilename,
-        this.caption,
-        required this.size,
-        required this.external,
-        required this.extension,
-        required this.filename,
-        required this.createdAt,
-        required this.updatedAt});
+      required this.assetSourceId,
+      required this.location,
+      required this.kind,
+      required this.subKind,
+      this.width,
+      this.height,
+      required this.title,
+      required this.originalFilename,
+      this.caption,
+      required this.size,
+      required this.external,
+      required this.extension,
+      required this.filename,
+      required this.createdAt,
+      required this.updatedAt});
 
   Assets.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -711,22 +737,22 @@ class Product {
 
   Product(
       {required this.id,
-        this.attributeData,
-        required this.createdAt,
-        required this.updatedAt,
-        this.deletedAt,
-        required this.productFamilyId,
-        this.layoutId,
-        required this.groupPricing,
-        this.draftedAt,
-        this.draftParentId,
-        this.customName,
-        this.productId,
-        this.customNameUz,
-        required this.active,
-        this.modifierProdId,
-        this.boxId,
-        this.assets});
+      this.attributeData,
+      required this.createdAt,
+      required this.updatedAt,
+      this.deletedAt,
+      required this.productFamilyId,
+      this.layoutId,
+      required this.groupPricing,
+      this.draftedAt,
+      this.draftParentId,
+      this.customName,
+      this.productId,
+      this.customNameUz,
+      required this.active,
+      this.modifierProdId,
+      this.boxId,
+      this.assets});
 
   Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -745,10 +771,12 @@ class Product {
     productId = json['product_id'] != null ? json['product_id'] : 0;
     customNameUz = json['custom_name_uz'] != null ? json['custom_name_uz'] : '';
     active = json['active'];
-    modifierProdId = json['modifier_prod_id'] != null ? json['modifier_prod_id'] : 0;
+    modifierProdId =
+        json['modifier_prod_id'] != null ? json['modifier_prod_id'] : 0;
     boxId = json['box_id'] != null ? json['box_id'] : 0;
     if (json['assets'] != null) {
-      assets = json['assets'].map<Assets>((m) => new Assets.fromJson(m)).toList();
+      assets =
+          json['assets'].map<Assets>((m) => new Assets.fromJson(m)).toList();
     }
   }
 
@@ -803,15 +831,15 @@ class OrderChild {
 
   OrderChild(
       {required this.id,
-        required this.basketId,
-        required this.productVariantId,
-        required this.quantity,
-        required this.total,
-        required this.createdAt,
-        required this.updatedAt,
-        // this.modifiers,
-        required this.parentId,
-        this.variant});
+      required this.basketId,
+      required this.productVariantId,
+      required this.quantity,
+      required this.total,
+      required this.createdAt,
+      required this.updatedAt,
+      // this.modifiers,
+      required this.parentId,
+      this.variant});
 
   OrderChild.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -824,7 +852,7 @@ class OrderChild {
     // modifiers = json['modifiers'] != null ? json['modifiers'] : List<dynamic>.empty();
     parentId = json['parent_id'];
     variant =
-    json['variant'] != null ? new Variant.fromJson(json['variant']) : null;
+        json['variant'] != null ? new Variant.fromJson(json['variant']) : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -852,7 +880,8 @@ class TerminalData {
   String? descEn;
   String? descUz;
 
-  TerminalData({required this.name, this.nameUz, this.desc, this.descEn, this.descUz});
+  TerminalData(
+      {required this.name, this.nameUz, this.desc, this.descEn, this.descUz});
 
   TerminalData.fromJson(Map<String, dynamic> json) {
     name = json['name'];

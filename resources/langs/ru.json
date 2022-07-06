@@ -157,5 +157,7 @@
   "wrongNumber": "Неверный номер",
   "sentCodeToNumber": "Отправлен код на номер",
   "chooseDate": "Выберите дату",
-  "day": "День"
+  "day": "День",
+  "buyWithTheseProducts" : "С этими продуктами покупают",
+  "featuredProducts": "Популярные продукты"
 }

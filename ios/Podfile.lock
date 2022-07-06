@@ -83,8 +83,6 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
-  - package_info (0.0.1):
-    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - phone_number (0.12.0):
@@ -104,8 +102,8 @@ PODS:
     - Flutter
   - yandex_mapkit (0.0.1):
     - Flutter
-    - YandexMapsMobile (= 4.0.0-full)
-  - YandexMapsMobile (4.0.0-full)
+    - YandexMapsMobile (= 4.1.0-full)
+  - YandexMapsMobile (4.1.0-full)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -118,7 +116,6 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
-  - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - phone_number (from `.symlinks/plugins/phone_number/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
@@ -165,8 +162,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/map_launcher/ios"
   maps_launcher:
     :path: ".symlinks/plugins/maps_launcher/ios"
-  package_info:
-    :path: ".symlinks/plugins/package_info/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   phone_number:
@@ -203,7 +198,6 @@ SPEC CHECKSUMS:
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
-  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   phone_number: 7e56d6e4e43fbe37507512a3aab3f11cf082af69
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
@@ -213,9 +207,9 @@ SPEC CHECKSUMS:
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
   vertical_scrollable_tabview: 6e6f25411f226cc077ac4d915c8cd407a1317587
-  yandex_mapkit: 2d9da6e13f6f1a03395debbbbb7845eaefa24a8b
-  YandexMapsMobile: 0f3d8c92fad685dc33d07f83eed4eb0166089743
+  yandex_mapkit: d89a794dcaf8caa93f36a8c2badf9e7e2c45ce75
+  YandexMapsMobile: c145ffd0dbdbb8079fca1eb6706cf9e751b07809
 
-PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
+PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
 
 COCOAPODS: 1.11.3

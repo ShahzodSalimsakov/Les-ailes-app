@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
@@ -296,16 +297,46 @@ class ProductCard extends HookWidget {
 
     var locale = context.locale.toString();
     var attributeDataName = '';
+    var attributeDataDesc = '';
     switch (locale) {
       // case 'en':
       //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
       //   break;
       case 'uz':
         attributeDataName = product!.attributeData?.name?.chopar?.uz ?? '';
+        attributeDataDesc =
+            product!.attributeData?.description?.chopar?.uz ?? '';
+        break;
+      case 'ru':
+        attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
+        attributeDataDesc =
+            product!.attributeData?.description?.chopar?.ru ?? '';
         break;
       default:
         attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
+        attributeDataDesc =
+            product!.attributeData?.description?.chopar?.ru ?? '';
         break;
+    }
+
+    Widget _buildHandle(BuildContext context) {
+      final theme = Theme.of(context);
+
+      return FractionallySizedBox(
+        widthFactor: 0.25,
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 1.0,
+          ),
+          child: Container(
+            height: 5.0,
+            decoration: BoxDecoration(
+              color: theme.dividerColor,
+              borderRadius: const BorderRadius.all(Radius.circular(2.5)),
+            ),
+          ),
+        ),
+      );
     }
 
     Widget renderProduct(BuildContext context) {
@@ -351,6 +382,74 @@ class ProductCard extends HookWidget {
                     style: const TextStyle(fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
+                  attributeDataDesc.isNotEmpty ?
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(40.0),
+                              topRight: Radius.circular(40.0),
+                            ),
+                          ),
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (BuildContext builder) {
+                            return  Container(
+                                  height: MediaQuery.of(context).size.height * 0.7,
+                                  decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(40.0),
+                                    topRight: Radius.circular(40.0),
+                                  )),
+                                  // height: 200,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      _buildHandle(context),CachedNetworkImage(
+                                        imageUrl: '$image',
+                                        progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                            CircularProgressIndicator(
+                                                value: downloadProgress.progress, color: AppColors.mainColor),
+                                        errorWidget: (context, url, error) => const Icon(Icons.error),
+                                        height: 300,
+                                        width: 300,
+                                      ),
+                                      Html(
+                                        data: attributeDataDesc,
+                                        style: {
+                                          'p': Style(
+                                              textOverflow:
+                                                  TextOverflow.visible,
+                                              alignment: Alignment.center,
+                                              fontSize: FontSize.xLarge,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20)),
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                );
+                          });
+                    },
+                    child: Container(
+                      height: 40,
+                      child: Html(
+                        data: attributeDataDesc,
+                        style: {
+                          'p': Style(
+                              maxLines: 1,
+                              textAlign: TextAlign.center,
+                              textOverflow: TextOverflow.ellipsis,
+                              alignment: Alignment.center),
+                        },
+                      ),
+                    ),
+                  ) : const SizedBox(),
                   const Spacer(
                     flex: 1,
                   ),
