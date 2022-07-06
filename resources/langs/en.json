@@ -161,5 +161,7 @@
   "accrued": "Accrued",
   "decommissioned": "Decommissioned",
   "chooseDate": "Choose date",
-  "day": "Day"
+  "day": "Day",
+  "buyWithTheseProducts" : "Buy with these products",
+  "featuredProducts": "Featured Products"
 }

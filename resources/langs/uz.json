@@ -157,5 +157,7 @@
   "wrongNumber": "Noto'g'ri raqam",
   "sentCodeToNumber": "Raqamga kod yuborildi",
   "chooseDate": "Sanani tanlang",
-  "day": "Kun"
+  "day": "Kun",
+  "buyWithTheseProducts" : "Ushbu mahsulotlar bilan xarid qiling",
+  "featuredProducts": "Mashhur mahsulotlar"
 }

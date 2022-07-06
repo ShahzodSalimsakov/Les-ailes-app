@@ -34,6 +34,7 @@ import '../models/productSection.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
 import '../services/user_repository.dart';
+import '../utils/simplified_url.dart';
 import 'additional_phone_number.dart';
 import 'comment.dart';
 
@@ -47,6 +48,10 @@ class BasketWidget extends HookWidget {
     final _isOrderLoading = useState<bool>(false);
     final basketData = useState<BasketData?>(null);
     final relatedData =
+        useState<List<RelatedProduct>>(List<RelatedProduct>.empty());
+    final relatedBiData =
+        useState<List<RelatedProduct>>(List<RelatedProduct>.empty());
+    final topProducts =
         useState<List<RelatedProduct>>(List<RelatedProduct>.empty());
     final hashids = HashIds(
       salt: 'basket',
@@ -173,8 +178,7 @@ class BasketWidget extends HookWidget {
         return Container(
             margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(26),
-                color: Colors.grey.shade100),
+                borderRadius: BorderRadius.circular(26), color: Colors.white),
             height: 104,
             width: 104,
             // margin: EdgeInsets.all(15),
@@ -187,8 +191,7 @@ class BasketWidget extends HookWidget {
         return Container(
           margin: const EdgeInsets.only(right: 10),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(26),
-              color: Colors.grey.shade100),
+              borderRadius: BorderRadius.circular(26), color: Colors.white),
           child: Image.network(
             'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
             width: 104,
@@ -234,7 +237,7 @@ class BasketWidget extends HookWidget {
       }
       return Container(
           margin: const EdgeInsets.symmetric(vertical: 15),
-          height: 104,
+          height: 80,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -329,6 +332,45 @@ class BasketWidget extends HookWidget {
       return result;
     }, [basketData.value, deliveryPrice.value]);
 
+    Future<void> fetchBiRecomendedItems(BasketData basketData) async {
+      if (basket != null) {
+        List<String> productIds = [];
+
+        if (basketData?.lines != null) {
+          if (basketData!.lines!.length > 0) {
+            for (var line in basketData!.lines!) {
+              productIds.add(line.variant!.productId.toString());
+            }
+          }
+        }
+
+        Map<String, String> requestHeaders = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json'
+        };
+
+        var url = SimplifiedUri.uri(
+            'https://api.lesailes.uz/api/baskets/bi_related/',
+            {"productIds": productIds});
+        var response = await http.get(url, headers: requestHeaders);
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var json = jsonDecode(response.body);
+          if (json['data'] != null) {
+            List<RelatedProduct> localBiRelatedProduct =
+                List<RelatedProduct>.from(json['data']['relatedItems']
+                    .map((m) => RelatedProduct.fromJson(m))
+                    .toList());
+            relatedBiData.value = localBiRelatedProduct;
+            List<RelatedProduct> topProduct = List<RelatedProduct>.from(
+                json['data']['topItems']
+                    .map((m) => RelatedProduct.fromJson(m))
+                    .toList());
+            topProducts.value = topProduct;
+          }
+        }
+      }
+    }
+
     Future<void> getBasket() async {
       if (basket != null) {
         Map<String, String> requestHeaders = {
@@ -376,6 +418,7 @@ class BasketWidget extends HookWidget {
             }
           }
           basketData.value = basketLocalData;
+          fetchBiRecomendedItems(basketLocalData);
           _isBasketLoading.value = false;
         }
       }
@@ -582,21 +625,21 @@ class BasketWidget extends HookWidget {
                                           ),
                                         );
                                 }),
-                        relatedData.value.isNotEmpty
+                        relatedBiData.value.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(
-                                  top: 45,
+                                  top: 10,
                                   bottom: 10,
                                 ),
                                 child: Align(
                                     alignment: Alignment.centerLeft,
-                                    child: Text(tr('basket.addToOrder'),
+                                    child: Text(tr('buyWithTheseProducts'),
                                         style: const TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w500))),
                               )
                             : const SizedBox(),
-                        relatedData.value.isNotEmpty
+                        relatedBiData.value.isNotEmpty
                             ? Padding(
                                 padding: const EdgeInsets.only(bottom: 30),
                                 child: SizedBox(
@@ -604,7 +647,7 @@ class BasketWidget extends HookWidget {
                                   child: ListView.builder(
                                       shrinkWrap: true,
                                       scrollDirection: Axis.horizontal,
-                                      itemCount: relatedData.value.length,
+                                      itemCount: relatedBiData.value.length,
                                       itemBuilder: (context, index) {
                                         final formatCurrency =
                                             NumberFormat.currency(
@@ -614,7 +657,7 @@ class BasketWidget extends HookWidget {
                                         String productPrice = '';
 
                                         productPrice =
-                                            relatedData.value[index].price;
+                                            relatedBiData.value[index].price;
 
                                         productPrice = formatCurrency.format(
                                             double.tryParse(productPrice));
@@ -641,7 +684,7 @@ class BasketWidget extends HookWidget {
                                                             .center,
                                                     children: [
                                                       Image.network(
-                                                        relatedData
+                                                        relatedBiData
                                                             .value[index].image,
                                                         height: 140,
                                                         width: 140,
@@ -650,12 +693,16 @@ class BasketWidget extends HookWidget {
                                                         flex: 1,
                                                       ),
                                                       Text(
-                                                        relatedData.value[index]
+                                                        relatedBiData
+                                                            .value[index]
                                                             .customName,
                                                         style: const TextStyle(
                                                             fontSize: 20),
                                                         textAlign:
                                                             TextAlign.center,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 3,
                                                       ),
                                                       const Spacer(
                                                         flex: 1,
@@ -673,7 +720,295 @@ class BasketWidget extends HookWidget {
                                                                 .value = true;
 
                                                             int selectedProdId =
-                                                                relatedData
+                                                                relatedBiData
+                                                                    .value[
+                                                                        index]
+                                                                    .id;
+
+                                                            Box userBox =
+                                                                Hive.box<User>(
+                                                                    'user');
+                                                            User? user = userBox
+                                                                .get('user');
+                                                            Box basketBox = Hive
+                                                                .box<Basket>(
+                                                                    'basket');
+                                                            Basket? basket =
+                                                                basketBox.get(
+                                                                    'basket');
+
+                                                            if (basket !=
+                                                                    null &&
+                                                                basket.encodedId
+                                                                    .isNotEmpty &&
+                                                                basket.encodedId
+                                                                    .isNotEmpty) {
+                                                              Map<String,
+                                                                      String>
+                                                                  requestHeaders =
+                                                                  {
+                                                                'Content-type':
+                                                                    'application/json',
+                                                                'Accept':
+                                                                    'application/json'
+                                                              };
+
+                                                              if (user !=
+                                                                  null) {
+                                                                requestHeaders[
+                                                                        'Authorization'] =
+                                                                    'Bearer ${user.userToken}';
+                                                              }
+
+                                                              var url = Uri.https(
+                                                                  'api.lesailes.uz',
+                                                                  '/api/baskets-lines');
+                                                              var formData = {
+                                                                'basket_id': basket
+                                                                    .encodedId,
+                                                                'variants': [
+                                                                  {
+                                                                    'id':
+                                                                        selectedProdId,
+                                                                    'quantity':
+                                                                        1,
+                                                                    'modifiers':
+                                                                        selectedModifiers
+                                                                  }
+                                                                ]
+                                                              };
+                                                              var response = await http.post(
+                                                                  url,
+                                                                  headers:
+                                                                      requestHeaders,
+                                                                  body: jsonEncode(
+                                                                      formData));
+                                                              if (response.statusCode ==
+                                                                      200 ||
+                                                                  response.statusCode ==
+                                                                      201) {
+                                                                var json =
+                                                                    jsonDecode(
+                                                                        response
+                                                                            .body);
+                                                                BasketData
+                                                                    basketLocalData =
+                                                                    BasketData
+                                                                        .fromJson(
+                                                                            json['data']);
+                                                                Basket newBasket = Basket(
+                                                                    encodedId:
+                                                                        basketLocalData.encodedId ??
+                                                                            '',
+                                                                    lineCount: basketLocalData
+                                                                            .lines
+                                                                            ?.length ??
+                                                                        0,
+                                                                    totalPrice:
+                                                                        basketLocalData
+                                                                            .total);
+                                                                basketBox.put(
+                                                                    'basket',
+                                                                    newBasket);
+                                                                basketData
+                                                                        .value =
+                                                                    basketLocalData;
+                                                              }
+                                                            } else {
+                                                              Map<String,
+                                                                      String>
+                                                                  requestHeaders =
+                                                                  {
+                                                                'Content-type':
+                                                                    'application/json',
+                                                                'Accept':
+                                                                    'application/json'
+                                                              };
+
+                                                              if (user !=
+                                                                  null) {
+                                                                requestHeaders[
+                                                                        'Authorization'] =
+                                                                    'Bearer ${user.userToken}';
+                                                              }
+
+                                                              var url = Uri.https(
+                                                                  'api.lesailes.uz',
+                                                                  '/api/baskets');
+                                                              var formData = {
+                                                                'variants': [
+                                                                  {
+                                                                    'id':
+                                                                        selectedProdId,
+                                                                    'quantity':
+                                                                        1,
+                                                                    'modifiers':
+                                                                        selectedModifiers
+                                                                  }
+                                                                ]
+                                                              };
+                                                              var response = await http.post(
+                                                                  url,
+                                                                  headers:
+                                                                      requestHeaders,
+                                                                  body: jsonEncode(
+                                                                      formData));
+                                                              if (response.statusCode ==
+                                                                      200 ||
+                                                                  response.statusCode ==
+                                                                      201) {
+                                                                var json =
+                                                                    jsonDecode(
+                                                                        response
+                                                                            .body);
+                                                                BasketData
+                                                                    basketLocalData =
+                                                                    BasketData
+                                                                        .fromJson(
+                                                                            json['data']);
+                                                                Basket newBasket = Basket(
+                                                                    encodedId:
+                                                                        basketLocalData.encodedId ??
+                                                                            '',
+                                                                    lineCount: basketLocalData
+                                                                            .lines
+                                                                            ?.length ??
+                                                                        0,
+                                                                    totalPrice:
+                                                                        basketLocalData
+                                                                            .total);
+                                                                basketBox.put(
+                                                                    'basket',
+                                                                    newBasket);
+                                                                basketData
+                                                                        .value =
+                                                                    basketLocalData;
+                                                              }
+                                                            }
+                                                            _isBasketLoading
+                                                                .value = false;
+
+                                                            return;
+                                                          },
+                                                          child: Text(
+                                                              productPrice),
+                                                          style: ButtonStyle(
+                                                            shape: MaterialStateProperty.all<
+                                                                    RoundedRectangleBorder>(
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          18.0),
+                                                            )),
+                                                            backgroundColor:
+                                                                MaterialStateProperty.all<
+                                                                        Color>(
+                                                                    AppColors
+                                                                        .mainColor),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ])));
+                                      }),
+                                ),
+                              )
+                            : const SizedBox(),
+                        topProducts.value.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  bottom: 10,
+                                ),
+                                child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(tr('featuredProducts'),
+                                        style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.w500))),
+                              )
+                            : const SizedBox(),
+                        topProducts.value.isNotEmpty
+                            ? Padding(
+                                padding: const EdgeInsets.only(bottom: 30),
+                                child: SizedBox(
+                                  height: 280,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: topProducts.value.length,
+                                      itemBuilder: (context, index) {
+                                        final formatCurrency =
+                                            NumberFormat.currency(
+                                                locale: 'ru_RU',
+                                                symbol: 'сум',
+                                                decimalDigits: 0);
+                                        String productPrice = '';
+
+                                        productPrice =
+                                            topProducts.value[index].price;
+
+                                        productPrice = formatCurrency.format(
+                                            double.tryParse(productPrice));
+                                        return Container(
+                                            width: 140,
+                                            margin: const EdgeInsets.only(
+                                                right: 10),
+                                            child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 10,
+                                                        horizontal: 10),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: [
+                                                      Image.network(
+                                                        topProducts
+                                                            .value[index].image,
+                                                        height: 140,
+                                                        width: 140,
+                                                      ),
+                                                      const Spacer(
+                                                        flex: 1,
+                                                      ),
+                                                      Text(
+                                                        topProducts.value[index]
+                                                            .customName,
+                                                        style: const TextStyle(
+                                                            fontSize: 20),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        maxLines: 3,
+                                                      ),
+                                                      const Spacer(
+                                                        flex: 1,
+                                                      ),
+                                                      SizedBox(
+                                                        height: 50,
+                                                        width: 144,
+                                                        child: ElevatedButton(
+                                                          onPressed: () async {
+                                                            List<
+                                                                    Map<String,
+                                                                        int>>?
+                                                                selectedModifiers;
+                                                            _isBasketLoading
+                                                                .value = true;
+
+                                                            int selectedProdId =
+                                                                topProducts
                                                                     .value[
                                                                         index]
                                                                     .id;
@@ -873,7 +1208,7 @@ class BasketWidget extends HookWidget {
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
                               color: Colors.grey.shade100),
-                          height: 187,
+                          height: 150,
                           child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
@@ -927,35 +1262,35 @@ class BasketWidget extends HookWidget {
                                         style: const TextStyle(fontSize: 18),
                                       )
                                     ]),
-                                Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        tr("basket.willReturn") +
-                                            ' 5% ' +
-                                            tr("basket.fromOrder") +
-                                            ':',
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            color: AppColors.plum),
-                                      ),
-                                      const Spacer(),
-                                      Image.asset(
-                                        'images/coin.png',
-                                        height: 16,
-                                        width: 16,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Text(
-                                        cashback,
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            color: AppColors.plum),
-                                      )
-                                    ]),
+                                // Row(
+                                //     mainAxisAlignment:
+                                //         MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       Text(
+                                //         tr("basket.willReturn") +
+                                //             ' 5% ' +
+                                //             tr("basket.fromOrder") +
+                                //             ':',
+                                //         style: const TextStyle(
+                                //             fontSize: 18,
+                                //             color: AppColors.plum),
+                                //       ),
+                                //       const Spacer(),
+                                //       Image.asset(
+                                //         'images/coin.png',
+                                //         height: 16,
+                                //         width: 16,
+                                //       ),
+                                //       const SizedBox(
+                                //         width: 5,
+                                //       ),
+                                //       Text(
+                                //         cashback,
+                                //         style: const TextStyle(
+                                //             fontSize: 18,
+                                //             color: AppColors.plum),
+                                //       )
+                                //     ]),
                                 Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1242,11 +1577,10 @@ class BasketWidget extends HookWidget {
                           await Hive.box<DeliveryNotes>('deliveryNotes')
                               .delete('deliveryNotes');
 
-                                  Box<BasketItemQuantity>
-                                      basketItemQuantityBox =
-                                      Hive.box<BasketItemQuantity>(
-                                          'basketItemQuantity');
-                                  await basketItemQuantityBox.clear();
+                          Box<BasketItemQuantity> basketItemQuantityBox =
+                              Hive.box<BasketItemQuantity>(
+                                  'basketItemQuantity');
+                          await basketItemQuantityBox.clear();
                           Navigator.of(context).pop();
                           showBarModalBottomSheet(
                               expand: false,
