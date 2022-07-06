@@ -159,5 +159,10 @@
   "chooseDate": "Выберите дату",
   "day": "День",
   "buyWithTheseProducts" : "С этими продуктами покупают",
-  "featuredProducts": "Популярные продукты"
+  "featuredProducts": "Популярные продукты",
+  "enterYourName": "Введите ваше имя",
+  "yourName": "Ваше имя",
+  "incorrectCode": "Введен неверный код или срок действия кода истек",
+  "sentCodeToNumber": "Отправлен код на номер",
+  "getNewCode": "Получить новый код"
 }

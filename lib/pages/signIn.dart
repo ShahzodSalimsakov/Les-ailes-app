@@ -7,7 +7,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sms_autofill/sms_autofill.dart';
+
+// import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../models/user.dart';
@@ -34,6 +36,7 @@ class SignInPage extends HookWidget {
     final otpCode = useState<String>('');
     final otpToken = useState<String>('');
     final _isFinishedTimer = useState<bool>(false);
+    final signature = useState<String>('');
 
     Future<void> trySignIn() async {
       _isSendingPhone.value = true;
@@ -92,6 +95,12 @@ class SignInPage extends HookWidget {
       }
     }
 
+    useEffect(() {
+      return () {
+        SmsAutoFill().unregisterListener();
+      };
+    });
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -133,6 +142,7 @@ class SignInPage extends HookWidget {
                               height: 20,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   tr("sentCodeToNumber"),
@@ -140,12 +150,12 @@ class SignInPage extends HookWidget {
                                   style: TextStyle(color: Colors.grey),
                                 )
                               ],
-                              mainAxisAlignment: MainAxisAlignment.center,
                             ),
                             const SizedBox(
                               height: 10,
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
                                   phoneNumber.value,
@@ -153,7 +163,6 @@ class SignInPage extends HookWidget {
                                   style: const TextStyle(fontSize: 26),
                                 )
                               ],
-                              mainAxisAlignment: MainAxisAlignment.center,
                             ),
                             const SizedBox(
                               height: 30,
@@ -162,29 +171,47 @@ class SignInPage extends HookWidget {
                                 height: 150,
                                 margin:
                                     const EdgeInsets.symmetric(horizontal: 40),
-                                child: PinCodeTextField(
-                                  controller: controller,
-                                  enablePinAutofill: true,
-                                  autoFocus: true,
-                                  length: 4,
-                                  onChanged: (String value) {},
-                                  appContext: context,
-                                  keyboardType: TextInputType.number,
-                                  onCompleted: (String code) {
-                                    otpCode.value = code;
-                                    trySignIn();
+                                child: PinFieldAutoFill(
+                                  decoration: UnderlineDecoration(
+                                    textStyle: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                    colorBuilder: FixedColorBuilder(
+                                        Colors.black.withOpacity(0.3)),
+                                  ),
+                                  currentCode: otpCode.value,
+                                  codeLength: 4,
+                                  onCodeSubmitted: (code) {},
+                                  onCodeChanged: (code) {
+                                    if (code!.length == 4) {
+                                      otpCode.value = code;
+                                      trySignIn();
+                                    }
                                   },
-                                  pinTheme: PinTheme(
-                                      borderRadius: BorderRadius.circular(20),
-                                      fieldWidth: 60,
-                                      fieldHeight: 70,
-                                      shape: PinCodeFieldShape.box,
-                                      inactiveColor: Colors.grey,
-                                      activeColor: AppColors.mainColor,
-                                      selectedColor: AppColors.mainColor,
-                                      inactiveFillColor: Colors.grey,
-                                      activeFillColor: Colors.grey),
-                                )),
+                                )
+                                // PinCodeTextField(
+                                //   controller: controller,
+                                //   enablePinAutofill: true,
+                                //   autoFocus: true,
+                                //   length: 4,
+                                //   onChanged: (String value) {},
+                                //   appContext: context,
+                                //   keyboardType: TextInputType.number,
+                                //   onCompleted: (String code) {
+                                //     otpCode.value = code;
+                                //     trySignIn();
+                                //   },
+                                //   pinTheme: PinTheme(
+                                //       borderRadius: BorderRadius.circular(20),
+                                //       fieldWidth: 60,
+                                //       fieldHeight: 70,
+                                //       shape: PinCodeFieldShape.box,
+                                //       inactiveColor: Colors.grey,
+                                //       activeColor: AppColors.mainColor,
+                                //       selectedColor: AppColors.mainColor,
+                                //       inactiveFillColor: Colors.grey,
+                                //       activeFillColor: Colors.grey),
+                                // )
+                                ),
                             const Spacer(flex: 1),
                             _isFinishedTimer.value
                                 ? InkWell(
@@ -423,13 +450,14 @@ class SignInPage extends HookWidget {
                                               otpToken.value = jsonDecode(
                                                   decoded)['user_token'];
                                               _isVerifyPage.value = true;
+                                              signature.value = await SmsAutoFill().getAppSignature;
+                                              await SmsAutoFill().listenForCode;
                                             }
                                           }
                                         }
                                         _isSendingPhone.value = false;
                                       }
                                     },
-                                    child: Text(tr("signIn.proceed")),
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
@@ -441,6 +469,7 @@ class SignInPage extends HookWidget {
                                           MaterialStateProperty.all<Color>(
                                               AppColors.mainColor),
                                     ),
+                                    child: Text(tr("signIn.proceed")),
                                   ),
                                 ))
                           ],
