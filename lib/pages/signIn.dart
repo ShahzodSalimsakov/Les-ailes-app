@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:otp_autofill/otp_autofill.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 // import 'package:pin_code_fields/pin_code_fields.dart';
@@ -20,10 +21,11 @@ class SignInPage extends HookWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
 
-  final TextEditingController controller = TextEditingController();
+  // final TextEditingController controller = TextEditingController();
   final TextEditingController nameFieldController = TextEditingController();
   final initialCountry = 'UZ';
   final number = PhoneNumber(isoCode: 'UZ');
+  late OTPTextEditController controller;
 
   SignInPage({Key? key}) : super(key: key);
 
@@ -101,13 +103,30 @@ class SignInPage extends HookWidget {
       // Timer(const Duration(milliseconds: 700),  ()
       // async  {
         await SmsAutoFill().listenForCode; print('listen for code');
+        signature.value = await SmsAutoFill().getAppSignature;
       // });
     }
 
     useEffect(() {
-      listenForCode();
+      // listenForCode();
+
+      controller = OTPTextEditController(
+        codeLength: 4,
+        onCodeReceive: (code) => print('Your Application receive code - $code'),
+      )..startListenUserConsent(
+            (code) {
+              print(code);
+          final exp = RegExp(r'(\d{4})');
+          return exp.stringMatch(code ?? '') ?? '';
+        },
+        // strategies: [
+        //   SampleStrategy(),
+        // ],
+      );
+
       return () {
-        SmsAutoFill().unregisterListener();
+        // SmsAutoFill().unregisterListener();
+        controller.stopListen();
         print('Unregistered');
       };
     }, const []);
@@ -563,17 +582,18 @@ class SignInPage extends HookWidget {
                               colorBuilder: FixedColorBuilder(
                                   Colors.black.withOpacity(0.3)),
                             ),
-                            // currentCode: otpCode.value,
+                            currentCode: otpCode.value,
                             autoFocus: true,
                             cursor: Cursor(
                               width: 2,
-                              height: 40,
+                              height: 30,
                               color: AppColors.mainColor,
                               radius: Radius.circular(1),
                               enabled: true,
                             ),
                             keyboardType: TextInputType.number,
                             codeLength: 4,
+                            controller: controller,
                             onCodeSubmitted: (code) {
                               print(code);
                             },
@@ -850,7 +870,7 @@ class SignInPage extends HookWidget {
                                             decoded)['user_token'];
                                         _isVerifyPage.value = true;
                                         // listenForCode();
-                                        // signature.value = await SmsAutoFill().getAppSignature;
+
                                       }
                                     }
                                   }
