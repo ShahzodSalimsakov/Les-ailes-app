@@ -8,6 +8,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
+import '../models/basket.dart';
+import '../models/basket_item_quantity.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
 
@@ -21,6 +23,29 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
+
+  logout() async {
+    Box<User> transaction = Hive.box<User>('user');
+    User currentUser = transaction.get('user')!;
+    Map<String, String> requestHeaders = {
+      'Content-type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${currentUser.userToken}'
+    };
+    var url = Uri.https('api.lesailes.uz', '/api/logout');
+    var formData = {};
+    var response = await http.post(url,
+        headers: requestHeaders, body: jsonEncode(formData));
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+    }
+    transaction.delete('user');
+    Box<Basket> basketBox = Hive.box<Basket>('basket');
+    basketBox.delete('basket');
+    Box<BasketItemQuantity> basketItemQuantityBox =
+        Hive.box<BasketItemQuantity>('basketItemQuantity');
+    await basketItemQuantityBox.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +117,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         ),
                                         initialTime:
                                             const TimeOfDay(hour: 8, minute: 0),
-                                        initialValue: currentUser?.birth != null ?  DateTime.parse(currentUser!.birth!) : DateTime.now(),
+                                        initialValue: currentUser?.birth != null
+                                            ? DateTime.parse(
+                                                currentUser!.birth!)
+                                            : DateTime.now(),
                                         // enabled: true,
                                       ),
                                       const SizedBox(
@@ -150,60 +178,170 @@ class _ProfilePageState extends State<ProfilePage> {
                           alignment: Alignment.bottomCenter,
                           child: Container(
                             color: Colors.white,
-                            child: SizedBox(
-                                width: double.infinity,
-                                child: n.NikuButton.elevated(Text(
-                                  tr('save'),
-                                  style: const TextStyle(fontSize: 20),
-                                ))
-                                  ..bg = AppColors.mainColor
-                                  ..color = Colors.white
-                                  ..rounded = 20
-                                  ..py = 20
-                                  ..my = 10
-                                  ..onPressed = () async {
-                                    _formKey.currentState!.save();
-                                    if (_formKey.currentState != null &&
-                                        _formKey.currentState!.validate()) {
-                                      setState(() {
-                                        isLoading = true;
-                                      });
-                                      Map<String, String> requestHeaders = {
-                                        'Content-type': 'application/json',
-                                        'Accept': 'application/json',
-                                        'Authorization':
-                                            'Bearer ${currentUser!.userToken}'
-                                      };
-                                      var url = Uri.https(
-                                          'api.lesailes.uz', '/api/me');
-                                      var values = {..._formKey.currentState!.value};
-                                      if (values['email'] == null) {
-                                        values['email'] = '';
-                                      }
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                    width: double.infinity,
+                                    child: n.NikuButton.elevated(Text(
+                                      tr('profile.deleteProfile'),
+                                      style: const TextStyle(fontSize: 20),
+                                    ))
+                                      ..bg = Colors.white
+                                      ..border = const BorderSide(
+                                          color: AppColors.mainColor, width: 2)
+                                      ..color = AppColors.mainColor
+                                      ..rounded = 20
+                                      ..py = 20
+                                      ..my = 10
+                                      ..onPressed = () async {
+                                        setState(() {
+                                          isLoading = true;
+                                        });
+                                        Map<String, String> requestHeaders = {
+                                          'Content-type': 'application/json',
+                                          'Accept': 'application/json',
+                                          'Authorization':
+                                              'Bearer ${currentUser!.userToken}'
+                                        };
+                                        var url = Uri.https(
+                                            'api.lesailes.uz', '/api/delete');
 
-                                      if (values['birth'] != null) {
-                                        values['birth'] = DateFormat('yyyy-MM-dd').format(values['birth']);
-                                      }
+                                        var response = await http.post(url,
+                                            headers: requestHeaders);
+                                        if (response.statusCode == 200) {
+                                          await logout();
+                                          Navigator.of(context).pop();
+                                        }
 
-                                      var response = await http.post(url,
-                                          headers: requestHeaders,
-                                          body: jsonEncode(values));
-                                      if (response.statusCode == 200) {
-                                        var result = jsonDecode(response.body);
-                                        User authorizedUser =
-                                            User.fromJson(result['data']);
-                                        Box<User> transaction =
-                                            Hive.box<User>('user');
-                                        transaction.put('user', authorizedUser);
-                                        Navigator.of(context).pop();
-                                      }
+                                        setState(() {
+                                          isLoading = false;
+                                        });
+                                      }),
+                                SizedBox(
+                                    width: double.infinity,
+                                    child: n.NikuButton.elevated(Text(
+                                      tr('save'),
+                                      style: const TextStyle(fontSize: 20),
+                                    ))
+                                      ..bg = AppColors.mainColor
+                                      ..color = Colors.white
+                                      ..rounded = 20
+                                      ..py = 20
+                                      ..my = 10
+                                      ..onPressed = () async {
+                                        _formKey.currentState!.save();
+                                        if (_formKey.currentState != null &&
+                                            _formKey.currentState!.validate()) {
+                                          setState(() {
+                                            isLoading = true;
+                                          });
+                                          Map<String, String> requestHeaders = {
+                                            'Content-type': 'application/json',
+                                            'Accept': 'application/json',
+                                            'Authorization':
+                                                'Bearer ${currentUser!.userToken}'
+                                          };
+                                          var url = Uri.https(
+                                              'api.lesailes.uz', '/api/me');
+                                          var values = {
+                                            ..._formKey.currentState!.value
+                                          };
+                                          if (values['email'] == null) {
+                                            values['email'] = '';
+                                          }
 
-                                      setState(() {
-                                        isLoading = false;
-                                      });
-                                    }
-                                  }),
+                                          if (values['birth'] != null) {
+                                            values['birth'] =
+                                                DateFormat('yyyy-MM-dd')
+                                                    .format(values['birth']);
+                                          }
+
+                                          var response = await http.post(url,
+                                              headers: requestHeaders,
+                                              body: jsonEncode(values));
+                                          if (response.statusCode == 200) {
+                                            var result =
+                                                jsonDecode(response.body);
+                                            User authorizedUser =
+                                                User.fromJson(result['data']);
+                                            Box<User> transaction =
+                                                Hive.box<User>('user');
+                                            transaction.put(
+                                                'user', authorizedUser);
+                                            Navigator.of(context).pop();
+                                          }
+
+                                          setState(() {
+                                            isLoading = false;
+                                          });
+                                        }
+                                      })
+                              ],
+                            ),
                           )),
+                      // Align(
+                      //     alignment: Alignment.bottomCenter,
+                      //     child: Container(
+                      //       color: Colors.white,
+                      //       child: SizedBox(
+                      //           width: double.infinity,
+                      //           child: n.NikuButton.elevated(Text(
+                      //             tr('save'),
+                      //             style: const TextStyle(fontSize: 20),
+                      //           ))
+                      //             ..bg = AppColors.mainColor
+                      //             ..color = Colors.white
+                      //             ..rounded = 20
+                      //             ..py = 20
+                      //             ..my = 10
+                      //             ..onPressed = () async {
+                      //               _formKey.currentState!.save();
+                      //               if (_formKey.currentState != null &&
+                      //                   _formKey.currentState!.validate()) {
+                      //                 setState(() {
+                      //                   isLoading = true;
+                      //                 });
+                      //                 Map<String, String> requestHeaders = {
+                      //                   'Content-type': 'application/json',
+                      //                   'Accept': 'application/json',
+                      //                   'Authorization':
+                      //                       'Bearer ${currentUser!.userToken}'
+                      //                 };
+                      //                 var url = Uri.https(
+                      //                     'api.lesailes.uz', '/api/me');
+                      //                 var values = {
+                      //                   ..._formKey.currentState!.value
+                      //                 };
+                      //                 if (values['email'] == null) {
+                      //                   values['email'] = '';
+                      //                 }
+
+                      //                 if (values['birth'] != null) {
+                      //                   values['birth'] =
+                      //                       DateFormat('yyyy-MM-dd')
+                      //                           .format(values['birth']);
+                      //                 }
+
+                      //                 var response = await http.post(url,
+                      //                     headers: requestHeaders,
+                      //                     body: jsonEncode(values));
+                      //                 if (response.statusCode == 200) {
+                      //                   var result = jsonDecode(response.body);
+                      //                   User authorizedUser =
+                      //                       User.fromJson(result['data']);
+                      //                   Box<User> transaction =
+                      //                       Hive.box<User>('user');
+                      //                   transaction.put('user', authorizedUser);
+                      //                   Navigator.of(context).pop();
+                      //                 }
+
+                      //                 setState(() {
+                      //                   isLoading = false;
+                      //                 });
+                      //               }
+                      //             }),
+                      //     )),
                     ],
                   )),
             ),

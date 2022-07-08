@@ -60,7 +60,8 @@
     "name": "Name",
     "birthDay": "Date of Birth",
     "email": "Email",
-    "phone": "Phone"
+    "phone": "Phone",
+    "deleteProfile": "Delete profile"
   },
   "save": "Save",
   "deliveryBottomSheet": {
@@ -162,6 +163,6 @@
   "decommissioned": "Decommissioned",
   "chooseDate": "Choose date",
   "day": "Day",
-  "buyWithTheseProducts" : "Buy with these products",
+  "buyWithTheseProducts": "Buy with these products",
   "featuredProducts": "Featured Products"
 }
