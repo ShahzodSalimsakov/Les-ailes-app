@@ -165,5 +165,7 @@
   "yourName": "Ismingiz",
   "incorrectCode": "Kiritilgan kod noto'g'ri yoki kod muddati tugagan",
   "sentCodeToNumber": "Raqamga kod yuborildi",
-  "getNewCode": "Yangi kodni oling"
+  "getNewCode": "Yangi kodni oling",
+  "buyWithThisProduct": "Ushbu mahsulot bilan sotib oling",
+  "addedToBasket": "Savatga qo'shildi"
 }

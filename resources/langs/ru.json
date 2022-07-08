@@ -165,5 +165,7 @@
   "yourName": "Ваше имя",
   "incorrectCode": "Введен неверный код или срок действия кода истек",
   "sentCodeToNumber": "Отправлен код на номер",
-  "getNewCode": "Получить новый код"
+  "getNewCode": "Получить новый код",
+  "buyWithThisProduct": "Купить с этим продуктом",
+  "addedToBasket": "Добавлено в корзину"
 }

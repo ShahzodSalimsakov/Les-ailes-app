@@ -10,6 +10,7 @@ import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/widgets/productCardModal.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../models/basket.dart';
@@ -18,10 +19,12 @@ import '../models/basket_item_quantity.dart';
 import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
 import '../models/productSection.dart';
+import '../models/related_product.dart';
 import '../models/stock.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
+import '../utils/simplified_url.dart';
 
 class ProductCard extends HookWidget {
   final Items? product;
@@ -60,25 +63,20 @@ class ProductCard extends HookWidget {
     final formatCurrency =
         NumberFormat.currency(locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
     String productPrice = '';
-
     productPrice = product!.price;
-
     productPrice = formatCurrency.format(double.tryParse(productPrice));
     final _isBasketLoading = useState<bool>(false);
-
     Box<BasketItemQuantity> basketItemQuantityBox =
         Hive.box<BasketItemQuantity>('basketItemQuantity');
     BasketItemQuantity? basketItemQuantity =
         basketItemQuantityBox.get(product!.id);
-
     final hashids = HashIds(
       salt: 'basket',
       minHashLength: 15,
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
-
+    final deliveryPrice = useState(0);
     int? lineId;
-
     if (basketItemQuantity != null) {
       lineId = basketItemQuantity.lineId;
     }
@@ -295,6 +293,12 @@ class ProductCard extends HookWidget {
       return;
     }
 
+    Box<Basket> basketBox = Hive.box<Basket>('basket');
+    Basket? basket = basketBox.get('basket');
+
+
+
+
     var locale = context.locale.toString();
     var attributeDataName = '';
     var attributeDataDesc = '';
@@ -373,83 +377,50 @@ class ProductCard extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  productImage(image),
-                  const Spacer(
-                    flex: 1,
-                  ),
-                  Text(
-                    attributeDataName,
-                    style: const TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  attributeDataDesc.isNotEmpty ?
                   GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(40.0),
-                              topRight: Radius.circular(40.0),
+                      onTap: () {
+                        showModalBottomSheet(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(40.0),
+                                topRight: Radius.circular(40.0),
+                              ),
                             ),
-                          ),
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (BuildContext builder) {
-                            return  Container(
-                                  height: MediaQuery.of(context).size.height * 0.7,
-                                  decoration: const BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(40.0),
-                                    topRight: Radius.circular(40.0),
-                                  )),
-                                  // height: 200,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 20),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      _buildHandle(context),CachedNetworkImage(
-                                        imageUrl: '$image',
-                                        progressIndicatorBuilder: (context, url, downloadProgress) =>
-                                            CircularProgressIndicator(
-                                                value: downloadProgress.progress, color: AppColors.mainColor),
-                                        errorWidget: (context, url, error) => const Icon(Icons.error),
-                                        height: 300,
-                                        width: 300,
-                                      ),
-                                      Html(
-                                        data: attributeDataDesc,
-                                        style: {
-                                          'p': Style(
-                                              textOverflow:
-                                                  TextOverflow.visible,
-                                              alignment: Alignment.center,
-                                              fontSize: FontSize.xLarge,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20)),
-                                        },
-                                      )
-                                    ],
-                                  ),
-                                );
-                          });
-                    },
-                    child: Container(
-                      height: 40,
-                      child: Html(
-                        data: attributeDataDesc,
-                        style: {
-                          'p': Style(
-                              maxLines: 1,
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (BuildContext builder) {
+                              return ProductCardModal(product: product);
+                            });
+                      },
+                      child: SizedBox(
+                        height: 240,
+                        child: Column(
+                          children: [
+                            productImage(image),
+                            const Spacer(
+                              flex: 1,
+                            ),
+                            Text(
+                              attributeDataName,
+                              style: const TextStyle(fontSize: 20),
                               textAlign: TextAlign.center,
-                              textOverflow: TextOverflow.ellipsis,
-                              alignment: Alignment.center),
-                        },
-                      ),
-                    ),
-                  ) : const SizedBox(),
+                            ),
+                            SizedBox(
+                              height: 40,
+                              child: Html(
+                                data: attributeDataDesc,
+                                style: {
+                                  'p': Style(
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      textOverflow: TextOverflow.ellipsis,
+                                      alignment: Alignment.center),
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      )),
                   const Spacer(
                     flex: 1,
                   ),
@@ -565,6 +536,11 @@ class ProductCard extends HookWidget {
                 ]),
           ));
     }
+
+    // useEffect(() {
+    //   getBasket();
+    //   return null;
+    // });
 
     return ValueListenableBuilder<Box<Stock>>(
         valueListenable: Hive.box<Stock>('stock').listenable(),

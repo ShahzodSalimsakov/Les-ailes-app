@@ -164,5 +164,7 @@
   "chooseDate": "Choose date",
   "day": "Day",
   "buyWithTheseProducts": "Buy with these products",
-  "featuredProducts": "Featured Products"
+  "featuredProducts": "Featured Products",
+  "buyWithThisProduct": "Buy with this product",
+  "addedToBasket": "Added to basket"
 }
