@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import 'package:otp_autofill/otp_autofill.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 
 // import 'package:pin_code_fields/pin_code_fields.dart';
@@ -20,10 +21,11 @@ class SignInPage extends HookWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
 
-  final TextEditingController controller = TextEditingController();
+  // final TextEditingController controller = TextEditingController();
   final TextEditingController nameFieldController = TextEditingController();
   final initialCountry = 'UZ';
   final number = PhoneNumber(isoCode: 'UZ');
+  late OTPTextEditController controller;
 
   SignInPage({Key? key}) : super(key: key);
 
@@ -105,9 +107,25 @@ class SignInPage extends HookWidget {
     }
 
     useEffect(() {
-      listenForCode();
+      // listenForCode();
+
+      controller = OTPTextEditController(
+        codeLength: 4,
+        onCodeReceive: (code) => print('Your Application receive code - $code'),
+      )..startListenUserConsent(
+          (code) {
+            print(code);
+            final exp = RegExp(r'(\d{4})');
+            return exp.stringMatch(code ?? '') ?? '';
+          },
+          // strategies: [
+          //   SampleStrategy(),
+          // ],
+        );
+
       return () {
-        SmsAutoFill().unregisterListener();
+        // SmsAutoFill().unregisterListener();
+        controller.stopListen();
         print('Unregistered');
       };
     }, const []);
@@ -846,7 +864,7 @@ class SignInPage extends HookWidget {
                                             jsonDecode(decoded)['user_token'];
                                         _isVerifyPage.value = true;
                                         // listenForCode();
-                                        // signature.value = await SmsAutoFill().getAppSignature;
+
                                       }
                                     }
                                   }

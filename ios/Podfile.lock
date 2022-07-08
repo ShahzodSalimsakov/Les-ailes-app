@@ -83,6 +83,8 @@ PODS:
     - nanopb/encode (= 2.30908.0)
   - nanopb/decode (2.30908.0)
   - nanopb/encode (2.30908.0)
+  - otp_autofill (0.0.1):
+    - Flutter
   - path_provider_ios (0.0.1):
     - Flutter
   - phone_number (0.12.0):
@@ -118,6 +120,7 @@ DEPENDENCIES:
   - location (from `.symlinks/plugins/location/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
+  - otp_autofill (from `.symlinks/plugins/otp_autofill/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - phone_number (from `.symlinks/plugins/phone_number/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
@@ -165,6 +168,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/map_launcher/ios"
   maps_launcher:
     :path: ".symlinks/plugins/maps_launcher/ios"
+  otp_autofill:
+    :path: ".symlinks/plugins/otp_autofill/ios"
   path_provider_ios:
     :path: ".symlinks/plugins/path_provider_ios/ios"
   phone_number:
@@ -203,6 +208,7 @@ SPEC CHECKSUMS:
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
+  otp_autofill: 93bcc21475705d35445927cb9aef24e818bbf083
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   phone_number: 7e56d6e4e43fbe37507512a3aab3f11cf082af69
   PhoneNumberKit: 441e8b26ec88d598e3591de9061eff18f5dd12e8
