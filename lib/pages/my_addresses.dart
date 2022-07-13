@@ -19,6 +19,7 @@ class MyAddresses extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final address = useState<List<MyAddress>>(List<MyAddress>.empty());
+    final isLoading = useState(false);
 
     Future<void> getMyAddresses() async {
       Box box = Hive.box<User>('user');
@@ -75,7 +76,7 @@ class MyAddresses extends HookWidget {
                       ],
                     ),
                   )
-                : ListView(
+                : isLoading.value ? const Center(child: CircularProgressIndicator(color: AppColors.mainColor,)) : ListView(
                     shrinkWrap: true,
                     scrollDirection: Axis.vertical,
                     children: [
@@ -141,8 +142,8 @@ class MyAddresses extends HookWidget {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        print('deleted');
                                         Future<void> deleteAddress() async {
+                                          isLoading.value = true;
                                           Box box = Hive.box<User>('user');
                                           User? currentUser = box.get('user');
                                           if (currentUser != null) {
@@ -162,6 +163,7 @@ class MyAddresses extends HookWidget {
                                                 headers: requestHeaders);
                                             if (response.statusCode == 200) {
                                               getMyAddresses();
+                                              isLoading.value = false;
                                             }
                                           }
                                         }

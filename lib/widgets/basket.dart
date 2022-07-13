@@ -574,7 +574,7 @@ class BasketWidget extends HookWidget {
                     return Column(
                       children: [
                         const SizedBox(height: 20),
-                        // const WayToReceiveAnOrder(),
+                        const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),
                         _isBasketLoading.value != false
