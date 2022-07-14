@@ -33,6 +33,7 @@ class ProductCardModal extends HookWidget {
     final basketData = useState<BasketData?>(null);
 
     Future<void> fetchBiRecomendedItems() async {
+      _isBasketLoading.value = true;
       List<String> productIds = [product!.id.toString()];
 
       Map<String, String> requestHeaders = {
@@ -57,6 +58,7 @@ class ProductCardModal extends HookWidget {
                   .map((m) => RelatedProduct.fromJson(m))
                   .toList());
           topProducts.value = topProduct;
+          _isBasketLoading.value = false;
         }
       }
     }
@@ -214,7 +216,6 @@ class ProductCardModal extends HookWidget {
                                             onPressed: () async {
                                               List<Map<String, int>>?
                                                   selectedModifiers;
-                                              _isBasketLoading.value = true;
 
                                               int selectedProdId =
                                                   relatedBiData.value[index].id;
@@ -341,13 +342,12 @@ class ProductCardModal extends HookWidget {
                                                       basketLocalData;
                                                 }
                                               }
-                                              _isBasketLoading.value = false;
                                               Flushbar(
                                                 title: tr('product'),
-                                                message:
-                                                tr('addedToBasket'),
+                                                message: tr('addedToBasket'),
                                                 duration: Duration(seconds: 1),
-                                                flushbarPosition: FlushbarPosition.BOTTOM,
+                                                flushbarPosition:
+                                                    FlushbarPosition.BOTTOM,
                                               ).show(context);
                                               return;
                                             },
@@ -370,7 +370,10 @@ class ProductCardModal extends HookWidget {
                         }),
                   ),
                 )
-              : const SizedBox(),
+              : const Center(
+                  child: CircularProgressIndicator(
+                  color: AppColors.mainColor,
+                )),
         ],
       ),
     );
