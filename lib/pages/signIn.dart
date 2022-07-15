@@ -209,6 +209,9 @@ class SignInPage extends HookWidget {
                                   onChanged: (String value) {},
                                   appContext: context,
                                   keyboardType: TextInputType.number,
+                                  cursorColor: Colors.black,
+                                  cursorHeight: 30,
+                                  textStyle: const TextStyle(fontSize: 40, fontWeight: FontWeight.w100),
                                   onCompleted: (String code) {
                                     if (code!.length == 4) {
                                       otpCode.value = code;
@@ -218,10 +221,12 @@ class SignInPage extends HookWidget {
                                   pinTheme: PinTheme(
                                       borderRadius: BorderRadius.circular(10),
                                       fieldWidth: 55,
-                                      shape: PinCodeFieldShape.box,
-                                      inactiveColor: Colors.grey,
+                                      fieldHeight: 100,
+                                      shape: PinCodeFieldShape.underline,
+                                      inactiveColor: Colors.black,
                                       activeColor: AppColors.mainColor,
-                                      selectedColor: AppColors.mainColor),
+                                      selectedColor: AppColors.mainColor,
+                                  ),
                                 )
                                 // PinCodeTextField(
                                 //   controller: controller,
