@@ -62,7 +62,8 @@
     "birthDay": "Tug'ilgan kun",
     "email": "Elektron pochta",
     "phone": "Telefon",
-    "deleteProfile": "Profilni o'chirish"
+    "deleteProfile": "Profilni o'chirish",
+    "enterYourBirthday": "Tug'ilgan kuningizni kiriting"
   },
   "deliveryBottomSheet": {
     "addressNotDeliverable": "Etkazib berish zonasidan tashqaridagi manzil yoki filiallar yopiq",

@@ -36,7 +36,7 @@ class SignInPage extends HookWidget {
     final _isValid = useState<bool>(false);
     final _isVerifyPage = useState<bool>(false);
     final _isSendingPhone = useState<bool>(false);
-    final _isShowNameField = useState<bool>(false);
+    final _isShowNameField = useState<bool>(true);
     final phoneNumber = useState<String>('');
     final otpCode = useState<String>('');
     final otpToken = useState<String>('');
@@ -439,7 +439,7 @@ class SignInPage extends HookWidget {
                                       inputType: InputType.date,
                                       // style: const TextStyle(fontSize: 20),
                                       decoration: InputDecoration(
-                                          labelText: 'День рождения',
+                                          labelText: tr("profile.birthDay"),
                                           floatingLabelStyle: const TextStyle(
                                               color: AppColors.mainColor),
                                           focusedBorder: OutlineInputBorder(
@@ -458,7 +458,7 @@ class SignInPage extends HookWidget {
                                       initialValue: null,
                                       validator: (val) {
                                         if (val == null) {
-                                          return 'Укажите день рождения';
+                                          return tr('profile.enterYourBirthday');
                                         }
                                       },
                                       // enabled: true,
@@ -467,10 +467,10 @@ class SignInPage extends HookWidget {
                                 : const SizedBox(),
                             _isShowNameField.value
                                 ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      const Text('Укажите ваш пол',
-                                          style: TextStyle(fontSize: 18)),
+                                      // const Text('Укажите ваш пол',
+                                      //     style: TextStyle(fontSize: 18)),
                                       SizedBox(
                                         width: 100,
                                         child: ListTile(

@@ -61,7 +61,8 @@
     "birthDay": "Date of Birth",
     "email": "Email",
     "phone": "Phone",
-    "deleteProfile": "Delete profile"
+    "deleteProfile": "Delete profile",
+    "enterYourBirthday": "Enter your birthday"
   },
   "save": "Save",
   "deliveryBottomSheet": {

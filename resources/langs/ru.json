@@ -61,7 +61,8 @@
     "birthDay": "Дата рождения",
     "email": "Эл.почта",
     "phone": "Телефон",
-    "deleteProfile": "Удалить профиль"
+    "deleteProfile": "Удалить профиль",
+    "enterYourBirthday": "Укажите день рождения"
   },
   "save": "Сохранить",
   "deliveryBottomSheet": {
