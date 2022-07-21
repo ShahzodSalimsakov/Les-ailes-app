@@ -75,6 +75,8 @@ class User {
   late String? email;
   @HiveField(11)
   late String? birth;
+  @HiveField(11)
+  late String? gender;
 
   User(
       {required this.id,
@@ -88,7 +90,7 @@ class User {
       this.mobile,
       required this.userToken,
       this.email,
-      this.birth});
+      this.birth, this.gender});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -103,6 +105,7 @@ class User {
     userToken = json['user_token'];
     email = json['email'];
     birth = json['birth'];
+    gender = json['gender'];
   }
 
   Map<String, dynamic> toJson() {
@@ -119,6 +122,7 @@ class User {
     data['user_token'] = this.userToken;
     data['email'] = this.email;
     data['birth'] = this.birth;
+    data['gender'] = this.gender;
     return data;
   }
 }

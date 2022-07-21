@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +20,7 @@ import '../models/user.dart';
 import '../utils/colors.dart';
 
 class SignInPage extends HookWidget {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
 
   // final TextEditingController controller = TextEditingController();
@@ -41,6 +42,7 @@ class SignInPage extends HookWidget {
     final otpToken = useState<String>('');
     final _isFinishedTimer = useState<bool>(false);
     final signature = useState<String>('');
+    final _gender = useState(1);
 
     Future<void> trySignIn() async {
       _isSendingPhone.value = true;
@@ -211,7 +213,9 @@ class SignInPage extends HookWidget {
                                   keyboardType: TextInputType.number,
                                   cursorColor: Colors.black,
                                   cursorHeight: 30,
-                                  textStyle: const TextStyle(fontSize: 40, fontWeight: FontWeight.w100),
+                                  textStyle: const TextStyle(
+                                      fontSize: 40,
+                                      fontWeight: FontWeight.w100),
                                   onCompleted: (String code) {
                                     if (code!.length == 4) {
                                       otpCode.value = code;
@@ -219,13 +223,13 @@ class SignInPage extends HookWidget {
                                     }
                                   },
                                   pinTheme: PinTheme(
-                                      borderRadius: BorderRadius.circular(10),
-                                      fieldWidth: 55,
-                                      fieldHeight: 100,
-                                      shape: PinCodeFieldShape.underline,
-                                      inactiveColor: Colors.black,
-                                      activeColor: AppColors.mainColor,
-                                      selectedColor: AppColors.mainColor,
+                                    borderRadius: BorderRadius.circular(10),
+                                    fieldWidth: 55,
+                                    fieldHeight: 100,
+                                    shape: PinCodeFieldShape.underline,
+                                    inactiveColor: Colors.black,
+                                    activeColor: AppColors.mainColor,
+                                    selectedColor: AppColors.mainColor,
                                   ),
                                 )
                                 // PinCodeTextField(
@@ -323,7 +327,7 @@ class SignInPage extends HookWidget {
                     ),
                   )
                 : Expanded(
-                    child: Form(
+                    child: FormBuilder(
                       key: formKey,
                       child: Container(
                         child: Column(
@@ -347,7 +351,7 @@ class SignInPage extends HookWidget {
                             const SizedBox(height: 40.0),
                             Container(
                               margin:
-                                  const EdgeInsets.symmetric(horizontal: 30.0),
+                                  const EdgeInsets.symmetric(horizontal: 25.0),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20.0),
                                   border: Border.all(
@@ -369,7 +373,7 @@ class SignInPage extends HookWidget {
                                   selectorConfig: const SelectorConfig(
                                     selectorType:
                                         PhoneInputSelectorType.BOTTOM_SHEET,
-                                    showFlags: false,
+                                    showFlags: true,
                                   ),
                                   ignoreBlank: false,
                                   autoValidateMode: AutovalidateMode.disabled,
@@ -393,7 +397,9 @@ class SignInPage extends HookWidget {
                             ),
                             _isShowNameField.value
                                 ? Container(
-                                    height: 300,
+                                    // height: 50,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 15.0, vertical: 20),
                                     child: TextFormField(
@@ -405,25 +411,97 @@ class SignInPage extends HookWidget {
                                       },
                                       decoration: InputDecoration(
                                           labelText: tr("yourName"),
-                                          floatingLabelStyle: TextStyle(
-                                              color: Colors.yellow.shade600),
+                                          floatingLabelStyle: const TextStyle(
+                                              color: AppColors.mainColor),
                                           focusedBorder: OutlineInputBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(40),
-                                              borderSide: BorderSide(
+                                                  BorderRadius.circular(20),
+                                              borderSide: const BorderSide(
                                                   width: 1,
-                                                  color:
-                                                      Colors.yellow.shade600)),
+                                                  color: AppColors.mainColor)),
                                           contentPadding:
-                                              const EdgeInsets.only(left: 40),
+                                              const EdgeInsets.only(left: 20),
                                           border: OutlineInputBorder(
                                               borderRadius:
-                                                  BorderRadius.circular(40))),
+                                                  BorderRadius.circular(20))),
                                       keyboardType: TextInputType.name,
                                       textInputAction: TextInputAction.done,
                                     ),
                                   )
                                 : const SizedBox(),
+                            _isShowNameField.value
+                                ? Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 25),
+                                    child: FormBuilderDateTimePicker(
+                                      name: 'birth',
+                                      // onChanged: _onChanged,
+                                      inputType: InputType.date,
+                                      // style: const TextStyle(fontSize: 20),
+                                      decoration: InputDecoration(
+                                          labelText: 'День рождения',
+                                          floatingLabelStyle: const TextStyle(
+                                              color: AppColors.mainColor),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              borderSide: const BorderSide(
+                                                  width: 1,
+                                                  color: AppColors.mainColor)),
+                                          contentPadding:
+                                              const EdgeInsets.only(left: 20),
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
+                                      initialTime:
+                                          const TimeOfDay(hour: 8, minute: 0),
+                                      initialValue: null,
+                                      validator: (val) {
+                                        if (val == null) {
+                                          return 'Укажите день рождения';
+                                        }
+                                      },
+                                      // enabled: true,
+                                    ),
+                                  )
+                                : const SizedBox(),
+                            _isShowNameField.value
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text('Укажите ваш пол',
+                                          style: TextStyle(fontSize: 18)),
+                                      SizedBox(
+                                        width: 100,
+                                        child: ListTile(
+                                          title: const Text('М'),
+                                          leading: Radio<int>(
+                                            activeColor: AppColors.mainColor,
+                                            value: 1,
+                                            groupValue: _gender.value,
+                                            onChanged: (value) {
+                                              _gender.value = value!;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 100,
+                                        child: ListTile(
+                                          title: const Text('Ж'),
+                                          leading: Radio<int>(
+                                            activeColor: AppColors.mainColor,
+                                            value: 0,
+                                            groupValue: _gender.value,
+                                            onChanged: (value) {
+                                              _gender.value = value!;
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : SizedBox(),
                             const Spacer(),
                             Container(
                                 width: double.infinity,
@@ -436,7 +514,7 @@ class SignInPage extends HookWidget {
                                       if (_isSendingPhone.value) {
                                         return;
                                       }
-
+                                      formKey.currentState!.save();
                                       if (formKey.currentState != null &&
                                           formKey.currentState!.validate()) {
                                         _isSendingPhone.value = true;
@@ -468,6 +546,13 @@ class SignInPage extends HookWidget {
                                             formData['name'] =
                                                 nameFieldController.text;
                                           }
+                                          var values = {...formKey.currentState!.value};
+                                          if (values['birth'] != null) {
+                                            formData['birth'] = values['birth'] =
+                                                DateFormat('yyyy-MM-dd')
+                                                    .format(values['birth']);
+                                          }
+                                          formData['gender'] = _gender.value!.toString();
                                           response = await http.post(url,
                                               headers: requestHeaders,
                                               body: jsonEncode(formData));
@@ -478,9 +563,13 @@ class SignInPage extends HookWidget {
                                                   'name_field_is_required') {
                                                 _isShowNameField.value = true;
                                                 ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            'Мы Вас не нашли в нашей системе. Просьба указать своё имя.')));
+                                                    .showSnackBar(
+                                                        const SnackBar(
+                                                  content: Text(
+                                                      'Мы Вас не нашли в нашей системе. Просьба указать своё имя, день рождения и пол.'),
+                                                  duration:
+                                                      Duration(seconds: 3),
+                                                ));
                                               }
                                             } else if (json['success'] !=
                                                 null) {
