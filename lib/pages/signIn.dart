@@ -458,7 +458,8 @@ class SignInPage extends HookWidget {
                                       initialValue: null,
                                       validator: (val) {
                                         if (val == null) {
-                                          return tr('profile.enterYourBirthday');
+                                          return tr(
+                                              'profile.enterYourBirthday');
                                         }
                                       },
                                       // enabled: true,
@@ -546,13 +547,17 @@ class SignInPage extends HookWidget {
                                             formData['name'] =
                                                 nameFieldController.text;
                                           }
-                                          var values = {...formKey.currentState!.value};
+                                          var values = {
+                                            ...formKey.currentState!.value
+                                          };
                                           if (values['birth'] != null) {
-                                            formData['birth'] = values['birth'] =
-                                                DateFormat('yyyy-MM-dd')
+                                            formData['birth'] =
+                                                values['birth'] = DateFormat(
+                                                        'yyyy-MM-dd')
                                                     .format(values['birth']);
                                           }
-                                          formData['gender'] = _gender.value!.toString();
+                                          formData['gender'] =
+                                              _gender.value!.toString();
                                           response = await http.post(url,
                                               headers: requestHeaders,
                                               body: jsonEncode(formData));
@@ -570,6 +575,13 @@ class SignInPage extends HookWidget {
                                                   duration:
                                                       Duration(seconds: 3),
                                                 ));
+                                              }
+                                              if (json['error'] ==
+                                                  'user_is_blocked') {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(const SnackBar(
+                                                        content: Text(
+                                                            'Вы удаляли свой аккаунт. Просьба связаться с нами.')));
                                               }
                                             } else if (json['success'] !=
                                                 null) {
