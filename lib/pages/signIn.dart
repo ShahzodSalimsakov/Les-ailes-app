@@ -36,7 +36,7 @@ class SignInPage extends HookWidget {
     final _isValid = useState<bool>(false);
     final _isVerifyPage = useState<bool>(false);
     final _isSendingPhone = useState<bool>(false);
-    final _isShowNameField = useState<bool>(true);
+    final _isShowNameField = useState<bool>(false);
     final phoneNumber = useState<String>('');
     final otpCode = useState<String>('');
     final otpToken = useState<String>('');
