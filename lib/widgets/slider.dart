@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import '../models/mainSlider.dart';
 
@@ -15,6 +18,10 @@ class SliderCarousel extends HookWidget {
   Widget build(BuildContext context) {
     final _current = useState<int>(0);
     final banner = useState<List<SalesBanner>>(List<SalesBanner>.empty());
+    final Uri _urlAndroid = Uri.parse(
+        'https://play.google.com/store/apps/details?id=havoqand.chopar');
+    final Uri _urlIos =
+        Uri.parse('https://apps.apple.com/ru/app/chopar-pizza/id1597897308');
 
     Future<void> getSalesBanner() async {
       Map<String, String> requestHeaders = {
@@ -41,21 +48,33 @@ class SliderCarousel extends HookWidget {
         items: banner.value.map((SalesBanner slide) {
           return Builder(
             builder: (BuildContext context) {
-              return Container(
-                height: 220,
-                margin: const EdgeInsets.only(top: 20),
-                child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(25.0)),
-                    child: Stack(
-                      children: <Widget>[
-                        Image.network(
-                            (slide.asset[1] != null
-                                ? slide.asset[1].link
-                                : slide.asset[0].link),
-                            fit: BoxFit.cover,
-                            width: 1000.0),
-                      ],
-                    )),
+              return GestureDetector(
+                onTap: () async {
+                  if (Platform.isAndroid && slide.androidApplink != null) {
+                    await launchUrl(Uri.parse('${slide.androidApplink}'));
+                  } else if (Platform.isIOS && slide.iosApplink != null) {
+                    await launchUrl(Uri.parse('${slide.iosApplink}'));
+                  } else {
+                    return;
+                  }
+                },
+                child: Container(
+                  height: 220,
+                  margin: const EdgeInsets.only(top: 20),
+                  child: ClipRRect(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(25.0)),
+                      child: Stack(
+                        children: <Widget>[
+                          Image.network(
+                              (slide.asset[1] != null
+                                  ? slide.asset[1].link
+                                  : slide.asset[0].link),
+                              fit: BoxFit.cover,
+                              width: 1000.0),
+                        ],
+                      )),
+                ),
               );
             },
           );
