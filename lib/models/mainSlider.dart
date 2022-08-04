@@ -3,8 +3,8 @@ class SalesBanner {
   late bool active;
   late String title;
   late String? link;
-  late String? androidApplink;
-  late String? iosApplink;
+  late String? androidAppId;
+  late String? iOSAppId;
   late Null buttonTitle;
   late Null description;
   late int sort;
@@ -17,8 +17,8 @@ class SalesBanner {
       required this.active,
       required this.title,
       this.link,
-      this.androidApplink,
-      this.iosApplink,
+      this.androidAppId,
+      this.iOSAppId,
       this.buttonTitle,
       this.description,
       required this.sort,
@@ -31,8 +31,8 @@ class SalesBanner {
     active = json['active'];
     title = json['title'];
     link = json['link'];
-    androidApplink = json['androidApplink'];
-    iosApplink = json['iosApplink'];
+    androidAppId = json['androidAppId'];
+    iOSAppId = json['iOSAppId'];
     buttonTitle = json['button_title'];
     description = json['description'];
     sort = json['sort'];
@@ -52,8 +52,8 @@ class SalesBanner {
     data['active'] = this.active;
     data['title'] = this.title;
     data['link'] = this.link;
-    data['androidApplink'] = this.androidApplink;
-    data['iosApplink'] = this.iosApplink;
+    data['androidAppId'] = this.androidAppId;
+    data['iOSAppId'] = this.iOSAppId;
     data['button_title'] = this.buttonTitle;
     data['description'] = this.description;
     data['sort'] = this.sort;
@@ -86,8 +86,8 @@ class Asset {
   late int assetableId;
   late int assetId;
   late String link;
-  late String? androidApplink;
-  late String? iosApplink;
+  late String? androidAppId;
+  late String? iOSAppId;
 
   Asset(
       {required this.id,
@@ -109,8 +109,8 @@ class Asset {
       required this.assetableId,
       required this.assetId,
       required this.link,
-      required this.androidApplink,
-      required this.iosApplink
+      required this.androidAppId,
+      required this.iOSAppId
       });
 
   Asset.fromJson(Map<String, dynamic> json) {
@@ -134,8 +134,8 @@ class Asset {
     assetId = json['asset_id'];
     assetableId = json['assetableId'];
     link = json['link'];
-    androidApplink = json['androidApplink'];
-    iosApplink = json['iosApplink'];
+    androidAppId = json['androidAppId'];
+    iOSAppId = json['iOSAppId'];
   }
 
   Map<String, dynamic> toJson() {
@@ -160,8 +160,8 @@ class Asset {
     data['asset_id'] = this.assetId;
     data['assetableId'] = this.assetableId;
     data['link'] = this.link;
-    data['androidApplink'] = this.androidApplink;
-    data['iosApplink'] = this.iosApplink;
+    data['androidAppId'] = this.androidAppId;
+    data['iOSAppId'] = this.iOSAppId;
     return data;
   }
 }

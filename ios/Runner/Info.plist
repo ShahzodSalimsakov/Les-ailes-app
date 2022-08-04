@@ -44,6 +44,8 @@
 		<string>dgis</string>
 		<string>qqmap</string>
 		<string>here-location</string>
+		<string>itms-beta</string>
+        <string>itms</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

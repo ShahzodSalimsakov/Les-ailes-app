@@ -77,6 +77,7 @@ dependencies:
   otp_autofill: ^2.1.0
   another_flushbar: ^1.10.29
   pin_code_fields: ^7.4.0
+  launch_review: ^3.0.1
 
 dev_dependencies:
   flutter_test:
