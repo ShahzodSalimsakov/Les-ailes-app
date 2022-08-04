@@ -76,7 +76,7 @@ class User {
   @HiveField(11)
   late String? birth;
   @HiveField(11)
-  late String? gender;
+  late int? gender;
 
   User(
       {required this.id,
