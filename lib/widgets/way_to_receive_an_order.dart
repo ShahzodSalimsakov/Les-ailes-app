@@ -39,6 +39,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                   mainAxisSpacing: 15,
                   crossAxisSpacing: 15,
                   childAspectRatio: (164 / 164),
+                  shrinkWrap: true,
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -145,7 +146,6 @@ class WayToReceiveAnOrder extends StatelessWidget {
                     //   ),
                     // )
                   ],
-                  shrinkWrap: true,
                 ),
               ],
             ));
@@ -242,7 +242,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 GestureDetector(
                   onTap: () {

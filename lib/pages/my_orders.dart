@@ -120,11 +120,21 @@ class MyOrders extends HookWidget {
                                           color: order.status == 'cancelled'
                                               ? AppColors.mainColor
                                               : AppColors.green),
-                                      child: Text(tr(order.deliveryType == 'pickup' && order.status == 'done' ? 'takenAway' : order.status),
+                                      child: SizedBox(
+                                        width: 100,
+                                        child: Text(
+                                          tr(order.deliveryType == 'pickup' &&
+                                                  order.status == 'done'
+                                              ? 'takenAway'
+                                              : order.status),
                                           style: const TextStyle(
-                                              fontWeight: FontWeight.w400,
-                                              fontSize: 16,
-                                              color: Colors.white)),
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -152,6 +162,9 @@ class MyOrders extends HookWidget {
                             ),
                           ));
                     })
-                : const Center(child: CircularProgressIndicator(color: AppColors.mainColor,))));
+                : const Center(
+                    child: CircularProgressIndicator(
+                    color: AppColors.mainColor,
+                  ))));
   }
 }

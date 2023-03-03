@@ -182,9 +182,11 @@ class OrderDetail extends HookWidget {
           break;
         case 'uz':
           addressDesc = terminal?.descUz ?? '';
+          terminalName = terminal?.nameUz ?? '';
           break;
         default:
           addressDesc = terminal?.desc ?? '';
+          terminalName = terminal?.name ?? '';
           break;
       }
       return Scaffold(
@@ -243,7 +245,9 @@ class OrderDetail extends HookWidget {
                                     color: order.value!.status == 'cancelled'
                                         ? AppColors.mainColor
                                         : AppColors.green),
-                                child: Text(
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Text(
                                     tr(order.value?.deliveryType == 'pickup' &&
                                             order.value?.status == 'done'
                                         ? 'takenAway'
@@ -251,7 +255,10 @@ class OrderDetail extends HookWidget {
                                     style: const TextStyle(
                                         fontWeight: FontWeight.w400,
                                         fontSize: 16,
-                                        color: Colors.white)),
+                                        color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -343,6 +350,16 @@ class OrderDetail extends HookWidget {
                                                     .width *
                                                 0.6,
                                             child: Text(
+                                              terminalName,
+                                              style:
+                                                  const TextStyle(fontSize: 18),
+                                            )),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
+                                            child: Text(
                                               addressDesc,
                                               style:
                                                   const TextStyle(fontSize: 18),
@@ -356,6 +373,7 @@ class OrderDetail extends HookWidget {
                                 ),
                           order.value?.deliveryType == 'deliver'
                               ? Padding(
+                                  padding: const EdgeInsets.only(top: 20),
                                   child: Row(
                                     children: [
                                       Image.asset(
@@ -380,7 +398,6 @@ class OrderDetail extends HookWidget {
                                       )
                                     ],
                                   ),
-                                  padding: const EdgeInsets.only(top: 20),
                                 )
                               : const SizedBox(
                                   width: double.infinity,
