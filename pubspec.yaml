@@ -27,61 +27,59 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  another_flushbar: ^1.10.29
+  auto_route: ^4.0.1
+  cached_network_image: ^3.2.0
+  captcha_solver: ^1.0.4
+  carousel_slider: ^4.0.0
+  connectivity_plus: ^2.3.0
+  cupertino_icons: ^1.0.2
+  dart_date: ^1.1.1
+  easy_localization: ^3.0.0
+  extended_nested_scroll_view: ^6.0.0
+  firebase_core: ^2.7.1
+  firebase_messaging: ^14.2.6
   flutter:
     sdk: flutter
-  niku: 2.1.0
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  flutter_svg: ^1.0.3
-  auto_route: ^4.0.1
-  easy_localization: ^3.0.0
-  font_awesome_flutter: ^10.1.0
-  url_launcher: ^6.0.20
-  modal_bottom_sheet: ^2.0.1
-  carousel_slider: ^4.0.0
-  http: ^0.13.4
+  flutter_form_builder: ^7.1.1
   flutter_hooks: ^0.18.2+1
-  sticky_headers: ^0.3.0+2
-  firebase_messaging: ^11.2.10
-  intl_phone_number_input: ^0.7.0+2
-  #  pin_code_fields: ^7.3.0
-  timer_count_down: ^2.2.1
+  flutter_html: ^3.0.0-alpha.5
+  flutter_rating_bar: ^4.0.0
+  flutter_svg: ^1.0.3
   flutter_switch: ^0.3.2
-  cached_network_image: ^3.2.0
-  yandex_mapkit: ^3.0.0
+  font_awesome_flutter: ^10.1.0
+  form_builder_phone_field: ^1.0.0-beta.0
+  form_builder_validators: ^8.1.1
+  geolocator: ^8.2.0
+  get_it: ^7.2.0
+  hashids2: ^2.0.0
+  hex: ^0.2.0
   hive: ^2.1.0
   hive_flutter: ^1.1.0
-  flutter_form_builder: ^7.1.1
-  geolocator: ^8.2.0
-  dart_date: ^1.1.1
-  hashids2: ^2.0.0
-  form_builder_validators: ^8.1.1
-  form_builder_phone_field: ^1.0.0-beta.0
+  http: ^0.13.4
   intl: ^0.17.0
-  maps_launcher: ^2.0.1
+  intl_phone_number_input: ^0.7.0+2
+  launch_review: ^3.0.1
   location: ^4.3.0
   map_launcher: ^2.2.1+2
-  flutter_rating_bar: ^4.0.0
-  scrollable_positioned_list: ^0.3.1
-  connectivity_plus: ^2.3.0
-  scrolls_to_top: ^1.1.1
-  firebase_core: ^1.17.1
-  #  native_updater: ^0.1.1
-  extended_nested_scroll_view: ^5.0.0
-  vertical_scrollable_tabview: ^0.0.7
-  get_it: ^7.2.0
-  flutter_html: ^3.0.0-alpha.5
-  sms_autofill: ^2.2.0
+  maps_launcher: ^2.0.1
+  modal_bottom_sheet: 3.0.0-pre
+  niku: 2.1.0
   otp_autofill: ^2.1.0
-  another_flushbar: ^1.10.29
   pin_code_fields: ^7.4.0
-  launch_review: ^3.0.1
+  scrollable_positioned_list: ^0.3.1
+  scrolls_to_top: ^1.1.1
+  sms_autofill: ^2.2.0
+  sticky_headers: ^0.3.0+2
+  timer_count_down: ^2.2.1
+  url_launcher: ^6.0.20
+  vertical_scrollable_tabview: ^0.0.7
+  yandex_mapkit: ^3.0.0
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  analyzer: ^3.4.1
+  auto_route_generator: ^4.0.0
+  build_runner: null
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -89,15 +87,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.1
+  flutter_test:
+    sdk: flutter
   hive_generator: ^1.1.2
-  auto_route_generator: ^4.0.0
-  build_runner:
-  source_gen:
-  analyzer: ^3.4.1
+  source_gen: null
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter.
 flutter:
   # The following line ensures that the Material Icons font is
@@ -109,22 +105,18 @@ flutter:
   assets:
     - images/
     - resources/langs/
-
-      # An image asset can refer to one or more resolution-specific "variants", see
-      # https://flutter.dev/assets-and-images/#resolution-aware.
-
-      # For details regarding adding assets from package dependencies, see
-      # https://flutter.dev/assets-and-images/#from-packages
-
-      # To add custom fonts to your application, add a fonts section here,
-      # in this "flutter" section. Each entry in this list should have a
-      # "family" key with the font family name, and a "fonts" key with a
-      # list giving the asset and other descriptors for the font. For
-      # example:
+    # An image asset can refer to one or more resolution-specific "variants", see
+    # https://flutter.dev/assets-and-images/#resolution-aware.
+    # For details regarding adding assets from package dependencies, see
+    # https://flutter.dev/assets-and-images/#from-packages
+    # To add custom fonts to your application, add a fonts section here,
+    # in this "flutter" section. Each entry in this list should have a
+    # "family" key with the font family name, and a "fonts" key with a
+    # list giving the asset and other descriptors for the font. For
+    # example:
   fonts:
     - family: ProximaSoft
       fonts:
         - asset: fonts/ProximaSoft-Regular.ttf
-    #
     # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

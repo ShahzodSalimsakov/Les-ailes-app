@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
+import 'package:captcha_solver/captcha_solver.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -18,6 +21,7 @@ import 'package:timer_count_down/timer_count_down.dart';
 
 import '../models/user.dart';
 import '../utils/colors.dart';
+import '../utils/random.dart';
 
 class SignInPage extends HookWidget {
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
@@ -51,6 +55,7 @@ class SignInPage extends HookWidget {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${otpToken.value}'
       };
+
       String? token = await FirebaseMessaging.instance.getToken();
       var url = Uri.https('api.lesailes.uz', '/api/auth_otp');
       var formData = {'phone': phoneNumber.value, 'code': otpCode.value};
@@ -79,11 +84,18 @@ class SignInPage extends HookWidget {
     }
 
     Future<void> tryResendCode() async {
+      final buff = utf8.encode('X79PC6D4bKzW');
+      final base64data = base64.encode(buff);
+      final randomString = randomAlphaNumeric(6);
+      final hexBuffer = utf8.encode('$randomString$base64data');
+      final hexString = HEX.encode(hexBuffer);
+
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $hexString'
       };
-      var url = Uri.https('api.lesailes.uz', '/api/send_otp');
+      var url = Uri.https('api.lesailes.uz', '/api/ss_zz');
       var formData = {'phone': phoneNumber.value};
       if (_isShowNameField.value) {
         formData['name'] = nameFieldController.text;
@@ -534,12 +546,24 @@ class SignInPage extends HookWidget {
                                           String decoded = stringToBase64
                                               .decode(json['result']);
 
+                                          final buff =
+                                              utf8.encode('X79PC6D4bKzW');
+                                          final base64data =
+                                              base64.encode(buff);
+                                          final randomString =
+                                              randomAlphaNumeric(6);
+                                          final hexBuffer = utf8.encode(
+                                              '$randomString$base64data');
+                                          final hexString =
+                                              HEX.encode(hexBuffer);
+
                                           Map<String, String> requestHeaders = {
                                             'Content-type': 'application/json',
-                                            'Accept': 'application/json'
+                                            'Accept': 'application/json',
+                                            'Authorization': 'Bearer $hexString'
                                           };
-                                          url = Uri.https('api.lesailes.uz',
-                                              '/api/send_otp');
+                                          url = Uri.https(
+                                              'api.lesailes.uz', '/api/ss_zz');
                                           var formData = {
                                             'phone': phoneNumber.value
                                           };
