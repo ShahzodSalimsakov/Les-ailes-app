@@ -42,7 +42,7 @@ class ChoosePayType extends HookWidget {
             showBarModalBottomSheet(
                 expand: false,
                 context: context,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
         break;
@@ -77,7 +77,7 @@ class ChoosePayType extends HookWidget {
             showBarModalBottomSheet(
                 expand: false,
                 context: context,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
         break;
@@ -112,7 +112,7 @@ class ChoosePayType extends HookWidget {
             showBarModalBottomSheet(
                 expand: false,
                 context: context,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
         break;
@@ -147,7 +147,7 @@ class ChoosePayType extends HookWidget {
             showBarModalBottomSheet(
                 expand: false,
                 context: context,
-                backgroundColor: Colors.transparent,
+                backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
         break;
