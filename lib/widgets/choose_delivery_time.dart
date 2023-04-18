@@ -63,7 +63,7 @@ class ChooseDeliveryTime extends HookWidget {
                 showBarModalBottomSheet(
                     expand: false,
                     context: context,
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.white,
                     builder: (context) => ListOfDeliveryTimesTypes());
               };
           } else {
@@ -98,7 +98,7 @@ class ChooseDeliveryTime extends HookWidget {
                 showBarModalBottomSheet(
                     expand: false,
                     context: context,
-                    backgroundColor: Colors.transparent,
+                    backgroundColor: Colors.white,
                     builder: (context) => ListOfDeliveryTimesTypes());
               };
           }
