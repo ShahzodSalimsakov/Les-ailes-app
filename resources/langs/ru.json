@@ -168,5 +168,16 @@
   "sentCodeToNumber": "Отправлен код на номер",
   "getNewCode": "Получить новый код",
   "buyWithThisProduct": "Купить с этим продуктом",
-  "addedToBasket": "Добавлено в корзину"
+  "addedToBasket": "Добавлено в корзину",
+  "orderTracking": {
+    "tracking_page_title": "Отслеживайте свой заказ",
+    "location_not_allowed_for_status": "Отслеживание недоступно в данном статусе заказа",
+    "error_label": "Ошибка",
+    "location_not_found": "Отслеживание недоступно",
+    "order_not_found": "Заказ не найден",
+    "user_not_found": "Пользователь не найден",
+    "rights_not_enough": "Недостаточно прав на отслеживание",
+    "order_not_deliver": "Отслеживание не доступно",
+    "user_not_signed": "Вы не авторизованы"
+  }
 }

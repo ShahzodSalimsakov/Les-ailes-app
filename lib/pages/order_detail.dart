@@ -10,6 +10,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/widgets/orders/track.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/order.dart';
 import '../models/registered_review.dart';
@@ -399,6 +401,53 @@ class OrderDetail extends HookWidget {
                                     ],
                                   ),
                                 )
+                              : const SizedBox(
+                                  width: double.infinity,
+                                ),
+                          const SizedBox(
+                            height: 25,
+                          ),
+                          order.value?.deliveryType == 'deliver'
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    showMaterialModalBottomSheet(
+                                        context: context,
+                                        enableDrag: false,
+                                        bounce: true,
+                                        builder: (context) => TrackOrder(
+                                            orderId: order.value!.id));
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              AppColors.green),
+                                      shape: MaterialStateProperty.all(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10)))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                          Icons.location_on,
+                                          color: Colors.white,
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        Text(
+                                          'Отследить заказ'.toUpperCase(),
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        )
+                                      ],
+                                    ),
+                                  ))
                               : const SizedBox(
                                   width: double.infinity,
                                 )
