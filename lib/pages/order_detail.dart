@@ -235,7 +235,7 @@ class OrderDetail extends HookWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '${tr("order")} № ${order.value!.id}',
+                                '${tr("order")}\n№ ${order.value!.id}',
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w400, fontSize: 20),
                               ),

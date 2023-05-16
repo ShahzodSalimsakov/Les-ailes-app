@@ -16,7 +16,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
     showBarModalBottomSheet(
         expand: false,
         context: context,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         builder: (context) => Column(
               mainAxisSize: MainAxisSize.min,
               children: [

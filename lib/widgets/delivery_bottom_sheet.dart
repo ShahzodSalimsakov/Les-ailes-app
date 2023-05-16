@@ -128,7 +128,8 @@ class DeliveryBottomSheet extends HookWidget {
                 ..bg = currentTerminal.value == null
                     ? Colors.grey.shade200
                     : AppColors.mainColor
-                ..rounded = 20..onPressed = () {
+                ..rounded = 20
+                ..onPressed = () {
                   if (currentTerminal.value == null) {
                     return;
                   }
@@ -137,7 +138,8 @@ class DeliveryBottomSheet extends HookWidget {
                       expand: false,
                       context: context,
                       backgroundColor: Colors.transparent,
-                      builder: (context) => DeliverFieldsModal(geoData: geoData.value!));
+                      builder: (context) =>
+                          DeliverFieldsModal(geoData: geoData.value!));
                 },
             )
           ],

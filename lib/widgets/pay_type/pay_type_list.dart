@@ -26,7 +26,10 @@ class PayTypeListWidget extends HookWidget {
             shrinkWrap: true,
             children: [
               n.NikuButton(ListTile(
-                leading: const FaIcon(FontAwesomeIcons.wallet, color: Colors.black,),
+                leading: const FaIcon(
+                  FontAwesomeIcons.wallet,
+                  color: Colors.black,
+                ),
                 title: n.NikuText(
                   tr('payType.cash'),
                   style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
@@ -34,8 +37,9 @@ class PayTypeListWidget extends HookWidget {
                 trailing: Container(
                   height: 24,
                   width: 24,
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 1, color: Colors.grey)),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(width: 1, color: Colors.grey)),
                 ),
               ))
                 ..onPressed = () {
@@ -44,40 +48,46 @@ class PayTypeListWidget extends HookWidget {
                   Hive.box<PayType>('payType').put('payType', newPayType);
                   Navigator.of(context).pop();
                 },
+              // n.NikuButton(ListTile(
+              //   leading: Image.asset('images/pay_type_uzcard.png', width: 30, height: 30,),
+              //   title: n.NikuText(
+              //     tr('payType.uzcard'),
+              //     style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
+              //   ),
+              //   trailing: Container(
+              //     height: 24,
+              //     width: 24,
+              //     decoration:
+              //     BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 1, color: Colors.grey)),
+              //   ),
+              // ))
+              //   ..onPressed = () {
+              //     PayType newPayType = PayType();
+              //     newPayType.value = 'uzcard';
+              //     Hive.box<PayType>('payType').put('payType', newPayType);
+              //     Navigator.of(context).pop();
+              //   },
               n.NikuButton(ListTile(
-                leading: Image.asset('images/pay_type_uzcard.png', width: 30, height: 30,),
-                title: n.NikuText(
-                  tr('payType.uzcard'),
-                  style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
+                leading: Image.asset(
+                  'images/pay_type_online.png',
+                  width: 30,
+                  height: 30,
                 ),
-                trailing: Container(
-                  height: 24,
-                  width: 24,
-                  decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(20), border: Border.all(width: 1, color: Colors.grey)),
-                ),
-              ))
-                ..onPressed = () {
-                  PayType newPayType = PayType();
-                  newPayType.value = 'uzcard';
-                  Hive.box<PayType>('payType').put('payType', newPayType);
-                  Navigator.of(context).pop();
-                },
-              n.NikuButton(ListTile(
-                leading: Image.asset('images/pay_type_online.png', width: 30, height: 30,),
                 title: n.NikuText(
                   tr('payType.online'),
                   style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
                 ),
-                trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black,),
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Colors.black,
+                ),
               ))
                 ..onPressed = () {
                   showBarModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  backgroundColor: Colors.transparent,
-                  builder: (context) => OnlinePayments());
-
+                      expand: false,
+                      context: context,
+                      backgroundColor: Colors.white,
+                      builder: (context) => OnlinePayments());
                 },
               // n.NikuButton(ListTile(
               //   leading: Image.asset('images/pay_type_les_coin.png', width: 30, height: 30,),
