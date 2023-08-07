@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:captcha_solver/captcha_solver.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -23,6 +24,7 @@ import '../models/user.dart';
 import '../utils/colors.dart';
 import '../utils/random.dart';
 
+@RoutePage()
 class SignInPage extends HookWidget {
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();

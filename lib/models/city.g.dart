@@ -21,6 +21,7 @@ class CityAdapter extends TypeAdapter<City> {
       xmlId: fields[1] as String,
       name: fields[2] as String,
       nameUz: fields[3] as String,
+      nameEn: fields[10] as String?,
       mapZoom: fields[4] as String,
       lat: fields[5] as String,
       lon: fields[6] as String,
@@ -33,7 +34,7 @@ class CityAdapter extends TypeAdapter<City> {
   @override
   void write(BinaryWriter writer, City obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class CityAdapter extends TypeAdapter<City> {
       ..writeByte(8)
       ..write(obj.sort)
       ..writeByte(9)
-      ..write(obj.phone);
+      ..write(obj.phone)
+      ..writeByte(10)
+      ..write(obj.nameEn);
   }
 
   @override

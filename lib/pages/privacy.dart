@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class Privacy extends StatelessWidget {
-  const Privacy({Key? key}) : super(key: key);
+@RoutePage()
+class PrivacyPage extends StatelessWidget {
+  const PrivacyPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

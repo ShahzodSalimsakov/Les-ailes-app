@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
-class Franchise extends StatelessWidget {
-  const Franchise({Key? key}) : super(key: key);
+@RoutePage()
+class FranchisePage extends StatelessWidget {
+  const FranchisePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

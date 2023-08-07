@@ -8,14 +8,15 @@ import '../models/user.dart';
 import '../utils/colors.dart';
 import 'package:http/http.dart' as http;
 
-class CashbackDetail extends StatefulWidget {
-  const CashbackDetail({Key? key}) : super(key: key);
+@RoutePage()
+class CashbackDetailPage extends StatefulWidget {
+  const CashbackDetailPage({Key? key}) : super(key: key);
 
   @override
-  State<CashbackDetail> createState() => _CashbackDetailState();
+  State<CashbackDetailPage> createState() => _CashbackDetailPageState();
 }
 
-class _CashbackDetailState extends State<CashbackDetail> {
+class _CashbackDetailPageState extends State<CashbackDetailPage> {
   DateTimeRange dateRange = DateTimeRange(
       start: (DateTime.now().subtract(const Duration(days: 7))),
       end: DateTime.now());

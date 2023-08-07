@@ -10,14 +10,14 @@ class Lang {
   Lang({required this.value, required this.name});
 }
 
-class ChangeLang extends HookWidget {
-
+@RoutePage()
+class ChangeLangPage extends HookWidget {
   List<Lang> supportedLanguages = [
     Lang(name: 'Русский', value: 'ru'),
     Lang(name: 'O\'zbekcha', value: 'uz'),
     Lang(name: 'English', value: 'en'),
   ];
-  ChangeLang({Key? key}) : super(key: key);
+  ChangeLangPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,31 +50,39 @@ class ChangeLang extends HookWidget {
                         bottom: BorderSide(width: 1.0, color: AppColors.grey),
                       ),
                     ),
-                    child:
-                        ListView.separated(itemBuilder: (context, index) {
+                    child: ListView.separated(
+                        itemBuilder: (context, index) {
                           return GestureDetector(
                             child: ListTile(
                               title: Text(supportedLanguages[index].name),
                               leading: Radio(
                                 value: supportedLanguages[index].value,
                                 groupValue: currentLanguage.value,
-                                fillColor: MaterialStateProperty.all(AppColors.green),
+                                fillColor:
+                                    MaterialStateProperty.all(AppColors.green),
                                 onChanged: (value) async {
-                                  currentLanguage.value = supportedLanguages[index].value;
-                                  await context.setLocale(Locale(supportedLanguages[index].value));
+                                  currentLanguage.value =
+                                      supportedLanguages[index].value;
+                                  await context.setLocale(
+                                      Locale(supportedLanguages[index].value));
                                   context.router.popUntilRoot();
                                 },
                               ),
                             ),
                             onTap: () async {
-                              currentLanguage.value = supportedLanguages[index].value;
-                              await context.setLocale(Locale(supportedLanguages[index].value));
+                              currentLanguage.value =
+                                  supportedLanguages[index].value;
+                              await context.setLocale(
+                                  Locale(supportedLanguages[index].value));
                               context.router.popUntilRoot();
                             },
                           );
-                        }, separatorBuilder: (BuildContext context, int index) {
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
                           return const Divider();
-                        }, itemCount: supportedLanguages.length, shrinkWrap: true)),
+                        },
+                        itemCount: supportedLanguages.length,
+                        shrinkWrap: true)),
               ),
             ],
           ),

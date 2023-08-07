@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
 import 'package:niku/niku.dart' as n;
 
+@RoutePage()
 class NotificationDetailPage extends StatefulWidget {
   final String id;
   late Map<String, dynamic>? notification;
@@ -44,13 +45,15 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
           )
         : Scaffold(
             appBar: AppBar(
-              title: Text(
-                notification?['title'] ?? '',
-                style: const TextStyle(color: Colors.black),
-              ),
-              backgroundColor: Colors.white,
-              leading: const AutoBackButton(color: Colors.black),
-            ),
+                title: Text(
+                  notification?['title'] ?? '',
+                  style: const TextStyle(color: Colors.black),
+                ),
+                backgroundColor: Colors.white,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+                  onPressed: () => context.router.pop(),
+                )),
             body: Container(
               padding: const EdgeInsets.all(16),
               child: Column(

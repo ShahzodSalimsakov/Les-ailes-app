@@ -83,7 +83,7 @@ class Cashback extends HookWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: TextButton(
           onPressed: () {
-            context.router.pushNamed('cashback_detail');
+            context.router.pushNamed('/cashback_detail');
           },
           child: loading.value == true
               ? const CircularProgressIndicator(color: AppColors.mainColor)

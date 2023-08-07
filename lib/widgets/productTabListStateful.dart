@@ -9,6 +9,7 @@ import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:les_ailes/widgets/slider.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -33,7 +34,6 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
   late TabController _tabController;
   int scrolledIndex = 0;
 
-
   double getProductHeight(ProductSection section) {
     double height = 200;
 
@@ -48,9 +48,12 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
     return height;
   }
 
+  late AutoScrollController autoScrollController;
   @override
   void initState() {
-    _tabController = TabController(length: widget.products.length, vsync: this, initialIndex: 0);
+    _tabController = TabController(
+        length: widget.products.length, vsync: this, initialIndex: 0);
+    autoScrollController = AutoScrollController();
     // TODO: implement initState
     super.initState();
   }
@@ -58,6 +61,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
   @override
   void dispose() {
     _tabController.dispose();
+    autoScrollController.dispose();
     // TODO: implement dispose
     super.dispose();
   }
@@ -71,6 +75,9 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
       //   break;
       case 'uz':
         attributeDataName = section.attributeData?.name?.chopar?.uz ?? '';
+        break;
+      case 'en':
+        attributeDataName = section.attributeData?.name?.chopar?.en ?? '';
         break;
       default:
         attributeDataName = section.attributeData?.name?.chopar?.ru ?? '';
@@ -100,6 +107,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
 
   @override
   Widget build(BuildContext context) {
+    var locale = context.locale.toString();
     return SafeArea(
       child: ScrollsToTop(
         onScrollsToTop: (ScrollsToTopEvent event) async {
@@ -112,6 +120,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
             tabController: _tabController,
             listItemData: widget.products,
             verticalScrollPosition: VerticalScrollPosition.begin,
+            autoScrollController: autoScrollController,
             slivers: [
               SliverAppBar(
                 pinned: true,
@@ -151,7 +160,11 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 10),
                       child: Text(
-                        section.attributeData?.name?.chopar?.ru ?? '',
+                        locale == 'uz'
+                            ? section.attributeData?.name?.chopar?.uz ?? ''
+                            : locale == 'en'
+                                ? section.attributeData?.name?.chopar?.en ?? ''
+                                : section.attributeData?.name?.chopar?.ru ?? '',
                       ),
                     );
                   }).toList(),

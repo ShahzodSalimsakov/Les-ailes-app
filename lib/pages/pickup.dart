@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:auto_route/auto_route.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,6 +25,7 @@ import '../models/terminals.dart';
 import '../utils/colors.dart';
 import '../widgets/terminals_modal.dart';
 
+@RoutePage()
 class PickupPage extends HookWidget {
   late YandexMapController controller;
   final MapObjectId mapObjectCollectionId =

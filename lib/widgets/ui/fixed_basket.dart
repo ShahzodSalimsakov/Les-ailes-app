@@ -19,6 +19,7 @@ class FixedBasket extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var locale = context.locale.toString();
     return ValueListenableBuilder<Box<Basket>>(
         valueListenable: Hive.box<Basket>('basket').listenable(),
         builder: (context, box, _) {
@@ -29,7 +30,13 @@ class FixedBasket extends StatelessWidget {
           }
 
           final formatCurrency = NumberFormat.currency(
-              locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+              locale: 'ru_RU',
+              symbol: locale == 'uz'
+                  ? "so'm"
+                  : locale == 'en'
+                      ? 'sum'
+                      : 'сум',
+              decimalDigits: 0);
 
           String formattedTotalPrice =
               formatCurrency.format(double.tryParse(totalPrice.toString()));
@@ -47,7 +54,7 @@ class FixedBasket extends StatelessWidget {
                       context: context,
                       builder: (context) => const BasketListen());
                 } else {
-                  context.router.pushNamed('signIn');
+                  context.router.pushNamed('/signIn');
                 }
               },
               child: Container(

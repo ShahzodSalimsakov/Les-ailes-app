@@ -3,19 +3,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
-import 'package:les_ailes/routes/router.gr.dart';
+import 'package:les_ailes/routes/router.dart';
 import 'package:les_ailes/utils/colors.dart';
-import 'package:les_ailes/widgets/header.dart';
-import 'package:les_ailes/widgets/leftMenu.dart';
-import 'package:niku/niku.dart' as n;
-
 import 'models/additional_phone_number.dart';
 import 'models/basket.dart';
 import 'models/city.dart';
@@ -105,16 +100,14 @@ void main() async {
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
 
-  final _appRouter = AppRouter();
-
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: AppColors.mainColor, // Color for Android
-        statusBarBrightness:
-            Brightness.light, // Dark == white status bar -- for IOS.
+      statusBarColor: AppColors.mainColor, // Color for Android
+      statusBarBrightness:
+          Brightness.light, // Dark == white status bar -- for IOS.
       // systemNavigationBarColor: Colors.transparent
-        ));
+    ));
     final router = getIt<AppRouter>();
     return MaterialApp.router(
       localizationsDelegates: context.localizationDelegates,

@@ -7,7 +7,8 @@
     "writeUsDesc": "Если у вас возникли проблемы с сервисом",
     "profilePage": "Профиль",
     "myOrders": "Мои заказы",
-    "myAddresses": "Мои адреса"
+    "myAddresses": "Мои адреса",
+    "myCards": "Мои карты"
   },
   "main": {
     "deliveryOrPickup": "Закажите доставку или заберите",
@@ -165,7 +166,6 @@
   "enterYourName": "Введите ваше имя",
   "yourName": "Ваше имя",
   "incorrectCode": "Введен неверный код или срок действия кода истек",
-  "sentCodeToNumber": "Отправлен код на номер",
   "getNewCode": "Получить новый код",
   "buyWithThisProduct": "Купить с этим продуктом",
   "addedToBasket": "Добавлено в корзину",
@@ -179,5 +179,8 @@
     "rights_not_enough": "Недостаточно прав на отслеживание",
     "order_not_deliver": "Отслеживание не доступно",
     "user_not_signed": "Вы не авторизованы"
-  }
+  },
+  "addCard": "Добавить карту",
+  "cardNumber": "Номер карты",
+  "expireDate": "Срок действия"
 }

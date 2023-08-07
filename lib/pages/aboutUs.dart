@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+@RoutePage()
 class AboutUsPage extends StatelessWidget {
   const AboutUsPage({Key? key}) : super(key: key);
 
@@ -162,7 +163,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('privacy');
+                  context.router.pushNamed('/privacy');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -190,7 +191,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('terms');
+                  context.router.pushNamed('/terms');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -219,7 +220,7 @@ class AboutUsPage extends StatelessWidget {
               ),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed('franchise');
+                  context.router.pushNamed('/franchise');
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),

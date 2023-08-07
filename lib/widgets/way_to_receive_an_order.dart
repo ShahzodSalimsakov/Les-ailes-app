@@ -70,7 +70,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        context.router.pushNamed('pickup');
+                        context.router.pushNamed('/pickup');
                       },
                       child: Container(
                         width: 164,
@@ -93,32 +93,32 @@ class WayToReceiveAnOrder extends StatelessWidget {
                             ]),
                       ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        context.router.pushNamed('pickup');
-                      },
-                      child: Container(
-                        width: 164,
-                        height: 164,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(26),
-                          color: AppColors.grey,
-                        ),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Image.asset('images/inrestourant.png',
-                                  height: 92, width: 92),
-                              const SizedBox(height: 36),
-                              Text(
-                                tr("deliveryOrPickup.AtTheRestaurant"),
-                                style: const TextStyle(fontSize: 20),
-                              )
-                            ]),
-                      ),
-                    ),
+                    // GestureDetector(
+                    //   onTap: () {
+                    //     Navigator.of(context).pop();
+                    //     context.router.pushNamed('/pickup');
+                    //   },
+                    //   child: Container(
+                    //     width: 164,
+                    //     height: 164,
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(26),
+                    //       color: AppColors.grey,
+                    //     ),
+                    //     child: Column(
+                    //         mainAxisAlignment: MainAxisAlignment.center,
+                    //         crossAxisAlignment: CrossAxisAlignment.center,
+                    //         children: [
+                    //           Image.asset('images/inrestourant.png',
+                    //               height: 92, width: 92),
+                    //           const SizedBox(height: 36),
+                    //           Text(
+                    //             tr("deliveryOrPickup.AtTheRestaurant"),
+                    //             style: const TextStyle(fontSize: 20),
+                    //           )
+                    //         ]),
+                    //   ),
+                    // ),
                     // GestureDetector(
                     //   onTap: () {
                     //     Navigator.of(context).pop();
@@ -246,7 +246,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
-                    context.router.pushNamed('delivery');
+                    context.router.pushNamed('/delivery');
                   },
                   child: Container(
                     padding: const EdgeInsets.all(5),
@@ -277,7 +277,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    context.router.pushNamed('pickup');
+                    context.router.pushNamed('/pickup');
                   },
                   child: Container(
                     padding: const EdgeInsets.all(5),
@@ -306,38 +306,38 @@ class WayToReceiveAnOrder extends StatelessWidget {
                         ]),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {
-                    context.router.pushNamed('pickup');
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    width: 100,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(26),
-                      color: AppColors.grey,
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.grey,
-                          blurRadius: 4,
-                          // offset: Offset(2, 4), // Shadow position
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset('images/inrestourant.png',
-                              height: 40, width: 40),
-                          Text(
-                            tr("deliveryOrPickup.AtTheRestaurant"),
-                            style: const TextStyle(fontSize: 15),
-                          )
-                        ]),
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () {
+                //     context.router.pushNamed('/pickup');
+                //   },
+                //   child: Container(
+                //     padding: const EdgeInsets.all(5),
+                //     width: 100,
+                //     height: 100,
+                //     decoration: BoxDecoration(
+                //       borderRadius: BorderRadius.circular(26),
+                //       color: AppColors.grey,
+                //       boxShadow: const [
+                //         BoxShadow(
+                //           color: Colors.grey,
+                //           blurRadius: 4,
+                //           // offset: Offset(2, 4), // Shadow position
+                //         ),
+                //       ],
+                //     ),
+                //     child: Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         children: [
+                //           Image.asset('images/inrestourant.png',
+                //               height: 40, width: 40),
+                //           Text(
+                //             tr("deliveryOrPickup.AtTheRestaurant"),
+                //             style: const TextStyle(fontSize: 15),
+                //           )
+                //         ]),
+                //   ),
+                // ),
                 // GestureDetector(
                 //   onTap: () {
                 //     Navigator.of(context).pop();

@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,6 +12,7 @@ import '../models/yandex_geo_data.dart';
 import '../widgets/delivery_bottom_sheet.dart';
 import '../widgets/delivery_modal_sheet.dart';
 
+@RoutePage()
 class DeliveryPage extends HookWidget {
   final YandexGeoData? geoData;
 

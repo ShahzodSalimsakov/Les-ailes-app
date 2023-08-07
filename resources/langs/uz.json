@@ -7,7 +7,8 @@
     "writeUsDesc": "Xizmat bilan bog'liq muammolar mavjud bo'lsa",
     "profilePage": "Profil",
     "myOrders": "Mening buyurtmalarim",
-    "myAddresses": "Mening manzillarim"
+    "myAddresses": "Mening manzillarim",
+    "myCards": "Mening kartalarim"
   },
   "main": {
     "deliveryOrPickup": "Buyurtma bering yoki olib keting",
@@ -165,7 +166,6 @@
   "enterYourName": "Ismingizni kiriting",
   "yourName": "Ismingiz",
   "incorrectCode": "Kiritilgan kod noto'g'ri yoki kod muddati tugagan",
-  "sentCodeToNumber": "Raqamga kod yuborildi",
   "getNewCode": "Yangi kodni oling",
   "buyWithThisProduct": "Ushbu mahsulot bilan sotib oling",
   "addedToBasket": "Savatga qo'shildi",
@@ -179,5 +179,8 @@
     "rights_not_enough": "Kuzatuv huquqlari etarli emas",
     "order_not_deliver": "Kuzatuv mavjud emas",
     "user_not_signed": "Sizga ro'yxatdan o'tmagansiz"
-  }
+  },
+  "addCard": "Kartani qo'shish",
+  "cardNumber": "Kartani raqami",
+  "expireDate": "Amal qilish muddati"
 }

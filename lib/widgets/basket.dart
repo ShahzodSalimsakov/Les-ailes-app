@@ -209,8 +209,15 @@ class BasketWidget extends HookWidget {
     }
 
     Widget basketItems(Lines lines) {
+      var locale = context.locale.toString();
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
       String? productName = '';
       var productTotalPrice = 0;
       if (lines.child != null && lines.child!.length > 1) {
@@ -316,6 +323,7 @@ class BasketWidget extends HookWidget {
     }
 
     String totalPrice = useMemoized(() {
+      var locale = context.locale.toString();
       String result = '0';
       if (basketData.value != null) {
         if (deliveryPrice.value > 0) {
@@ -326,7 +334,13 @@ class BasketWidget extends HookWidget {
       }
 
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       result = formatCurrency.format(double.tryParse(result));
       return result;
@@ -477,26 +491,40 @@ class BasketWidget extends HookWidget {
     }
 
     String cashback = useMemoized(() {
+      var locale = context.locale.toString();
       String result = '0';
       if (basketData.value != null) {
         result = (basketData.value!.total * 0.05).round().toString();
       }
 
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       result = formatCurrency.format(double.tryParse(result));
       return result;
     }, [basketData.value]);
 
     String productsTotalPrice = useMemoized(() {
+      var locale = context.locale.toString();
       String result = '0';
       if (basketData.value != null) {
         result = basketData.value!.total.toString();
       }
 
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       result = formatCurrency.format(double.tryParse(result));
       return result;
@@ -568,9 +596,15 @@ class BasketWidget extends HookWidget {
                     Box<DeliveryType> box =
                         Hive.box<DeliveryType>('deliveryType');
                     DeliveryType? deliveryType = box.get('deliveryType');
-
+                    var locale = context.locale.toString();
                     final formatCurrency = NumberFormat.currency(
-                        locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+                        locale: 'ru_RU',
+                        symbol: locale == 'uz'
+                            ? "so'm"
+                            : locale == 'en'
+                                ? 'sum'
+                                : 'сум',
+                        decimalDigits: 0);
                     return Column(
                       children: [
                         const SizedBox(height: 20),
@@ -652,7 +686,11 @@ class BasketWidget extends HookWidget {
                                         final formatCurrency =
                                             NumberFormat.currency(
                                                 locale: 'ru_RU',
-                                                symbol: 'сум',
+                                                symbol: locale == 'uz'
+                                                    ? "so'm"
+                                                    : locale == 'en'
+                                                        ? 'sum'
+                                                        : 'сум',
                                                 decimalDigits: 0);
                                         String productPrice = '';
 
@@ -941,7 +979,11 @@ class BasketWidget extends HookWidget {
                                         final formatCurrency =
                                             NumberFormat.currency(
                                                 locale: 'ru_RU',
-                                                symbol: 'сум',
+                                                symbol: locale == 'uz'
+                                                    ? "so'm"
+                                                    : locale == 'en'
+                                                        ? 'sum'
+                                                        : 'сум',
                                                 decimalDigits: 0);
                                         String productPrice = '';
 
