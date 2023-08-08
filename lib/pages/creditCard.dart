@@ -113,8 +113,12 @@ class _CreditCardPageState extends State<CreditCardPage> {
       var response = await http.post(url,
           headers: requestHeaders,
           body: jsonEncode({
-            'cardNumber': _cardDetails?.cardNumber.toString(),
-            'validity': '${expiryDate![1]}${expiryDate[0]}',
+            'cardNumber': _cardDetails == null
+                ? myCardNumberController.text
+                : _cardDetails?.cardNumber.toString(),
+            'validity': _cardDetails == null
+                ? myCardExpireController.text
+                : '${expiryDate![1]}${expiryDate[0]}',
             'locale': context.locale.languageCode
           }));
       setState(() {
@@ -128,8 +132,13 @@ class _CreditCardPageState extends State<CreditCardPage> {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(json['message']),
+              content: Text(
+                json['message'],
+                style: const TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
               backgroundColor: Colors.red,
+              duration: const Duration(seconds: 2),
             ),
           );
         }
