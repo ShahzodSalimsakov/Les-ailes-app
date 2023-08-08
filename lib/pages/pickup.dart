@@ -13,6 +13,7 @@ import 'package:les_ailes/widgets/pickup/choose_terminal.dart';
 import 'package:les_ailes/widgets/pickup/listview.dart';
 import 'package:les_ailes/widgets/pickup/map.dart';
 import 'package:les_ailes/widgets/pickup/map_selected_terminal.dart';
+import 'package:location/location.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
@@ -81,85 +82,6 @@ class PickupPage extends HookWidget {
       };
       var formData = {'city_id': currentCity?.id.toString()};
 
-      /*
-      var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
-      var response = await http.get(url, headers: requestHeaders);
-      if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
-        List<TempTerminals> terminal = List<TempTerminals>.from(
-            json['data'].map((m) => TempTerminals.fromJson(m)).toList());
-        DateTime currentTime = DateTime.now();
-        List<TempTerminals> resultTerminals = [];
-        for (var t in terminal) {
-          if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
-            if (t.openWork == null) {
-              return;
-            } else {
-              DateTime openWork = Date.parse(t.openWork!);
-              openWork = openWork.toLocal();
-              openWork = openWork.setDay(currentTime.day);
-              openWork = openWork.setMonth(currentTime.month);
-              openWork = openWork.setYear(currentTime.year);
-              DateTime closeWork = Date.parse(t.closeWork!);
-              closeWork = closeWork.toLocal();
-              closeWork = closeWork.setDay(currentTime.day);
-              closeWork = closeWork.setMonth(currentTime.month);
-              closeWork = closeWork.setYear(currentTime.year);
-
-              // if (closeWork.hour < openWork.hour) {
-              //   closeWork = closeWork.setDay(currentTime.day + 1);
-              // }
-
-              if (closeWork.getHours < openWork.getHours) {
-                if (currentTime < openWork && currentTime > closeWork) {
-                  t.isWorking = false;
-                } else {
-                  t.isWorking = true;
-                }
-              } else {
-                if (currentTime < openWork || currentTime > closeWork) {
-                  t.isWorking = false;
-                } else {
-                  t.isWorking = true;
-                }
-              }
-            }
-          } else {
-            if (t.openWeekend == null) {
-              return;
-            } else {
-              DateTime openWork = Date.parse(t.openWeekend!);
-              openWork = openWork.toLocal();
-              openWork = openWork.setDay(currentTime.day);
-              openWork = openWork.setMonth(currentTime.month);
-              openWork = openWork.setYear(currentTime.year);
-              DateTime closeWork = Date.parse(t.closeWeekend!);
-              closeWork = closeWork.toLocal();
-              closeWork = closeWork.setDay(currentTime.day);
-              closeWork = closeWork.setMonth(currentTime.month);
-              closeWork = closeWork.setYear(currentTime.year);
-
-              if (closeWork.getHours < openWork.getHours) {
-                if (currentTime < openWork && currentTime > closeWork) {
-                  t.isWorking = false;
-                } else {
-                  t.isWorking = true;
-                }
-              } else {
-                if (currentTime < openWork || currentTime > closeWork) {
-                  t.isWorking = false;
-                } else {
-                  t.isWorking = true;
-                }
-              }
-            }
-          }
-          resultTerminals.add(t);
-        }
-
-        terminals.value = resultTerminals;
-      }
-*/
       bool isLocationSet = true;
       isLoading.value = true;
       final Box<DeliveryLocationData> deliveryLocationBox =
@@ -172,34 +94,36 @@ class PickupPage extends HookWidget {
       } else if (deliveryData.lat == null) {
         isLocationSet = false;
       }
-      bool serviceEnabled;
+
+      Location location = new Location();
+
+      bool _serviceEnabled;
       bool hasPermission = true;
-      LocationPermission permission;
+      PermissionStatus _permissionGranted;
+      LocationData _locationData;
 
-      // Test if location services are enabled.
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        hasPermission = true;
-      }
-
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
           hasPermission = false;
         }
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        hasPermission = false;
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          hasPermission = false;
+        }
       }
 
       if (hasPermission) {
-        Position currentPosition = await Geolocator.getCurrentPosition();
+        _locationData = await location.getLocation();
         formData = {
           'city_id': currentCity?.id.toString(),
-          'lat': currentPosition.latitude.toString(),
-          'lon': currentPosition.longitude.toString()
+          'lat': _locationData.latitude.toString(),
+          'lon': _locationData.longitude.toString()
         };
       }
       // } else {

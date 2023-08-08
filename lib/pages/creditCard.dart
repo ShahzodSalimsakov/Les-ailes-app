@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,13 @@ import 'package:card_scanner/card_scanner.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:hex/hex.dart';
+import 'package:hive/hive.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:http/http.dart' as http;
+
+import '../models/user.dart';
+import '../utils/random.dart';
 
 @RoutePage()
 class CreditCardPage extends StatefulWidget {
@@ -27,27 +35,41 @@ class _CreditCardPageState extends State<CreditCardPage> {
   );
   final myCardNumberController = TextEditingController();
   final myCardExpireController = TextEditingController();
+  bool _isLoadingAddCard = false;
 
-  void _printLatestValue() {
-    print('Number text field: ${myCardNumberController.text}');
-    print('Expire text field: ${myCardExpireController.text}');
-  }
+  var maskFormatter = MaskTextInputFormatter(
+      mask: '#### #### #### ####',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
+  var maskExpire = MaskTextInputFormatter(
+      mask: '##/##',
+      filter: {"#": RegExp(r'[0-9]')},
+      type: MaskAutoCompletionType.lazy);
 
   @override
   void initState() {
     super.initState();
 
-    // Start listening to changes.
-    myCardNumberController.addListener(_printLatestValue);
-    myCardExpireController.addListener(_printLatestValue);
+    myCardNumberController.addListener(() {
+      String formattedText = maskFormatter
+          .formatEditUpdate(
+            TextEditingValue(text: myCardNumberController.text),
+            TextEditingValue(text: myCardNumberController.text),
+          )
+          .text;
+
+      // To prevent infinite loops, only update if the text is different.
+      if (formattedText != myCardNumberController.text) {
+        myCardNumberController.text = formattedText;
+        myCardNumberController.selection =
+            TextSelection.collapsed(offset: formattedText.length);
+      }
+    });
   }
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
     myCardNumberController.dispose();
-    myCardExpireController.dispose();
     super.dispose();
   }
 
@@ -55,25 +77,77 @@ class _CreditCardPageState extends State<CreditCardPage> {
     final CardDetails? cardDetails =
         await CardScanner.scanCard(scanOptions: scanOptions);
     if (!mounted || cardDetails == null) return;
+
+    myCardNumberController.text = cardDetails!.cardNumber;
+    myCardExpireController.text = cardDetails!.expiryDate;
     setState(() {
       _cardDetails = cardDetails;
-      myCardNumberController.text = _cardDetails!.cardNumber;
-      myCardExpireController.text = _cardDetails!.expiryDate;
       print(_cardDetails?.cardNumber);
     });
+  }
+
+  Future<void> addCard() async {
+    setState(() {
+      _isLoadingAddCard = true;
+    });
+
+    final Box<User> userBox = Hive.box<User>('user');
+    final User? currentUser = userBox.get('user');
+
+    final buff = utf8.encode('X79PC6D4bKzW');
+    final base64data = base64.encode(buff);
+    final randomString = randomAlphaNumeric(6);
+    final hexBuffer = utf8.encode('$randomString$base64data');
+    final hexString = HEX.encode(hexBuffer);
+
+    if (currentUser != null) {
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${currentUser.userToken}',
+        'X-OTP-TOKEN': hexString
+      };
+
+      var url = Uri.https('api.lesailes.uz', 'api/payment_cards');
+      var expiryDate = _cardDetails?.expiryDate.toString().split('/');
+      var response = await http.post(url,
+          headers: requestHeaders,
+          body: jsonEncode({
+            'cardNumber': _cardDetails?.cardNumber.toString(),
+            'validity': '${expiryDate![1]}${expiryDate[0]}',
+            'locale': context.locale.languageCode
+          }));
+      setState(() {
+        _isLoadingAddCard = false;
+      });
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body);
+
+        if (json['success']) {
+          context.router.replaceNamed('/my_creditCardOtp');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(json['message']),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      } else {
+        var json = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(json['message']),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormBuilderState>();
-    var maskFormatter = MaskTextInputFormatter(
-        mask: '#### #### #### ####',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
-    var maskExpire = MaskTextInputFormatter(
-        mask: '##/##',
-        filter: {"#": RegExp(r'[0-9]')},
-        type: MaskAutoCompletionType.lazy);
 
     return Scaffold(
       appBar: AppBar(
@@ -221,7 +295,7 @@ class _CreditCardPageState extends State<CreditCardPage> {
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    context.router.pop();
+                    addCard();
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -230,7 +304,9 @@ class _CreditCardPageState extends State<CreditCardPage> {
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 20.0)),
-                child: const Text('Продолжить'),
+                child: _isLoadingAddCard
+                    ? const CircularProgressIndicator()
+                    : Text(tr('cards.continue')),
               ),
             ),
           ],

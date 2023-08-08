@@ -120,7 +120,8 @@
     "uzcard": "UzCard",
     "cashback": "Coins",
     "online": "Online payments",
-    "chooseDeliveryAddress": "Select a delivery or pickup address"
+    "chooseDeliveryAddress": "Select a delivery or pickup address",
+    "card": "Card"
   },
   "orderSuccess": {
     "thanks": "Thank you, order accepted",
@@ -182,7 +183,22 @@
   },
   "addCard": "Add card",
   "cardNumber": "Card number",
-  "expireDate": "Expiration date",
-  "p_b_n_selected": "Не выбран филиал самовывоза",
-  "d_a_n_specified": "Не указан адрес доставки"
+  "expireDate": "Expiration date:",
+  "p_b_n_selected": "Pickup branch is not selected",
+  "d_a_n_specified": "Delivery address is not specified",
+  "cards": {
+    "deleteModalTitle": "Delete card",
+    "deleteModalText": "Are you sure you want to delete the card?",
+    "deleteModalCancel": "Cancel",
+    "deleteModalDelete": "Delete",
+    "noCards": "No cards",
+    "addCard": "Add card",
+    "continue": "Continue",
+    "otpPageTitle": "Enter the code from the SMS",
+    "otpPageText": "We sent an SMS with a code to the number",
+    "otpApprove": "Confirm",
+    "insufficientFunds": "Insufficient funds",
+    "balance": "Balance",
+    "choose": "Choose"
+  }
 }

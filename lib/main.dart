@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/basket_item_quantity.dart';
+import 'package:les_ailes/models/payment_card_model.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.dart';
@@ -62,6 +63,7 @@ void main() async {
   Hive.registerAdapter(AdditionalPhoneNumberAdapter());
   Hive.registerAdapter(RegisteredReviewAdapter());
   Hive.registerAdapter(BasketItemQuantityAdapter());
+  Hive.registerAdapter(PaymentCardModelAdapter());
   // Hive.registerAdapter(HomeIsScrolledAdapter());
   // Hive.registerAdapter(HomeScrollPositionAdapter());
 
@@ -83,6 +85,7 @@ void main() async {
   await Hive.openBox<AdditionalPhoneNumber>('additionalPhoneNumber');
   await Hive.openBox<RegisteredReview>('registeredReview');
   await Hive.openBox<BasketItemQuantity>('basketItemQuantity');
+  await Hive.openBox<PaymentCardModel>('paymentCardModel');
   // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
   // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 

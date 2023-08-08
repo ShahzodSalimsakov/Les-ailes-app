@@ -120,7 +120,8 @@
     "uzcard": "UzCard",
     "cashback": "Ballar",
     "online": "Online to'lovlar",
-    "chooseDeliveryAddress": "Yetkazib berish yoki olib ketish manzilini tanlang"
+    "chooseDeliveryAddress": "Yetkazib berish yoki olib ketish manzilini tanlang",
+    "card": "Karta"
   },
   "orderSuccess": {
     "thanks": "Rahmat, buyurtma qabul qilindi",
@@ -182,5 +183,20 @@
   },
   "addCard": "Kartani qo'shish",
   "cardNumber": "Kartani raqami",
-  "expireDate": "Amal qilish muddati"
+  "expireDate": "Amal qilish muddati:",
+  "cards": {
+    "deleteModalTitle": "Kartani o'chirish",
+    "deleteModalText": "Kartani o'chirishni xohlaysizmi?",
+    "deleteModalCancel": "Bekor qilish",
+    "deleteModalDelete": "O'chirish",
+    "noCards": "Kartalar yo'q",
+    "addCard": "Kartani qo'shish",
+    "continue": "Davom etish",
+    "otpPageTitle": "Karta tasdiqlash",
+    "otpPageText": "Kartani tasdiqlash uchun telefon raqamingizga SMS xabar yuborildi",
+    "otpApprove": "Tasdiqlash",
+    "insufficientFunds": "Kartada yetarli mablag' mavjud emas",
+    "balance": "Balans",
+    "choose": "Tanlang"
+  }
 }

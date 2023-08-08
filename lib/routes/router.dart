@@ -12,6 +12,7 @@ import '../pages/cashback_detail.dart';
 import '../pages/changeLang.dart';
 import '../pages/creditCard.dart';
 import '../pages/creditCardList.dart';
+import '../pages/creditCardOtp.dart';
 import '../pages/franchise.dart';
 import '../pages/my_addresses.dart';
 import '../pages/my_orders.dart';
@@ -63,6 +64,7 @@ class AppRouter extends _$AppRouter {
         AutoRoute(path: '/my_addresses', page: MyAddressesRoute.page),
         AutoRoute(path: '/cashback_detail', page: CashbackDetailRoute.page),
         AutoRoute(path: '/my_creditCard', page: CreditCardRoute.page),
-        AutoRoute(path: '/my_creditCardList', page: CreditCardListRoute.page)
+        AutoRoute(path: '/my_creditCardList', page: CreditCardListRoute.page),
+        AutoRoute(path: '/my_creditCardOtp', page: CreditCardOtpRoute.page),
       ];
 }
