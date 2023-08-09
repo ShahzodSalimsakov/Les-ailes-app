@@ -48,7 +48,11 @@ class PaymentCardModel {
       id: map['id'].toInt() as int,
       expireDate: map['expireDate'] as String,
       number: map['number'] as String,
-      balance: map['balance'] as double?,
+      balance: map['balance'] != null
+          ? map['balance'] is int
+              ? double.parse(map['balance'].toString())
+              : map['balance'] as double
+          : null,
     );
   }
 

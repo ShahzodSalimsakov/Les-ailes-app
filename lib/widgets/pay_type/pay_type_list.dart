@@ -7,6 +7,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../../models/pay_type.dart';
+import '../../models/payment_card_model.dart';
 import 'online_payments.dart';
 import 'order_card_list.dart';
 
@@ -47,6 +48,9 @@ class PayTypeListWidget extends HookWidget {
                   PayType newPayType = PayType();
                   newPayType.value = 'offline';
                   Hive.box<PayType>('payType').put('payType', newPayType);
+                  Box<PaymentCardModel> box =
+                      Hive.box<PaymentCardModel>('paymentCardModel');
+                  box.delete('paymentCardModel');
                   Navigator.of(context).pop();
                 },
               // n.NikuButton(ListTile(

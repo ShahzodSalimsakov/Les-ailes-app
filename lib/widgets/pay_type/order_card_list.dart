@@ -8,6 +8,7 @@ import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/models/pay_type.dart';
 import 'package:les_ailes/utils/colors.dart';
 
 import '../../models/basket.dart';
@@ -261,7 +262,12 @@ class OrderCardList extends HookWidget {
                               ),
                               onPressed: () {
                                 if (selectedPaymentCard != null) {
-                                  context.router
+                                  final Box<PayType> box =
+                                      Hive.box<PayType>('payType');
+                                  PayType newPayType = PayType();
+                                  newPayType.value = 'card';
+                                  box.put('payType', newPayType);
+                                  Navigator.of(context)
                                     ..pop()
                                     ..pop();
                                 }

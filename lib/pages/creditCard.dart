@@ -109,16 +109,22 @@ class _CreditCardPageState extends State<CreditCardPage> {
       };
 
       var url = Uri.https('api.lesailes.uz', 'api/payment_cards');
-      var expiryDate = _cardDetails?.expiryDate.toString().split('/');
+      var expiryDate = '';
+      var arExpireDate = [];
+      if (_cardDetails == null) {
+        arExpireDate = myCardExpireController.text.split('/');
+      } else {
+        arExpireDate = _cardDetails!.expiryDate.toString().split('/');
+      }
+
+      expiryDate = '${arExpireDate[1]}${arExpireDate[0]}';
       var response = await http.post(url,
           headers: requestHeaders,
           body: jsonEncode({
             'cardNumber': _cardDetails == null
-                ? myCardNumberController.text
+                ? myCardNumberController.text.replaceAll(' ', '')
                 : _cardDetails?.cardNumber.toString(),
-            'validity': _cardDetails == null
-                ? myCardExpireController.text
-                : '${expiryDate![1]}${expiryDate[0]}',
+            'validity': '${expiryDate}',
             'locale': context.locale.languageCode
           }));
       setState(() {

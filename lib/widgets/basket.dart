@@ -8,6 +8,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:les_ailes/models/payment_card_model.dart';
 import 'package:les_ailes/models/related_product.dart';
 import 'package:les_ailes/pages/order_success.dart';
 import 'package:les_ailes/utils/colors.dart';
@@ -1428,6 +1429,10 @@ class BasketWidget extends HookWidget {
                           Hive.box<AdditionalPhoneNumber>(
                                   'additionalPhoneNumber')
                               .get('additionalPhoneNumber');
+
+                      PaymentCardModel? paymentCardModel =
+                          Hive.box<PaymentCardModel>('paymentCardModel')
+                              .get('paymentCardModel');
                       // Check deliveryType is chosen
                       if (deliveryType == null) {
                         _isOrderLoading.value = false;
@@ -1578,6 +1583,11 @@ class BasketWidget extends HookWidget {
                         formData['formData']['pay_type'] = payType.value;
                       } else {
                         formData['formData']['pay_type'] = 'offline';
+                      }
+
+                      if (formData['formData']['pay_type'] == 'card' &&
+                          paymentCardModel != null) {
+                        formData['formData']['cardId'] = paymentCardModel.id;
                       }
 
                       var response = await http.post(url,

@@ -6,6 +6,7 @@ import 'package:les_ailes/utils/colors.dart';
 import 'package:niku/niku.dart' as n;
 
 import '../../models/pay_type.dart';
+import '../../models/payment_card_model.dart';
 import '../../models/terminals.dart';
 
 class OnlinePayments extends HookWidget {
@@ -42,7 +43,12 @@ class OnlinePayments extends HookWidget {
                             newPayType.value = payment;
                             Hive.box<PayType>('payType')
                                 .put('payType', newPayType);
-                            Navigator.of(context)..pop()..pop();
+                            Box<PaymentCardModel> box =
+                                Hive.box<PaymentCardModel>('paymentCardModel');
+                            box.delete('paymentCardModel');
+                            Navigator.of(context)
+                              ..pop()
+                              ..pop();
                           },
                           child: Container(
                             height: 78,
@@ -50,10 +56,10 @@ class OnlinePayments extends HookWidget {
                             margin: const EdgeInsets.only(right: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(15),
-                                border: payType != null &&
-                                        payType.value == payment
-                                    ? Border.all(color: AppColors.mainColor)
-                                    : Border.all(width: 0)),
+                                border:
+                                    payType != null && payType.value == payment
+                                        ? Border.all(color: AppColors.mainColor)
+                                        : Border.all(width: 0)),
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Image.asset(
                               'images/$payment.png',
