@@ -17,6 +17,7 @@ import '../models/user.dart';
 import '../services/user_repository.dart';
 import '../utils/colors.dart';
 import '../utils/random.dart';
+import '../widgets/credit_card_add_sheet.dart';
 
 @RoutePage()
 class CreditCardListPage extends StatefulWidget {
@@ -152,8 +153,10 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
           ),
           actions: [
             IconButton(
-                onPressed: () {
-                  context.router.pushNamed('/my_creditCard');
+                onPressed: () async {
+                  await showCreditCardModalBottomSheet(context);
+                  _loadCards();
+                  // context.router.pushNamed('/my_creditCard');
                 },
                 icon: const Icon(
                   Icons.add_card,
@@ -299,8 +302,10 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   AppColors.mainColor),
                             ),
-                            onPressed: () {
-                              context.router.pushNamed('/my_creditCard');
+                            onPressed: () async {
+                              // context.router.pushNamed('/my_creditCard');
+                              await showCreditCardModalBottomSheet(context);
+                              _loadCards();
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

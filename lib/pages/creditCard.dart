@@ -14,6 +14,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/user.dart';
 import '../utils/random.dart';
+import 'creditCardOtp.dart';
 
 @RoutePage()
 class CreditCardPage extends StatefulWidget {
@@ -134,7 +135,10 @@ class _CreditCardPageState extends State<CreditCardPage> {
         var json = jsonDecode(response.body);
 
         if (json['success']) {
-          context.router.replaceNamed('/my_creditCardOtp');
+          // context.router.replaceNamed('/my_creditCardOtp');
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            return CreditCardOtpPage();
+          }));
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

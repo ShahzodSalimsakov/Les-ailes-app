@@ -44,7 +44,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).pop();
-                        context.router.pushNamed('delivery');
+                        context.router.pushNamed('/delivery');
                       },
                       child: Container(
                         width: 164,

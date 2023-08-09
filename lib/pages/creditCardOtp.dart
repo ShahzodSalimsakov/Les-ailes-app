@@ -70,7 +70,9 @@ class CreditCardOtpPage extends HookWidget {
           var json = jsonDecode(response.body);
 
           if (json['success']) {
-            context.router.pop();
+            Navigator.of(context)
+              ..pop()
+              ..pop('success');
           } else {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

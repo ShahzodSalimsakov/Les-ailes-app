@@ -15,6 +15,7 @@ import '../../models/basket.dart';
 import '../../models/payment_card_model.dart';
 import '../../models/user.dart';
 import '../../utils/random.dart';
+import '../credit_card_add_sheet.dart';
 
 class OrderCardList extends HookWidget {
   const OrderCardList({super.key});
@@ -309,8 +310,10 @@ class OrderCardList extends HookWidget {
                           backgroundColor: MaterialStateProperty.all<Color>(
                               AppColors.mainColor),
                         ),
-                        onPressed: () {
-                          context.router.pushNamed('/my_creditCard');
+                        onPressed: () async {
+                          // context.router.pushNamed('/my_creditCard');
+                          await showCreditCardModalBottomSheet(context);
+                          _loadCards();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
