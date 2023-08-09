@@ -10,7 +10,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:les_ailes/models/order.dart';
 import 'package:les_ailes/utils/colors.dart';
 import '../models/user.dart';
-import 'order_detail.dart';
 
 @RoutePage()
 class MyOrdersPage extends HookWidget {

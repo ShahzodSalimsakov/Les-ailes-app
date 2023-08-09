@@ -57,10 +57,8 @@ class AppRouter extends _$AppRouter {
         AutoRoute(
           path: '/my_orders',
           page: MyOrdersRoute.page,
-          children: [
-            AutoRoute(path: 'my_orders/:orderId', page: OrderDetailRoute.page)
-          ],
         ),
+        AutoRoute(path: '/my_orders/:orderId', page: OrderDetailRoute.page),
         AutoRoute(path: '/my_addresses', page: MyAddressesRoute.page),
         AutoRoute(path: '/cashback_detail', page: CashbackDetailRoute.page),
         AutoRoute(path: '/my_creditCard', page: CreditCardRoute.page),

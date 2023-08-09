@@ -72,27 +72,27 @@ class PayTypeListWidget extends HookWidget {
               //     Hive.box<PayType>('payType').put('payType', newPayType);
               //     Navigator.of(context).pop();
               //   },
-              n.NikuButton(ListTile(
-                leading: Icon(
-                  Icons.credit_card,
-                  color: Colors.black,
-                ),
-                title: n.NikuText(
-                  tr('payType.card'),
-                  style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
-                ),
-                trailing: const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Colors.black,
-                ),
-              ))
-                ..onPressed = () {
-                  showBarModalBottomSheet(
-                      expand: false,
-                      context: context,
-                      backgroundColor: Colors.white,
-                      builder: (context) => const OrderCardList());
-                },
+              // n.NikuButton(ListTile(
+              //   leading: Icon(
+              //     Icons.credit_card,
+              //     color: Colors.black,
+              //   ),
+              //   title: n.NikuText(
+              //     tr('payType.card'),
+              //     style: n.NikuTextStyle(fontSize: 24, color: Colors.black),
+              //   ),
+              //   trailing: const Icon(
+              //     Icons.arrow_forward_ios,
+              //     color: Colors.black,
+              //   ),
+              // ))
+              //   ..onPressed = () {
+              //     showBarModalBottomSheet(
+              //         expand: false,
+              //         context: context,
+              //         backgroundColor: Colors.white,
+              //         builder: (context) => const OrderCardList());
+              //   },
               n.NikuButton(ListTile(
                 leading: Image.asset(
                   'images/pay_type_online.png',
