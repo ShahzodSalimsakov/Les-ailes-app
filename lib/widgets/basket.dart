@@ -31,10 +31,8 @@ import '../models/delivery_type.dart';
 import '../models/order.dart';
 import '../models/pay_cash.dart';
 import '../models/pay_type.dart';
-import '../models/productSection.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
-import '../services/user_repository.dart';
 import '../utils/simplified_url.dart';
 import 'additional_phone_number.dart';
 import 'comment.dart';
@@ -633,7 +631,6 @@ class BasketWidget extends HookWidget {
                                           direction:
                                               DismissDirection.endToStart,
                                           key: Key(item.id.toString()),
-                                          child: basketItems(item),
                                           background: Container(
                                             color: Colors.red,
                                           ),
@@ -643,12 +640,12 @@ class BasketWidget extends HookWidget {
                                           },
                                           secondaryBackground: Container(
                                             color: Colors.red,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(15),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(15),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
-                                                children: const [
+                                                children: [
                                                   Icon(Icons.delete,
                                                       color: Colors.white),
                                                   Text('Удалить',
@@ -658,6 +655,7 @@ class BasketWidget extends HookWidget {
                                               ),
                                             ),
                                           ),
+                                          child: basketItems(item),
                                         );
                                 }),
                         relatedBiData.value.isNotEmpty
@@ -929,8 +927,6 @@ class BasketWidget extends HookWidget {
 
                                                             return;
                                                           },
-                                                          child: Text(
-                                                              productPrice),
                                                           style: ButtonStyle(
                                                             shape: MaterialStateProperty.all<
                                                                     RoundedRectangleBorder>(
@@ -946,6 +942,8 @@ class BasketWidget extends HookWidget {
                                                                     AppColors
                                                                         .mainColor),
                                                           ),
+                                                          child: Text(
+                                                              productPrice),
                                                         ),
                                                       )
                                                     ])));
@@ -1221,8 +1219,6 @@ class BasketWidget extends HookWidget {
 
                                                             return;
                                                           },
-                                                          child: Text(
-                                                              productPrice),
                                                           style: ButtonStyle(
                                                             shape: MaterialStateProperty.all<
                                                                     RoundedRectangleBorder>(
@@ -1238,6 +1234,8 @@ class BasketWidget extends HookWidget {
                                                                     AppColors
                                                                         .mainColor),
                                                           ),
+                                                          child: Text(
+                                                              productPrice),
                                                         ),
                                                       )
                                                     ])));
