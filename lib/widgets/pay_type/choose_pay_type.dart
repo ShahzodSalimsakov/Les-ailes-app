@@ -47,7 +47,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
       case 'cashback':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,7 +81,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
       case 'uzcard':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -117,7 +115,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
 
       case 'card':
         Box<PaymentCardModel> box =
@@ -157,7 +154,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
       default:
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -192,7 +188,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
     }
   }
 
@@ -212,6 +207,7 @@ class ChoosePayType extends HookWidget {
         valueListenable: Hive.box<PayType>('payType').listenable(),
         builder: (context, box, _) {
           PayType? payType = box.get('payType');
+          print(payType);
           if (payType == null) {
             return n.NikuButton(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
