@@ -169,6 +169,7 @@ class OrderDetailPage extends HookWidget {
       var terminal = order.value?.terminalData;
       var terminalName = '';
       var addressDesc = '';
+      var paymentType = '';
       switch (locale) {
         case 'en':
           addressDesc = terminal?.descEn ?? '';
@@ -180,6 +181,29 @@ class OrderDetailPage extends HookWidget {
         default:
           addressDesc = terminal?.desc ?? '';
           terminalName = terminal?.name ?? '';
+          break;
+      }
+
+      switch (order.value?.type) {
+        case 'card':
+          paymentType = locale == 'uz'
+              ? 'Karta orqali to\'lov'
+              : locale == 'en'
+                  ? 'Payment by card'
+                  : 'Картой';
+          break;
+        case 'offline':
+          paymentType = locale == 'uz'
+              ? 'Naqd pul orqali to\'lov'
+              : locale == 'en'
+                  ? 'Cash'
+                  : 'Наличными';
+          break;
+        case 'click':
+          paymentType = 'Click';
+          break;
+        case 'payme':
+          paymentType = 'Payme';
           break;
       }
       return Scaffold(
@@ -556,7 +580,14 @@ class OrderDetailPage extends HookWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ${formatCurrency.format(order.value!.orderTotal / 100)}',
+                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                  )),
+                              Text(
+                                  formatCurrency
+                                      .format(order.value!.orderTotal / 100),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 20,
@@ -569,8 +600,14 @@ class OrderDetailPage extends HookWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Text('${tr('shippingAmount')} : ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        )),
                                     Text(
-                                        '${tr('shippingAmount')} : ${formatCurrency.format((deliveryPrice.value))}',
+                                        formatCurrency
+                                            .format((deliveryPrice.value)),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 20,
@@ -584,15 +621,40 @@ class OrderDetailPage extends HookWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Text('${tr('total')} : ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        )),
                                     Text(
-                                        '${tr('total')} : ${formatCurrency.format((deliveryPriceReady + order.value!.orderTotal / 100))}',
+                                        formatCurrency.format(
+                                            (deliveryPriceReady +
+                                                order.value!.orderTotal / 100)),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 20,
                                         ))
                                   ],
                                 )
-                              : const SizedBox()
+                              : const SizedBox(),
+                          const SizedBox(height: 10),
+                          order.value?.type != null
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                      Text('${tr("orderCreate.payType")} :',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 20,
+                                          )),
+                                      Text(paymentType,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 20,
+                                          ))
+                                    ])
+                              : const SizedBox(),
                         ],
                       ),
                     ),

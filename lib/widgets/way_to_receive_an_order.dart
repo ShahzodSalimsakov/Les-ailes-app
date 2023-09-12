@@ -7,6 +7,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
+import '../models/pay_type.dart';
+import '../models/payment_card_model.dart';
 import '../models/terminals.dart';
 
 class WayToReceiveAnOrder extends StatelessWidget {
@@ -69,6 +71,12 @@ class WayToReceiveAnOrder extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
+                        PayType newPayType = PayType();
+                        newPayType.value = 'offline';
+                        Hive.box<PayType>('payType').put('payType', newPayType);
+                        Box<PaymentCardModel> box =
+                            Hive.box<PaymentCardModel>('paymentCardModel');
+                        box.delete('paymentCardModel');
                         Navigator.of(context).pop();
                         context.router.pushNamed('/pickup');
                       },

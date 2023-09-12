@@ -207,7 +207,6 @@ class ChoosePayType extends HookWidget {
         valueListenable: Hive.box<PayType>('payType').listenable(),
         builder: (context, box, _) {
           PayType? payType = box.get('payType');
-          print(payType);
           if (payType == null) {
             return n.NikuButton(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
