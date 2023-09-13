@@ -21,6 +21,9 @@ class OnlinePayments extends HookWidget {
     if (currentTerminal != null) {
       Map<String, dynamic> terminalJson = currentTerminal.toJson();
       for (var key in terminalJson.keys) {
+        if (key == 'my_uzcard_active') {
+          continue;
+        }
         if (key.indexOf('_active') > 1 && terminalJson[key] == true) {
           payments.add(key.replaceAll('_active', ''));
         }

@@ -269,6 +269,12 @@ class AddressSearchModal extends HookWidget {
                                         myAddresses.value[index].label != null
                                             ? Colors.grey
                                             : Colors.black)),
+                            Text(myAddresses.value[index].house ?? '',
+                                style: TextStyle(
+                                    color:
+                                        myAddresses.value[index].house != null
+                                            ? Colors.grey
+                                            : Colors.black)),
                           ],
                         ),
                       ),
