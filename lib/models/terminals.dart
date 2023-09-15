@@ -74,6 +74,8 @@ class Terminals {
   int? cityId;
   @HiveField(35)
   bool? isWorking;
+  @HiveField(36)
+  bool? myUzCardActive;
 
   Terminals(
       {required this.id,
@@ -110,7 +112,8 @@ class Terminals {
       required this.clickSecretKey,
       required this.clickMerchantId,
       required this.cityId,
-      this.isWorking});
+      this.isWorking,
+      this.myUzCardActive});
 
   Terminals.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -147,6 +150,7 @@ class Terminals {
     clickSecretKey = json['click_secret_key'];
     clickMerchantId = json['click_merchant_id'];
     cityId = json['city_id'];
+    myUzCardActive = json['my_uzcard_active'];
   }
 
   Map<String, dynamic> toJson() {
@@ -185,6 +189,7 @@ class Terminals {
     data['click_secret_key'] = this.clickSecretKey;
     data['click_merchant_id'] = this.clickMerchantId;
     data['city_id'] = this.cityId;
+    data['my_uzcard_active'] = this.myUzCardActive;
     return data;
   }
 }

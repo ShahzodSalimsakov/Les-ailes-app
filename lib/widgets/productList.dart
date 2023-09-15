@@ -38,13 +38,10 @@ class ProductList extends HookWidget {
       }
     }
 
-
-
     useEffect(() {
       getProducts();
       return null;
     }, []);
-
 
     Widget _productSection(BuildContext context, int index) {
       var locale = context.locale.toString();
@@ -146,8 +143,7 @@ class ProductList extends HookWidget {
                       fontWeight: FontWeight.w500),
                 ),
               ),
-              content:
-              ValueListenableBuilder<Box<Basket>>(
+              content: ValueListenableBuilder<Box<Basket>>(
                   valueListenable: Hive.box<Basket>('basket').listenable(),
                   builder: (context, box, _) {
                     return ProductCardList(products.value[index].items);

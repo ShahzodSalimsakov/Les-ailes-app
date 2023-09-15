@@ -13,11 +13,13 @@ import '../utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
 
-class MyAddresses extends HookWidget {
-  const MyAddresses({Key? key}) : super(key: key);
+@RoutePage()
+class MyAddressesPage extends HookWidget {
+  const MyAddressesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var locale = context.locale.toString();
     final address = useState<List<MyAddress>>(List<MyAddress>.empty());
     final isLoading = useState(false);
 
@@ -76,129 +78,146 @@ class MyAddresses extends HookWidget {
                       ],
                     ),
                   )
-                : isLoading.value ? const Center(child: CircularProgressIndicator(color: AppColors.mainColor,)) : ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    children: [
-                      Column(
+                : isLoading.value
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                        color: AppColors.mainColor,
+                      ))
+                    : ListView(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
                         children: [
-                          ListView.separated(
-                              separatorBuilder: (context, index) =>
-                                  const Divider(
-                                    color: Colors.grey,
-                                  ),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: address.value.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                final hashids = HashIds(
-                                  salt: 'order',
-                                  minHashLength: 15,
-                                  alphabet:
-                                      'abcdefghijklmnopqrstuvwxyz1234567890',
-                                );
-
-                                final formatCurrency = NumberFormat.currency(
-                                    locale: 'ru_RU',
-                                    symbol: 'сум',
-                                    decimalDigits: 0);
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.bookmark_border_outlined),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        address.value[index].label != null
-                                            ? Text(
-                                                address.value[index].label
-                                                        ?.toUpperCase() ??
-                                                    '',
-                                                style: const TextStyle(
-                                                    fontSize: 18))
-                                            : const SizedBox(),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.7,
-                                          child: Text(
-                                              address.value[index].address ??
-                                                  '',
-                                              style: address
-                                                          .value[index].label !=
-                                                      null
-                                                  ? TextStyle(
-                                                      fontSize: 14,
-                                                      color:
-                                                          Colors.grey.shade400)
-                                                  : const TextStyle(
-                                                      fontSize: 18)),
-                                        ),
-                                      ],
-                                    ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Future<void> deleteAddress() async {
-                                          isLoading.value = true;
-                                          Box box = Hive.box<User>('user');
-                                          User? currentUser = box.get('user');
-                                          if (currentUser != null) {
-                                            Map<String, String> requestHeaders =
-                                                {
-                                              'Content-type':
-                                                  'application/json',
-                                              'Accept': 'application/json',
-                                              'Authorization':
-                                                  'Bearer ${currentUser.userToken}'
-                                            };
-                                            var url = Uri.https(
-                                                'api.lesailes.uz',
-                                                '/api/address/${address.value[index].id}');
-                                            var response = await http.delete(
-                                                url,
-                                                headers: requestHeaders);
-                                            if (response.statusCode == 200) {
-                                              getMyAddresses();
-                                              isLoading.value = false;
-                                            }
-                                          }
-                                        }
-
-                                        deleteAddress();
-                                      },
-                                      child: Image.asset(
-                                        'images/delete.png',
-                                        height: 25,
-                                        width: 30,
+                          Column(
+                            children: [
+                              ListView.separated(
+                                  separatorBuilder: (context, index) =>
+                                      const Divider(
+                                        color: Colors.grey,
                                       ),
-                                    )
-                                  ],
-                                );
-                              }),
-                          // Padding(
-                          //   padding: const EdgeInsets.symmetric(vertical: 28),
-                          //   child: SizedBox(
-                          //       height: 60,
-                          //       width: double.infinity,
-                          //       child: n.NikuButton.elevated(Text(
-                          //         tr('newAddress'),
-                          //         style: const TextStyle(
-                          //             fontSize: 20, fontWeight: FontWeight.w500),
-                          //       ))
-                          //         ..bg = AppColors.mainColor
-                          //         ..color = Colors.white
-                          //         ..mx = 36
-                          //         ..rounded = 20
-                          //         ..onPressed = () {}),
-                          // )
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: address.value.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final hashids = HashIds(
+                                      salt: 'order',
+                                      minHashLength: 15,
+                                      alphabet:
+                                          'abcdefghijklmnopqrstuvwxyz1234567890',
+                                    );
+
+                                    final formatCurrency =
+                                        NumberFormat.currency(
+                                            locale: 'ru_RU',
+                                            symbol: locale == 'uz'
+                                                ? "so'm"
+                                                : locale == 'en'
+                                                    ? 'sum'
+                                                    : 'сум',
+                                            decimalDigits: 0);
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        const Icon(
+                                            Icons.bookmark_border_outlined),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            address.value[index].label != null
+                                                ? Text(
+                                                    address.value[index].label
+                                                            ?.toUpperCase() ??
+                                                        '',
+                                                    style: const TextStyle(
+                                                        fontSize: 18))
+                                                : const SizedBox(),
+                                            SizedBox(
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.7,
+                                              child: Text(
+                                                  address.value[index]
+                                                          .address ??
+                                                      '',
+                                                  style: address.value[index]
+                                                              .label !=
+                                                          null
+                                                      ? TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .grey.shade400)
+                                                      : const TextStyle(
+                                                          fontSize: 18)),
+                                            ),
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Future<void> deleteAddress() async {
+                                              isLoading.value = true;
+                                              Box box = Hive.box<User>('user');
+                                              User? currentUser =
+                                                  box.get('user');
+                                              if (currentUser != null) {
+                                                Map<String, String>
+                                                    requestHeaders = {
+                                                  'Content-type':
+                                                      'application/json',
+                                                  'Accept': 'application/json',
+                                                  'Authorization':
+                                                      'Bearer ${currentUser.userToken}'
+                                                };
+                                                var url = Uri.https(
+                                                    'api.lesailes.uz',
+                                                    '/api/address/${address.value[index].id}');
+                                                var response = await http
+                                                    .delete(url,
+                                                        headers:
+                                                            requestHeaders);
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  getMyAddresses();
+                                                  isLoading.value = false;
+                                                }
+                                              }
+                                            }
+
+                                            deleteAddress();
+                                          },
+                                          child: Image.asset(
+                                            'images/delete.png',
+                                            height: 25,
+                                            width: 30,
+                                          ),
+                                        )
+                                      ],
+                                    );
+                                  }),
+                              // Padding(
+                              //   padding: const EdgeInsets.symmetric(vertical: 28),
+                              //   child: SizedBox(
+                              //       height: 60,
+                              //       width: double.infinity,
+                              //       child: n.NikuButton.elevated(Text(
+                              //         tr('newAddress'),
+                              //         style: const TextStyle(
+                              //             fontSize: 20, fontWeight: FontWeight.w500),
+                              //       ))
+                              //         ..bg = AppColors.mainColor
+                              //         ..color = Colors.white
+                              //         ..mx = 36
+                              //         ..rounded = 20
+                              //         ..onPressed = () {}),
+                              // )
+                            ],
+                          ),
                         ],
-                      ),
-                    ],
-                  )),
+                      )),
       ),
     );
   }

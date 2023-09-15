@@ -52,13 +52,14 @@ class TerminalsAdapter extends TypeAdapter<Terminals> {
       clickMerchantId: fields[33] as String?,
       cityId: fields[34] as int?,
       isWorking: fields[35] as bool?,
+      myUzCardActive: fields[36] as bool?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Terminals obj) {
     writer
-      ..writeByte(35)
+      ..writeByte(36)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -128,7 +129,9 @@ class TerminalsAdapter extends TypeAdapter<Terminals> {
       ..writeByte(34)
       ..write(obj.cityId)
       ..writeByte(35)
-      ..write(obj.isWorking);
+      ..write(obj.isWorking)
+      ..writeByte(36)
+      ..write(obj.myUzCardActive);
   }
 
   @override

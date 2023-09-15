@@ -7,8 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
 import 'package:niku/niku.dart' as n;
 
-import '../routes/router.gr.dart';
+import '../routes/router.dart';
 
+@RoutePage()
 class NotificationsPage extends StatefulWidget {
   const NotificationsPage({Key? key}) : super(key: key);
 

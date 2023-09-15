@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:les_ailes/utils/colors.dart';
 
-import '../routes/router.gr.dart';
-
+@RoutePage()
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
 
@@ -82,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   )),
               GestureDetector(
                 onTap: () {
-                  context.router.pushNamed("changeLang");
+                  context.router.pushNamed("/changeLang");
                 },
                 child: Container(
                     padding: const EdgeInsets.symmetric(vertical: 20),

@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:les_ailes/utils/colors.dart';
+import 'package:location/location.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import '../models/city.dart';
 import '../models/delivery_location_data.dart';
@@ -11,6 +13,7 @@ import '../models/yandex_geo_data.dart';
 import '../widgets/delivery_bottom_sheet.dart';
 import '../widgets/delivery_modal_sheet.dart';
 
+@RoutePage()
 class DeliveryPage extends HookWidget {
   final YandexGeoData? geoData;
 
@@ -46,36 +49,37 @@ class DeliveryPage extends HookWidget {
       } else if (deliveryData.lat == null) {
         isLocationSet = false;
       }
-      Position currentPosition;
-      // if (!isLocationSet) {
-      bool serviceEnabled;
-      LocationPermission permission;
 
-      // Test if location services are enabled.
-      serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Недостаточно прав для получения локации')));
-        return;
-      }
+      Location location = new Location();
 
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
+      bool _serviceEnabled;
+      PermissionStatus _permissionGranted;
+      LocationData _locationData;
+
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('Недостаточно прав для получения локации')));
           return;
         }
       }
 
-      if (permission == LocationPermission.deniedForever) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('Недостаточно прав для получения локации')));
-        return;
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('Недостаточно прав для получения локации')));
+          return;
+        }
       }
 
-      currentPosition = await Geolocator.getCurrentPosition();
+      _locationData = await location.getLocation();
+
+      // if (!isLocationSet) {
+
       // } else {
       //   currentPosition = Position(
       //       longitude: deliveryData!.lon!,
@@ -90,8 +94,8 @@ class DeliveryPage extends HookWidget {
       var _placemark = PlacemarkMapObject(
           mapId: placemarkId,
           point: Point(
-              latitude: currentPosition.latitude,
-              longitude: currentPosition.longitude),
+              latitude: _locationData.latitude!,
+              longitude: _locationData.longitude!),
           // onTap: (Placemark self, Point point) =>
           //     setCurrentTerminal(element),
           opacity: 0.7,
@@ -106,13 +110,13 @@ class DeliveryPage extends HookWidget {
       mapsList.add(_placemark);
       mapObjects.value = mapsList;
       currentPoint.value = Point(
-          latitude: currentPosition.latitude,
-          longitude: currentPosition.longitude);
+          latitude: _locationData.latitude!,
+          longitude: _locationData.longitude!);
       await controller.moveCamera(
           CameraUpdate.newCameraPosition(CameraPosition(
               target: Point(
-                  latitude: currentPosition.latitude,
-                  longitude: currentPosition.longitude),
+                  latitude: _locationData.latitude!,
+                  longitude: _locationData.longitude!),
               zoom: 17)),
           animation: animation);
       // showBottomSheet(Point(
@@ -198,36 +202,36 @@ class DeliveryPage extends HookWidget {
                         zoom: 17)),
                     animation: animation);
               } else {
-                bool serviceEnabled;
+                Location location = new Location();
+
                 bool hasPermission = true;
-                LocationPermission permission;
+                bool _serviceEnabled;
+                PermissionStatus _permissionGranted;
+                LocationData _locationData;
 
-                // Test if location services are enabled.
-                serviceEnabled = await Geolocator.isLocationServiceEnabled();
-                if (!serviceEnabled) {
-                  hasPermission = true;
-                }
-
-                permission = await Geolocator.checkPermission();
-                if (permission == LocationPermission.denied) {
-                  permission = await Geolocator.requestPermission();
-                  if (permission == LocationPermission.denied) {
+                _serviceEnabled = await location.serviceEnabled();
+                if (!_serviceEnabled) {
+                  _serviceEnabled = await location.requestService();
+                  if (!_serviceEnabled) {
                     hasPermission = false;
                   }
                 }
 
-                if (permission == LocationPermission.deniedForever) {
-                  hasPermission = false;
+                _permissionGranted = await location.hasPermission();
+                if (_permissionGranted == PermissionStatus.denied) {
+                  _permissionGranted = await location.requestPermission();
+                  if (_permissionGranted != PermissionStatus.granted) {
+                    hasPermission = false;
+                  }
                 }
 
                 if (hasPermission) {
-                  Position currentPosition =
-                      await Geolocator.getCurrentPosition();
+                  _locationData = await location.getLocation();
                   var _placemark = PlacemarkMapObject(
                       mapId: placemarkId,
                       point: Point(
-                          latitude: currentPosition.latitude,
-                          longitude: currentPosition.longitude),
+                          latitude: _locationData.latitude!,
+                          longitude: _locationData.longitude!),
                       // onTap: (Placemark self, Point point) =>
                       //     setCurrentTerminal(element),
                       opacity: 0.7,
@@ -242,13 +246,13 @@ class DeliveryPage extends HookWidget {
                   mapsList.add(_placemark);
                   mapObjects.value = mapsList;
                   currentPoint.value = Point(
-                      latitude: currentPosition.latitude,
-                      longitude: currentPosition.longitude);
+                      latitude: _locationData.latitude!,
+                      longitude: _locationData.longitude!);
                   await controller.moveCamera(
                       CameraUpdate.newCameraPosition(CameraPosition(
                           target: Point(
-                              latitude: currentPosition.latitude,
-                              longitude: currentPosition.longitude),
+                              latitude: _locationData.latitude!,
+                              longitude: _locationData.longitude!),
                           zoom: 17)),
                       animation: animation);
                   // showBottomSheet(Point(

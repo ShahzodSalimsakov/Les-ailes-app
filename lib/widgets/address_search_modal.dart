@@ -20,7 +20,6 @@ import '../models/yandex_geo_data.dart';
 import '../utils/debouncer.dart';
 
 class AddressSearchModal extends HookWidget {
-
   final void Function(Point)? onSetLocation;
 
   final _debouncer = Debouncer(milliseconds: 500);
@@ -33,7 +32,7 @@ class AddressSearchModal extends HookWidget {
     final _formKey = useMemoized(() => GlobalKey<FormBuilderState>());
     final currentCity = Hive.box<City>('currentCity').get('currentCity');
     final suggestedData =
-    useState<List<YandexGeoData>>(List<YandexGeoData>.empty());
+        useState<List<YandexGeoData>>(List<YandexGeoData>.empty());
     final queryText = useState<String>('');
     final myAddresses = useState<List<MyAddress>>(List<MyAddress>.empty());
 
@@ -64,8 +63,8 @@ class AddressSearchModal extends HookWidget {
       };
       String prefix = '${currentCity!.name}, ';
       query = '${query}${prefix}';
-      var url = Uri.https(
-          'api.lesailes.uz', 'api/geocode/query', {'query': query});
+      var url =
+          Uri.https('api.lesailes.uz', 'api/geocode/query', {'query': query});
       queryText.value = query;
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
@@ -95,7 +94,6 @@ class AddressSearchModal extends HookWidget {
                     //           geoData: suggestedData.value[index],
                     //         )));
                     if (address.lat != null) {
-
                       onSetLocation!(Point(
                         latitude: double.parse(address.lat!),
                         longitude: double.parse(address.lon!),
@@ -109,8 +107,7 @@ class AddressSearchModal extends HookWidget {
                           label: address.label ?? '',
                           lat: double.parse(address.lat!),
                           lon: double.parse(address.lon!),
-                          address: address.address ?? ''
-                    );
+                          address: address.address ?? '');
                       // geoData.addressItems?.forEach((item) async {
                       //   if (item.kind == 'province' || item.kind == 'area') {
                       //     Map<String, String> requestHeaders = {
@@ -135,27 +132,29 @@ class AddressSearchModal extends HookWidget {
                       //   }
                       // });
                       final Box<DeliveryLocationData> deliveryLocationBox =
-                      Hive.box<DeliveryLocationData>('deliveryLocationData');
-                      deliveryLocationBox.put('deliveryLocationData', deliveryData);
+                          Hive.box<DeliveryLocationData>(
+                              'deliveryLocationData');
+                      deliveryLocationBox.put(
+                          'deliveryLocationData', deliveryData);
                       Map<String, String> requestHeaders = {
                         'Content-type': 'application/json',
                         'Accept': 'application/json'
                       };
 
                       var url = Uri.https(
-                          'api.lesailes.uz', 'api/terminals/find_nearest', {
-                        'lat': address.lat,
-                        'lon': address.lon
-                      });
-                      var response = await http.get(url, headers: requestHeaders);
+                          'api.lesailes.uz',
+                          'api/terminals/find_nearest',
+                          {'lat': address.lat, 'lon': address.lon});
+                      var response =
+                          await http.get(url, headers: requestHeaders);
                       if (response.statusCode == 200) {
                         var json = jsonDecode(response.body);
-                        List<Terminals> terminal = List<Terminals>.from(json['data']
-                        ['items']
-                            .map((m) => Terminals.fromJson(m))
-                            .toList());
+                        List<Terminals> terminal = List<Terminals>.from(
+                            json['data']['items']
+                                .map((m) => Terminals.fromJson(m))
+                                .toList());
                         Box<Terminals> transaction =
-                        Hive.box<Terminals>('currentTerminal');
+                            Hive.box<Terminals>('currentTerminal');
                         transaction.put('currentTerminal', terminal[0]);
 
                         var stockUrl = Uri.https(
@@ -163,18 +162,18 @@ class AddressSearchModal extends HookWidget {
                             'api/terminals/get_stock',
                             {'terminal_id': terminal[0].id.toString()});
                         var stockResponse =
-                        await http.get(stockUrl, headers: requestHeaders);
+                            await http.get(stockUrl, headers: requestHeaders);
                         if (stockResponse.statusCode == 200) {
                           var json = jsonDecode(stockResponse.body);
                           Stock newStockData = Stock(
                               prodIds: List<int>.from(json[
-                              'data']) /* json['data'].map((id) => id as int).toList()*/);
+                                  'data']) /* json['data'].map((id) => id as int).toList()*/);
                           Box<Stock> box = Hive.box<Stock>('stock');
                           box.put('stock', newStockData);
                         }
 
                         Box<DeliveryType> box =
-                        Hive.box<DeliveryType>('deliveryType');
+                            Hive.box<DeliveryType>('deliveryType');
                         DeliveryType newDeliveryType = DeliveryType();
                         newDeliveryType.value = DeliveryTypeEnum.deliver;
                         box.put('deliveryType', newDeliveryType);
@@ -259,17 +258,23 @@ class AddressSearchModal extends HookWidget {
                           children: [
                             myAddresses.value[index].label != null
                                 ? Text(
-                                myAddresses.value[index].label
-                                    ?.toUpperCase() ??
-                                    '',
-                                style: const TextStyle())
+                                    myAddresses.value[index].label
+                                            ?.toUpperCase() ??
+                                        '',
+                                    style: const TextStyle())
                                 : const SizedBox(height: 3),
                             Text(myAddresses.value[index].address ?? '',
                                 style: TextStyle(
                                     color:
-                                    myAddresses.value[index].label != null
-                                        ? Colors.grey
-                                        : Colors.black)),
+                                        myAddresses.value[index].label != null
+                                            ? Colors.grey
+                                            : Colors.black)),
+                            Text(myAddresses.value[index].house ?? '',
+                                style: TextStyle(
+                                    color:
+                                        myAddresses.value[index].house != null
+                                            ? Colors.grey
+                                            : Colors.black)),
                           ],
                         ),
                       ),
@@ -292,8 +297,10 @@ class AddressSearchModal extends HookWidget {
               return ListTile(
                 onTap: () {
                   onSetLocation!(Point(
-                    latitude: double.parse(suggestedData.value[index].coordinates.lat),
-                    longitude: double.parse(suggestedData.value[index].coordinates.long),
+                    latitude: double.parse(
+                        suggestedData.value[index].coordinates.lat),
+                    longitude: double.parse(
+                        suggestedData.value[index].coordinates.long),
                   ));
                   Navigator.of(context).pop();
 
@@ -320,77 +327,81 @@ class AddressSearchModal extends HookWidget {
     }, []);
 
     return SafeArea(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            color: Colors.white,
-            padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
-            child: Column(
-              children: [
-                Container(
-                  height: 65,
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 5,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3), // changes position of shadow
-                        ),
-                      ]),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.search,
-                        color: Colors.grey.shade600,
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Flexible(
-                        child: TextField(
-                          style: const TextStyle(fontSize: 17,),
-                          controller: queryController,
-                          onChanged: (String val) {
-                            _debouncer.run(() => getSuggestions(val));
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Введите адрес',
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            prefixIcon: Center(
-                              child: Text(
-                                '${currentCity!.name}, ',
-                                style: const TextStyle(fontSize: 17),
-                              ),
-                              widthFactor: 1,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const VerticalDivider(),
-                      InkWell(
-                        onTap: () {
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => DeliveryModal()));
-                        },
-                        child: n.NikuButton(n.NikuText(tr('cancel'), style: n.NikuTextStyle(color: Colors.black)))..onPressed = () {
-                          Navigator.of(context).pop();
-                        },
-                      )
-                    ],
+        child: Container(
+      width: MediaQuery.of(context).size.width,
+      color: Colors.white,
+      padding: const EdgeInsets.only(top: 20, left: 15, right: 15),
+      child: Column(
+        children: [
+          Container(
+            height: 65,
+            padding: const EdgeInsets.all(15),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3), // changes position of shadow
                   ),
+                ]),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.search,
+                  color: Colors.grey.shade600,
                 ),
                 const SizedBox(
-                  height: 20,
+                  width: 10,
                 ),
-                Expanded(child: renderItems(context))
+                Flexible(
+                  child: TextField(
+                    style: const TextStyle(
+                      fontSize: 17,
+                    ),
+                    controller: queryController,
+                    onChanged: (String val) {
+                      _debouncer.run(() => getSuggestions(val));
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Введите адрес',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                      prefixIcon: Center(
+                        child: Text(
+                          '${currentCity!.name}, ',
+                          style: const TextStyle(fontSize: 17),
+                        ),
+                        widthFactor: 1,
+                      ),
+                    ),
+                  ),
+                ),
+                const VerticalDivider(),
+                InkWell(
+                  onTap: () {
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (context) => DeliveryModal()));
+                  },
+                  child: n.NikuButton(n.NikuText(tr('cancel'),
+                      style: n.NikuTextStyle(color: Colors.black)))
+                    ..onPressed = () {
+                      Navigator.of(context).pop();
+                    },
+                )
               ],
             ),
-          ));
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          Expanded(child: renderItems(context))
+        ],
+      ),
+    ));
   }
 }

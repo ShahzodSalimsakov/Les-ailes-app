@@ -5,21 +5,21 @@ class RelatedProduct {
     required this.optionData,
     required this.createdAt,
     required this.updatedAt,
-     this.deletedAt,
+    this.deletedAt,
     required this.productFamilyId,
-     this.layoutId,
+    this.layoutId,
     required this.groupPricing,
-     this.draftedAt,
-     this.draftParentId,
+    this.draftedAt,
+    this.draftParentId,
     required this.customName,
-     this.productId,
-     this.customNameUz,
+    this.productId,
+    this.customNameUz,
     required this.active,
-     this.modifierProdId,
-     this.boxId,
+    this.modifierProdId,
+    this.boxId,
     required this.sort,
     required this.weight,
-     this.additionalSales,
+    this.additionalSales,
     required this.price,
     required this.image,
     required this.variants,
@@ -47,8 +47,8 @@ class RelatedProduct {
   late final String price;
   late final String image;
   late final List<dynamic> variants;
-  
-  RelatedProduct.fromJson(Map<String, dynamic> json){
+
+  RelatedProduct.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     attributeData = AttributeData.fromJson(json['attribute_data']);
     optionData = List.castFrom<dynamic, dynamic>(json['option_data']);
@@ -112,8 +112,8 @@ class AttributeData {
   late final Name name;
   late final XmlId xmlId;
   late final Description description;
-  
-  AttributeData.fromJson(Map<String, dynamic> json){
+
+  AttributeData.fromJson(Map<String, dynamic> json) {
     name = Name.fromJson(json['name']);
     xmlId = XmlId.fromJson(json['xml_id']);
     description = Description.fromJson(json['description']);
@@ -133,8 +133,8 @@ class Name {
     required this.chopar,
   });
   late final Chopar chopar;
-  
-  Name.fromJson(Map<String, dynamic> json){
+
+  Name.fromJson(Map<String, dynamic> json) {
     chopar = Chopar.fromJson(json['chopar']);
   }
 
@@ -154,8 +154,8 @@ class Chopar {
   late final String? en;
   late final String? ru;
   late final String? uz;
-  
-  Chopar.fromJson(Map<String, dynamic> json){
+
+  Chopar.fromJson(Map<String, dynamic> json) {
     en = json['en'];
     ru = json['ru'];
     uz = json['uz'];
@@ -175,8 +175,8 @@ class XmlId {
     required this.chopar,
   });
   late final Chopar chopar;
-  
-  XmlId.fromJson(Map<String, dynamic> json){
+
+  XmlId.fromJson(Map<String, dynamic> json) {
     chopar = Chopar.fromJson(json['chopar']);
   }
 
@@ -192,8 +192,8 @@ class Description {
     required this.chopar,
   });
   late final Chopar chopar;
-  
-  Description.fromJson(Map<String, dynamic> json){
+
+  Description.fromJson(Map<String, dynamic> json) {
     chopar = Chopar.fromJson(json['chopar']);
   }
 

@@ -102,7 +102,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("profile");
+                        context.router.pushNamed("/profile");
                       },
                     ),
                     ListTile(
@@ -115,7 +115,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("my_orders");
+                        context.router.pushNamed("/my_orders");
                       },
                     ),
                     ListTile(
@@ -128,7 +128,20 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("my_addresses");
+                        context.router.pushNamed("/my_addresses");
+                      },
+                    ),
+                    ListTile(
+                      leading: SvgPicture.asset("images/credit-card.svg",
+                          width: 24, height: 24),
+                      title: Text(
+                        tr('leftMenu.myCards'),
+                        style:
+                            const TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                      onTap: () {
+                        Scaffold.of(context).openEndDrawer();
+                        context.router.pushNamed("/my_creditCardList");
                       },
                     ),
                     ListTile(
@@ -141,7 +154,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("settings");
+                        context.router.pushNamed("/settings");
                       },
                     ),
                     ListTile(
@@ -154,7 +167,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("about");
+                        context.router.pushNamed("/about");
                       },
                     ),
                   ],
@@ -235,7 +248,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("signIn");
+                        context.router.pushNamed("/signIn");
                       },
                     ),
                     ListTile(
@@ -248,7 +261,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("settings");
+                        context.router.pushNamed("/settings");
                       },
                     ),
                     ListTile(
@@ -261,7 +274,7 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                       ),
                       onTap: () {
                         Scaffold.of(context).openEndDrawer();
-                        context.router.pushNamed("about");
+                        context.router.pushNamed("/about");
                       },
                     ),
                   ],

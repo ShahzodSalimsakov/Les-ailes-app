@@ -1,20 +1,16 @@
 import 'dart:convert';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
-import '../models/basket.dart';
 import '../models/productSection.dart';
 import '../utils/colors.dart';
 
 class ProductListStateful extends StatefulWidget {
   final ScrollController parentScrollController;
-  const ProductListStateful({Key? key, required this.parentScrollController}) : super(key: key);
+  const ProductListStateful({Key? key, required this.parentScrollController})
+      : super(key: key);
 
   @override
   State<ProductListStateful> createState() => _ProductListStatefulState();
@@ -54,7 +50,7 @@ class _ProductListStatefulState extends State<ProductListStateful> {
       height = 260;
     } else {
       if (section.items != null && section.items!.isNotEmpty) {
-        height = ((section.items!.length * 330)/2) + 250;
+        height = ((section.items!.length * 330) / 2) + 250;
       }
     }
     print('Height $height');
@@ -80,10 +76,12 @@ class _ProductListStatefulState extends State<ProductListStateful> {
               widget.parentScrollController.position.maxScrollExtent,
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeIn);
-        } else if (min.itemLeadingEdge == 0 && min.index == 0 &&
+        } else if (min.itemLeadingEdge == 0 &&
+            min.index == 0 &&
             widget.parentScrollController.position.pixels != 0.0) {
           widget.parentScrollController.animateTo(0.0,
-              duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeIn);
         }
 
         itemScrollController.scrollTo(
@@ -126,9 +124,9 @@ class _ProductListStatefulState extends State<ProductListStateful> {
     var locale = context.locale.toString();
     var attributeDataName = '';
     switch (locale) {
-    // case 'en':
-    //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
-    //   break;
+      // case 'en':
+      //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
+      //   break;
       case 'uz':
         attributeDataName =
             products[index].attributeData?.name?.chopar?.uz ?? '';
@@ -150,13 +148,17 @@ class _ProductListStatefulState extends State<ProductListStateful> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         margin: const EdgeInsets.only(right: 6),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10), color: scrolledIndex == index ? AppColors.mainColor : AppColors.grey),
+            borderRadius: BorderRadius.circular(10),
+            color:
+                scrolledIndex == index ? AppColors.mainColor : AppColors.grey),
         child: Center(
             child: Text(
-              attributeDataName,
-              style: TextStyle(
-                  fontSize: 18, color: scrolledIndex == index ? Colors.white : Colors.black, fontWeight: FontWeight.w500),
-            )),
+          attributeDataName,
+          style: TextStyle(
+              fontSize: 18,
+              color: scrolledIndex == index ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w500),
+        )),
       ),
     );
   }
@@ -167,6 +169,7 @@ class _ProductListStatefulState extends State<ProductListStateful> {
       child: Column(children: [
         const SizedBox(height: 24),
         SizedBox(
+          height: 40,
           child: ScrollablePositionedList.builder(
             itemCount: products.length,
             itemBuilder: productSection,
@@ -174,7 +177,6 @@ class _ProductListStatefulState extends State<ProductListStateful> {
             itemPositionsListener: itemPositionsListener,
             scrollDirection: Axis.horizontal,
           ),
-          height: 40,
         ),
         const SizedBox(height: 24),
         Expanded(
@@ -183,18 +185,13 @@ class _ProductListStatefulState extends State<ProductListStateful> {
           itemCount: products.length,
           itemBuilder: (context, index) {
             var locale = context.locale.toString();
-            var attributeDataName = '';
             switch (locale) {
               // case 'en':
               //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
               //   break;
               case 'uz':
-                attributeDataName =
-                    products[index].attributeData?.name?.chopar?.uz ?? '';
                 break;
               default:
-                attributeDataName =
-                    products[index].attributeData?.name?.chopar?.ru ?? '';
                 break;
             }
             return SizedBox(
@@ -210,7 +207,9 @@ class _ProductListStatefulState extends State<ProductListStateful> {
                             fontSize: 30,
                             fontWeight: FontWeight.w500),
                       ),
-                      const SizedBox(height: 10,),
+                      const SizedBox(
+                        height: 10,
+                      ),
                       ProductCardList(products[index].items),
                     ]));
           },

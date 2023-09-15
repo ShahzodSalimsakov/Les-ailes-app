@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/widgets/orders/track.dart';
@@ -18,10 +15,12 @@ import '../models/registered_review.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
 
-class OrderDetail extends HookWidget {
+@RoutePage()
+class OrderDetailPage extends HookWidget {
   final String orderId;
 
-  OrderDetail({Key? key, @PathParam() required this.orderId}) : super(key: key);
+  const OrderDetailPage({Key? key, @PathParam() required this.orderId})
+      : super(key: key);
 
   Widget renderProductImage(BuildContext context, OrderLines lineItem) {
     if (lineItem.child != null &&
@@ -41,12 +40,12 @@ class OrderDetail extends HookWidget {
                 Positioned(
                     left: 0,
                     child: SizedBox(
+                      width: MediaQuery.of(context).size.width - 30,
                       child: Image.network(
                         'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
                         height: 90,
                         width: 90,
                       ),
-                      width: MediaQuery.of(context).size.width - 30,
                     ))
               ],
             )),
@@ -84,26 +83,12 @@ class OrderDetail extends HookWidget {
     }
   }
 
-  Future<void>? _launched;
-
-  Future<void> _launchInBrowser(String url) async {
-    if (!await launch(
-      url,
-      forceSafariVC: false,
-      forceWebView: false,
-      headers: <String, String>{'my_header_key': 'my_header_value'},
-    )) {
-      throw 'Could not launch $url';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final order = useState<Order?>(null);
     final product = useState(0.0);
     final equipment = useState(0.0);
     final delivery = useState(0.0);
-    const String toLaunch = 'https://t.me/lesaileshelpbot';
     final deliveryPrice = useState<int?>(0);
 
     Future<void> loadOrder() async {
@@ -142,7 +127,7 @@ class OrderDetail extends HookWidget {
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-              onPressed: () => context.router.navigateBack(),
+              onPressed: () => context.router.back(),
             ),
             title: Text(tr('leftMenu.myOrders'),
                 style: const TextStyle(color: Colors.black)),
@@ -154,12 +139,19 @@ class OrderDetail extends HookWidget {
             child: CircularProgressIndicator(),
           ));
     } else {
+      var locale = context.locale.toString();
       DateTime createdAt =
           DateTime.parse(order.value!.createdAt ?? '').toLocal();
       // createdAt = createdAt.toLocal();
       DateFormat createdAtFormat = DateFormat('d MMMM. H:m', 'ru');
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       String house =
           order.value!.house != null ? ', дом: ${order.value!.house}' : '';
@@ -174,10 +166,10 @@ class OrderDetail extends HookWidget {
       String address =
           '${order.value!.billingAddress}$house$flat$entrance$doorCode';
 
-      var locale = context.locale.toString();
       var terminal = order.value?.terminalData;
       var terminalName = '';
       var addressDesc = '';
+      var paymentType = '';
       switch (locale) {
         case 'en':
           addressDesc = terminal?.descEn ?? '';
@@ -191,11 +183,34 @@ class OrderDetail extends HookWidget {
           terminalName = terminal?.name ?? '';
           break;
       }
+
+      switch (order.value?.type) {
+        case 'card':
+          paymentType = locale == 'uz'
+              ? 'Karta orqali to\'lov'
+              : locale == 'en'
+                  ? 'Payment by card'
+                  : 'Картой';
+          break;
+        case 'offline':
+          paymentType = locale == 'uz'
+              ? 'Naqd pul orqali to\'lov'
+              : locale == 'en'
+                  ? 'Cash'
+                  : 'Наличными';
+          break;
+        case 'click':
+          paymentType = 'Click';
+          break;
+        case 'payme':
+          paymentType = 'Payme';
+          break;
+      }
       return Scaffold(
           appBar: AppBar(
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-              onPressed: () => context.router.navigateBack(),
+              onPressed: () => context.router.back(),
             ),
             title: Text('${tr("order")} № ${order.value!.id}',
                 style: const TextStyle(color: Colors.black)),
@@ -565,7 +580,14 @@ class OrderDetail extends HookWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ${formatCurrency.format(order.value!.orderTotal / 100)}',
+                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                  )),
+                              Text(
+                                  formatCurrency
+                                      .format(order.value!.orderTotal / 100),
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 20,
@@ -578,8 +600,14 @@ class OrderDetail extends HookWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Text('${tr('shippingAmount')} : ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        )),
                                     Text(
-                                        '${tr('shippingAmount')} : ${formatCurrency.format((deliveryPrice.value))}',
+                                        formatCurrency
+                                            .format((deliveryPrice.value)),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 20,
@@ -593,15 +621,40 @@ class OrderDetail extends HookWidget {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
+                                    Text('${tr('total')} : ',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20,
+                                        )),
                                     Text(
-                                        '${tr('total')} : ${formatCurrency.format((deliveryPriceReady + order.value!.orderTotal / 100))}',
+                                        formatCurrency.format(
+                                            (deliveryPriceReady +
+                                                order.value!.orderTotal / 100)),
                                         style: const TextStyle(
                                           fontWeight: FontWeight.w400,
                                           fontSize: 20,
                                         ))
                                   ],
                                 )
-                              : const SizedBox()
+                              : const SizedBox(),
+                          const SizedBox(height: 10),
+                          order.value?.type != null
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                      Text('${tr("orderCreate.payType")} :',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 20,
+                                          )),
+                                      Text(paymentType,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 20,
+                                          ))
+                                    ])
+                              : const SizedBox(),
                         ],
                       ),
                     ),
@@ -847,9 +900,7 @@ class OrderDetail extends HookWidget {
                           Row(
                             children: [
                               GestureDetector(
-                                onTap: () {
-                                  _launched = _launchInBrowser(toLaunch);
-                                },
+                                onTap: () {},
                                 child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 73, vertical: 20),

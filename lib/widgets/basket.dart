@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:les_ailes/models/payment_card_model.dart';
 import 'package:les_ailes/models/related_product.dart';
 import 'package:les_ailes/pages/order_success.dart';
 import 'package:les_ailes/utils/colors.dart';
@@ -30,10 +30,8 @@ import '../models/delivery_type.dart';
 import '../models/order.dart';
 import '../models/pay_cash.dart';
 import '../models/pay_type.dart';
-import '../models/productSection.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
-import '../services/user_repository.dart';
 import '../utils/simplified_url.dart';
 import 'additional_phone_number.dart';
 import 'comment.dart';
@@ -209,8 +207,15 @@ class BasketWidget extends HookWidget {
     }
 
     Widget basketItems(Lines lines) {
+      var locale = context.locale.toString();
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
       String? productName = '';
       var productTotalPrice = 0;
       if (lines.child != null && lines.child!.length > 1) {
@@ -316,6 +321,7 @@ class BasketWidget extends HookWidget {
     }
 
     String totalPrice = useMemoized(() {
+      var locale = context.locale.toString();
       String result = '0';
       if (basketData.value != null) {
         if (deliveryPrice.value > 0) {
@@ -326,7 +332,13 @@ class BasketWidget extends HookWidget {
       }
 
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       result = formatCurrency.format(double.tryParse(result));
       return result;
@@ -476,27 +488,21 @@ class BasketWidget extends HookWidget {
       }
     }
 
-    String cashback = useMemoized(() {
-      String result = '0';
-      if (basketData.value != null) {
-        result = (basketData.value!.total * 0.05).round().toString();
-      }
-
-      final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
-
-      result = formatCurrency.format(double.tryParse(result));
-      return result;
-    }, [basketData.value]);
-
     String productsTotalPrice = useMemoized(() {
+      var locale = context.locale.toString();
       String result = '0';
       if (basketData.value != null) {
         result = basketData.value!.total.toString();
       }
 
       final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+          locale: 'ru_RU',
+          symbol: locale == 'uz'
+              ? "so'm"
+              : locale == 'en'
+                  ? 'sum'
+                  : 'сум',
+          decimalDigits: 0);
 
       result = formatCurrency.format(double.tryParse(result));
       return result;
@@ -568,13 +574,93 @@ class BasketWidget extends HookWidget {
                     Box<DeliveryType> box =
                         Hive.box<DeliveryType>('deliveryType');
                     DeliveryType? deliveryType = box.get('deliveryType');
-
+                    var locale = context.locale.toString();
+                    Box<DeliveryLocationData> deliveryLocationBox =
+                        Hive.box<DeliveryLocationData>('deliveryLocationData');
+                    DeliveryLocationData? deliveryLocationData =
+                        deliveryLocationBox.get('deliveryLocationData');
+                    String deliveryText = tr("main.deliveryOrPickup");
+                    Box<Terminals> terminalBox =
+                        Hive.box<Terminals>('currentTerminal');
+                    Terminals? currentTerminal =
+                        terminalBox.get('currentTerminal');
+                    if (deliveryLocationData != null) {
+                      if (deliveryType!.value == DeliveryTypeEnum.deliver) {
+                        deliveryText = deliveryLocationData.address ?? '';
+                        String house = deliveryLocationData.house!.length > 1
+                            ? ', дом: ${deliveryLocationData.house}'
+                            : '';
+                        String flat = deliveryLocationData.flat!.length > 1
+                            ? ', кв: ${deliveryLocationData.flat}'
+                            : '';
+                        String entrance =
+                            deliveryLocationData.entrance!.length > 1
+                                ? ', подъезд: ${deliveryLocationData.entrance}'
+                                : '';
+                        deliveryText = '$deliveryText$house$flat$entrance';
+                      }
+                    }
                     final formatCurrency = NumberFormat.currency(
-                        locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+                        locale: 'ru_RU',
+                        symbol: locale == 'uz'
+                            ? "so'm"
+                            : locale == 'en'
+                                ? 'sum'
+                                : 'сум',
+                        decimalDigits: 0);
                     return Column(
                       children: [
                         const SizedBox(height: 20),
-                        const WayToReceiveAnOrder(),
+                        deliveryType != null
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      deliveryType!.value ==
+                                              DeliveryTypeEnum.deliver
+                                          ? Image.asset(
+                                              'images/delivery_car.png',
+                                              width: 30,
+                                              height: 15,
+                                            )
+                                          : Image.asset(
+                                              'images/delivery_pickup.png',
+                                              width: 30,
+                                              height: 15,
+                                            ),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        tr(deliveryType.value.toString()),
+                                        style:
+                                            const TextStyle(color: Colors.grey),
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  deliveryType.value == DeliveryTypeEnum.deliver
+                                      ? SizedBox(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.7,
+                                          child: n.NikuText(
+                                            deliveryText,
+                                            style: n.NikuTextStyle(
+                                                color: Colors.grey),
+                                          ))
+                                      : n.NikuText(
+                                          currentTerminal!.name,
+                                          style: n.NikuTextStyle(
+                                              color: Colors.black,
+                                              fontSize: 20),
+                                        )
+                                ],
+                              )
+                            : const SizedBox(),
                         const SizedBox(height: 20),
                         const Divider(),
                         _isBasketLoading.value != false
@@ -598,7 +684,6 @@ class BasketWidget extends HookWidget {
                                           direction:
                                               DismissDirection.endToStart,
                                           key: Key(item.id.toString()),
-                                          child: basketItems(item),
                                           background: Container(
                                             color: Colors.red,
                                           ),
@@ -608,12 +693,12 @@ class BasketWidget extends HookWidget {
                                           },
                                           secondaryBackground: Container(
                                             color: Colors.red,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(15),
+                                            child: const Padding(
+                                              padding: EdgeInsets.all(15),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.end,
-                                                children: const [
+                                                children: [
                                                   Icon(Icons.delete,
                                                       color: Colors.white),
                                                   Text('Удалить',
@@ -623,6 +708,7 @@ class BasketWidget extends HookWidget {
                                               ),
                                             ),
                                           ),
+                                          child: basketItems(item),
                                         );
                                 }),
                         relatedBiData.value.isNotEmpty
@@ -652,7 +738,11 @@ class BasketWidget extends HookWidget {
                                         final formatCurrency =
                                             NumberFormat.currency(
                                                 locale: 'ru_RU',
-                                                symbol: 'сум',
+                                                symbol: locale == 'uz'
+                                                    ? "so'm"
+                                                    : locale == 'en'
+                                                        ? 'sum'
+                                                        : 'сум',
                                                 decimalDigits: 0);
                                         String productPrice = '';
 
@@ -890,8 +980,6 @@ class BasketWidget extends HookWidget {
 
                                                             return;
                                                           },
-                                                          child: Text(
-                                                              productPrice),
                                                           style: ButtonStyle(
                                                             shape: MaterialStateProperty.all<
                                                                     RoundedRectangleBorder>(
@@ -907,6 +995,8 @@ class BasketWidget extends HookWidget {
                                                                     AppColors
                                                                         .mainColor),
                                                           ),
+                                                          child: Text(
+                                                              productPrice),
                                                         ),
                                                       )
                                                     ])));
@@ -941,7 +1031,11 @@ class BasketWidget extends HookWidget {
                                         final formatCurrency =
                                             NumberFormat.currency(
                                                 locale: 'ru_RU',
-                                                symbol: 'сум',
+                                                symbol: locale == 'uz'
+                                                    ? "so'm"
+                                                    : locale == 'en'
+                                                        ? 'sum'
+                                                        : 'сум',
                                                 decimalDigits: 0);
                                         String productPrice = '';
 
@@ -1178,8 +1272,6 @@ class BasketWidget extends HookWidget {
 
                                                             return;
                                                           },
-                                                          child: Text(
-                                                              productPrice),
                                                           style: ButtonStyle(
                                                             shape: MaterialStateProperty.all<
                                                                     RoundedRectangleBorder>(
@@ -1195,6 +1287,8 @@ class BasketWidget extends HookWidget {
                                                                     AppColors
                                                                         .mainColor),
                                                           ),
+                                                          child: Text(
+                                                              productPrice),
                                                         ),
                                                       )
                                                     ])));
@@ -1386,6 +1480,10 @@ class BasketWidget extends HookWidget {
                           Hive.box<AdditionalPhoneNumber>(
                                   'additionalPhoneNumber')
                               .get('additionalPhoneNumber');
+
+                      PaymentCardModel? paymentCardModel =
+                          Hive.box<PaymentCardModel>('paymentCardModel')
+                              .get('paymentCardModel');
                       // Check deliveryType is chosen
                       if (deliveryType == null) {
                         _isOrderLoading.value = false;
@@ -1538,6 +1636,11 @@ class BasketWidget extends HookWidget {
                         formData['formData']['pay_type'] = 'offline';
                       }
 
+                      if (formData['formData']['pay_type'] == 'card' &&
+                          paymentCardModel != null) {
+                        formData['formData']['cardId'] = paymentCardModel.id;
+                      }
+
                       var response = await http.post(url,
                           headers: requestHeaders, body: jsonEncode(formData));
                       if (response.statusCode == 200 ||
@@ -1633,8 +1736,6 @@ class BasketWidget extends HookWidget {
           ],
         ),
       ),
-      // bottomNavigationBar: BottomAppBar(
-      //     child: ),
     ));
   }
 }

@@ -9,6 +9,8 @@ import 'package:les_ailes/widgets/pay_type/pay_type_list.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:niku/niku.dart' as n;
 
+import '../../models/payment_card_model.dart';
+
 class ChoosePayType extends HookWidget {
   Widget renderPayType(PayType payType, BuildContext context) {
     switch (payType.value) {
@@ -45,7 +47,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
       case 'cashback':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,7 +81,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
       case 'uzcard':
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -115,7 +115,45 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
+
+      case 'card':
+        Box<PaymentCardModel> box =
+            Hive.box<PaymentCardModel>('paymentCardModel');
+        PaymentCardModel? paymentCardModel = box.get('paymentCardModel');
+        return n.NikuButton(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Icon(
+              Icons.credit_card,
+              color: Colors.black,
+            ),
+            const SizedBox(
+              width: 20,
+            ),
+            n.NikuText(
+              paymentCardModel != null
+                  ? paymentCardModel.number
+                  : tr('payType.uzcard'),
+              style: n.NikuTextStyle(fontSize: 20, color: Colors.black),
+            ),
+            const Spacer(),
+            const Icon(
+              Icons.chevron_right,
+              color: Colors.black,
+              size: 30,
+            )
+          ],
+        ))
+          ..p = 20
+          ..bg = Colors.grey.shade100
+          ..rounded = 20
+          ..onPressed = () {
+            showBarModalBottomSheet(
+                expand: false,
+                context: context,
+                backgroundColor: Colors.white,
+                builder: (context) => PayTypeListWidget());
+          };
       default:
         return n.NikuButton(Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -150,7 +188,6 @@ class ChoosePayType extends HookWidget {
                 backgroundColor: Colors.white,
                 builder: (context) => PayTypeListWidget());
           };
-        break;
     }
   }
 

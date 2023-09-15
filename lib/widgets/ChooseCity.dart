@@ -51,6 +51,12 @@ class ChooseCity extends HookWidget {
                       case "uz":
                         cityName = cities[index].nameUz;
                         break;
+                      case "ru":
+                        cityName = cities[index].name;
+                        break;
+                      case "en":
+                        cityName = cities[index].nameEn!;
+                        break;
                       default:
                         cityName = cities[index].name;
                         break;
@@ -73,9 +79,11 @@ class ChooseCity extends HookWidget {
                         Box<City> transaction = Hive.box<City>('currentCity');
                         transaction.put('currentCity', cities[index]);
                         final Box<DeliveryLocationData> deliveryLocationBox =
-                        Hive.box<DeliveryLocationData>('deliveryLocationData');
+                            Hive.box<DeliveryLocationData>(
+                                'deliveryLocationData');
                         deliveryLocationBox.delete('deliveryLocationData');
-                        Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+                        Box<DeliveryType> box =
+                            Hive.box<DeliveryType>('deliveryType');
                         box.delete('deliveryType');
                         Navigator.of(context).pop();
                       },
@@ -122,6 +130,12 @@ class ChooseCity extends HookWidget {
           switch (locale) {
             case "uz":
               cityName = currentCity?.nameUz ?? '';
+              break;
+            case "ru":
+              cityName = currentCity?.name ?? '';
+              break;
+            case "en":
+              cityName = currentCity?.nameEn ?? '';
               break;
             default:
               cityName = currentCity?.name ?? '';

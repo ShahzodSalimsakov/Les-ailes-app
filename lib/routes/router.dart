@@ -1,63 +1,68 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:les_ailes/pages/aboutUs.dart';
-import 'package:les_ailes/pages/cashback_detail.dart';
-import 'package:les_ailes/pages/changeLang.dart';
 import 'package:les_ailes/pages/delivery.dart';
-import 'package:les_ailes/pages/franchise.dart';
-import 'package:les_ailes/pages/my_addresses.dart';
-import 'package:les_ailes/pages/my_orders.dart';
 import 'package:les_ailes/pages/notifications.dart';
-import 'package:les_ailes/pages/order_detail.dart';
 import 'package:les_ailes/pages/pickup.dart';
-import 'package:les_ailes/pages/privacy.dart';
 import 'package:les_ailes/pages/settings.dart';
 import 'package:les_ailes/pages/signIn.dart';
-import 'package:les_ailes/pages/terms.dart';
-
 import '../message_handler.dart';
+import '../models/yandex_geo_data.dart';
+import '../pages/cashback_detail.dart';
+import '../pages/changeLang.dart';
+import '../pages/creditCard.dart';
+import '../pages/creditCardList.dart';
+import '../pages/creditCardOtp.dart';
+import '../pages/franchise.dart';
+import '../pages/my_addresses.dart';
+import '../pages/my_orders.dart';
 import '../pages/notifications_detail.dart';
+import '../pages/order_detail.dart';
+import '../pages/privacy.dart';
 import '../pages/profile.dart';
+import '../pages/terms.dart';
+part 'router.gr.dart';
 
-@MaterialAutoRouter(replaceInRouteName: 'Page,Route', routes: [
-  AutoRoute(path: '/', name: 'Home', page: MessageHandler),
-  AutoRoute(path: 'signIn', name: 'SignInPage', page: SignInPage),
-  AutoRoute(
-    path: 'settings',
-    name: 'SettingsPage',
-    page: SettingsPage,
-  ),
-  AutoRoute(path: 'about', name: 'AboutUsPage', page: AboutUsPage),
-  AutoRoute(
-      path: 'notifications',
-      name: 'NotificationsPage',
-      page: EmptyRouterPage,
-      children: [
+@AutoRouterConfig(replaceInRouteName: 'Page,Route')
+class AppRouter extends _$AppRouter {
+  @override
+  List<AutoRoute> get routes => [
+        AutoRoute(path: '/', page: MessageHandlerRoute.page),
+        AutoRoute(path: '/signIn', page: SignInRoute.page),
         AutoRoute(
-          path: '',
-          page: NotificationsPage,
+          path: '/settings',
+          page: SettingsRoute.page,
         ),
+        AutoRoute(path: '/about', page: AboutUsRoute.page),
         AutoRoute(
-          path: ':id',
-          page: NotificationDetailPage,
-        )
-      ]),
-  AutoRoute(path: 'changeLang', name: 'changeLang', page: ChangeLang),
-  AutoRoute(path: 'privacy', name: 'PrivacyPolicy', page: Privacy),
-  AutoRoute(path: 'terms', name: 'Termsofuse', page: Terms),
-  AutoRoute(path: 'franchise', name: 'Franchise', page: Franchise),
-  AutoRoute(path: 'delivery', name: 'Delivery', page: DeliveryPage),
-  AutoRoute(path: 'pickup', name: 'Pickup', page: PickupPage),
-  AutoRoute(path: 'profile', name: 'Profile', page: ProfilePage),
-  AutoRoute(
-      path: 'my_orders',
-      name: 'Myorders',
-      page: EmptyRouterPage,
-      children: [
-        AutoRoute(path: '', page: MyOrders),
-        AutoRoute(path: ':orderId', page: OrderDetail)
-      ]),
-  AutoRoute(path: 'my_addresses', name: 'MyAddresses', page: MyAddresses),
-  AutoRoute(
-      path: 'cashback_detail', name: 'CashbackDetail', page: CashbackDetail)
-])
-class $AppRouter {}
+            path: '/notifications',
+            children: [
+              AutoRoute(
+                path: '',
+                page: NotificationsRoute.page,
+              ),
+              AutoRoute(
+                path: ':id',
+                page: NotificationDetailRoute.page,
+              )
+            ],
+            page: NotificationsRoute.page),
+        AutoRoute(path: '/changeLang', page: ChangeLangRoute.page),
+        AutoRoute(path: '/privacy', page: PrivacyRoute.page),
+        AutoRoute(path: '/terms', page: TermsRoute.page),
+        AutoRoute(path: '/franchise', page: FranchiseRoute.page),
+        AutoRoute(path: '/delivery', page: DeliveryRoute.page),
+        AutoRoute(path: '/pickup', page: PickupRoute.page),
+        AutoRoute(path: '/profile', page: ProfileRoute.page),
+        AutoRoute(
+          path: '/my_orders',
+          page: MyOrdersRoute.page,
+        ),
+        AutoRoute(path: '/my_orders/:orderId', page: OrderDetailRoute.page),
+        AutoRoute(path: '/my_addresses', page: MyAddressesRoute.page),
+        AutoRoute(path: '/cashback_detail', page: CashbackDetailRoute.page),
+        AutoRoute(path: '/my_creditCard', page: CreditCardRoute.page),
+        AutoRoute(path: '/my_creditCardList', page: CreditCardListRoute.page),
+        AutoRoute(path: '/my_creditCardOtp', page: CreditCardOtpRoute.page),
+      ];
+}

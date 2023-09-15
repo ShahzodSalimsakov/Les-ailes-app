@@ -7,7 +7,8 @@
     "writeUsDesc": "Если у вас возникли проблемы с сервисом",
     "profilePage": "Профиль",
     "myOrders": "Мои заказы",
-    "myAddresses": "Мои адреса"
+    "myAddresses": "Мои адреса",
+    "myCards": "Мои карты"
   },
   "main": {
     "deliveryOrPickup": "Закажите доставку или заберите",
@@ -119,7 +120,8 @@
     "uzcard": "UzCard",
     "cashback": "Баллами",
     "online": "Онлайн оплата",
-    "chooseDeliveryAddress": "Выберите адрес доставки или самовывоза"
+    "chooseDeliveryAddress": "Выберите адрес доставки или самовывоза",
+    "card": "Картой"
   },
   "orderSuccess": {
     "thanks": "Спасибо, заказ принят",
@@ -165,7 +167,6 @@
   "enterYourName": "Введите ваше имя",
   "yourName": "Ваше имя",
   "incorrectCode": "Введен неверный код или срок действия кода истек",
-  "sentCodeToNumber": "Отправлен код на номер",
   "getNewCode": "Получить новый код",
   "buyWithThisProduct": "Купить с этим продуктом",
   "addedToBasket": "Добавлено в корзину",
@@ -179,5 +180,23 @@
     "rights_not_enough": "Недостаточно прав на отслеживание",
     "order_not_deliver": "Отслеживание не доступно",
     "user_not_signed": "Вы не авторизованы"
+  },
+  "addCard": "Добавить карту",
+  "cardNumber": "Номер карты",
+  "expireDate": "Срок действия:",
+  "cards": {
+    "deleteModalTitle": "Удаление карты",
+    "deleteModalText": "Вы действительно хотите удалить карту?",
+    "deleteModalCancel": "Отмена",
+    "deleteModalDelete": "Удалить",
+    "noCards": "У Вас нет сохраненных карт",
+    "addCard": "Добавить карту",
+    "continue": "Продолжить",
+    "otpPageTitle": "Подтверждение карты",
+    "otpPageText": "На привязанный номер телефона был отправлен код подтверждения",
+    "otpApprove": "Подтвердить",
+    "insufficientFunds": "Недостаточно средств",
+    "balance": "Баланс",
+    "choose": "Выбрать"
   }
 }

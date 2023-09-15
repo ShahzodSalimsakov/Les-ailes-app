@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -13,20 +12,13 @@ import 'package:les_ailes/models/stock.dart';
 import 'package:les_ailes/models/terminals.dart';
 import 'package:les_ailes/models/yandex_geo_data.dart';
 import 'package:les_ailes/utils/colors.dart';
-import 'package:les_ailes/widgets/ChooseCity.dart';
-import 'package:les_ailes/widgets/header.dart';
 import 'package:les_ailes/widgets/leftMenu.dart';
-import 'package:les_ailes/widgets/productList.dart';
-import 'package:les_ailes/widgets/productListStateful.dart';
 import 'package:les_ailes/widgets/productTabListStateful.dart';
-import 'package:les_ailes/widgets/slider.dart';
 import 'package:les_ailes/widgets/ui/fixed_basket.dart';
-import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 // import 'package:native_updater/native_updater.dart';
 import 'models/delivery_location_data.dart';
-import 'dart:io' show Platform;
 
 import 'models/productSection.dart';
 
@@ -133,6 +125,7 @@ class _HomePageState extends State<HomePage> {
     var token = await FirebaseMessaging.instance.getToken();
     print("Print Instance Token ID: " + token!);
   }
+
   @override
   void initState() {
     super.initState();
@@ -143,7 +136,7 @@ class _HomePageState extends State<HomePage> {
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     getProducts();
     () async {
-      Location location = Location();
+      /*Location location = Location();
 
       bool _serviceEnabled;
       PermissionStatus _permissionGranted;
@@ -199,8 +192,8 @@ class _HomePageState extends State<HomePage> {
             address: geoData.formatted ?? '');
 
         setLocation(_locationData, deliveryData, house);
-      }
-      location.onLocationChanged.listen((LocationData currentLocation) async {
+      }*/
+      /*location.onLocationChanged.listen((LocationData currentLocation) async {
         DeliveryLocationData? deliveryLocationData =
             Hive.box<DeliveryLocationData>('deliveryLocationData')
                 .get('deliveryLocationData');
@@ -239,6 +232,7 @@ class _HomePageState extends State<HomePage> {
           }
         }
       });
+    */
     }();
   }
 

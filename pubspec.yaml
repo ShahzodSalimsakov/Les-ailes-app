@@ -15,10 +15,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.32+32
+version: 1.0.38+38
 
 environment:
-  sdk: ">=2.16.1 <3.0.0"
+  sdk: ">=2.17.1 <3.1.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,9 +28,10 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   another_flushbar: ^1.10.29
-  auto_route: ^4.0.1
+  auto_route: ^7.7.1
   cached_network_image: ^3.2.0
   captcha_solver: ^1.0.4
+  card_scanner: ^1.0.1-prerelease
   carousel_slider: ^4.0.0
   connectivity_plus: ^2.3.0
   cupertino_icons: ^1.0.2
@@ -38,7 +39,7 @@ dependencies:
   easy_localization: ^3.0.0
   extended_nested_scroll_view: ^6.0.0
   firebase_core: ^2.7.1
-  firebase_messaging: ^14.2.6
+  firebase_messaging: ^14.6.1
   flutter:
     sdk: flutter
   flutter_form_builder: ^7.1.1
@@ -60,36 +61,33 @@ dependencies:
   intl: ^0.17.0
   intl_phone_number_input: ^0.7.0+2
   launch_review: ^3.0.1
-  location: ^4.3.0
+  location: ^5.0.2+1
   map_launcher: ^2.2.1+2
   maps_launcher: ^2.0.1
+  mask_text_input_formatter: ^2.5.0
   modal_bottom_sheet: 3.0.0-pre
   niku: 2.1.0
   otp_autofill: ^2.1.0
   pin_code_fields: ^7.4.0
+  scroll_to_index: ^3.0.1
   scrollable_positioned_list: ^0.3.1
   scrolls_to_top: ^1.1.1
   sms_autofill: ^2.2.0
   sticky_headers: ^0.3.0+2
   timer_count_down: ^2.2.1
   url_launcher: ^6.0.20
-  vertical_scrollable_tabview: ^0.0.7
+  vertical_scrollable_tabview: ^0.1.0
   yandex_mapkit: ^3.0.0
 
-dev_dependencies:
-  analyzer: ^3.4.1
-  auto_route_generator: ^4.0.0
-  build_runner: null
+dependency_overrides:
+  intl: ^0.17.0
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+dev_dependencies:
+  analyzer: ^5.0.0
+  auto_route_generator: ^7.2.0
+  build_runner: ^2.4.6
   flutter_lints: ^2.0.1
-  flutter_test:
-    sdk: flutter
-  hive_generator: ^1.1.2
+  hive_generator: ^2.0.0
   source_gen: null
 
 # For information on the generic Dart part of this file, see the

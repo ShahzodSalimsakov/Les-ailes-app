@@ -8,16 +8,16 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:les_ailes/models/order.dart';
-import 'package:les_ailes/routes/router.gr.dart';
 import 'package:les_ailes/utils/colors.dart';
 import '../models/user.dart';
-import 'order_detail.dart';
 
-class MyOrders extends HookWidget {
-  const MyOrders({Key? key}) : super(key: key);
+@RoutePage()
+class MyOrdersPage extends HookWidget {
+  const MyOrdersPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var locale = context.locale.toString();
     final orders = useState<List<Order>>(List<Order>.empty());
 
     Future<void> getMyOrders() async {
@@ -73,11 +73,17 @@ class MyOrders extends HookWidget {
                       );
 
                       final formatCurrency = NumberFormat.currency(
-                          locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+                          locale: 'ru_RU',
+                          symbol: locale == 'uz'
+                              ? "so'm"
+                              : locale == 'en'
+                                  ? 'sum'
+                                  : 'сум',
+                          decimalDigits: 0);
                       return GestureDetector(
                           onTap: () {
                             context.router.pushNamed(
-                                'my_orders/${hashids.encode(order.id)}');
+                                '/my_orders/${hashids.encode(order.id)}');
                           },
                           child: Container(
                             // margin: EdgeInsets.symmetric(vertical: 10, horizontal: 15),

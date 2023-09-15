@@ -45,6 +45,7 @@ class DeliverFieldsModal extends HookWidget {
     return Padding(
       padding: MediaQuery.of(context).viewInsets,
       child: Container(
+        color: Colors.white,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -161,7 +162,9 @@ class DeliverFieldsModal extends HookWidget {
               height: 20,
             ),
             isLoading.value != false
-                ? const CircularProgressIndicator(color: AppColors.mainColor,)
+                ? const CircularProgressIndicator(
+                    color: AppColors.mainColor,
+                  )
                 : SizedBox(
                     width: double.infinity,
                     height: 60,

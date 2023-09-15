@@ -9,7 +9,6 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:hive/hive.dart';
 import 'package:les_ailes/models/productSection.dart';
 import 'package:http/http.dart' as http;
-import 'package:niku/niku.dart' as n;
 
 import '../models/basket.dart';
 import '../models/basket_data.dart';
@@ -69,24 +68,21 @@ class ProductCardModal extends HookWidget {
     }, []);
 
     var locale = context.locale.toString();
-    var attributeDataName = '';
     var attributeDataDesc = '';
     switch (locale) {
-      // case 'en':
-      //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
-      //   break;
       case 'uz':
-        attributeDataName = product!.attributeData?.name?.chopar?.uz ?? '';
         attributeDataDesc =
             product!.attributeData?.description?.chopar?.uz ?? '';
         break;
       case 'ru':
-        attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
         attributeDataDesc =
             product!.attributeData?.description?.chopar?.ru ?? '';
         break;
+      case 'en':
+        attributeDataDesc =
+            product!.attributeData?.description?.chopar?.en ?? '';
+        break;
       default:
-        attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
         attributeDataDesc =
             product!.attributeData?.description?.chopar?.ru ?? '';
         break;
@@ -112,7 +108,7 @@ class ProductCardModal extends HookWidget {
     }
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.95,
+      height: MediaQuery.of(context).size.height * 0.70,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(40.0),
@@ -125,25 +121,29 @@ class ProductCardModal extends HookWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           _buildHandle(context),
-          CachedNetworkImage(
-            imageUrl: product!.image!,
-            progressIndicatorBuilder: (context, url, downloadProgress) =>
-                CircularProgressIndicator(
-                    value: downloadProgress.progress,
-                    color: AppColors.mainColor),
-            errorWidget: (context, url, error) => const Icon(Icons.error),
-            // height: 200,
-            width: 200,
-          ),
-          Html(
-            data: attributeDataDesc,
-            style: {
-              'p': Style(
-                  textOverflow: TextOverflow.visible,
-                  alignment: Alignment.center,
-                  fontSize: FontSize.xLarge,
-                  padding: const EdgeInsets.symmetric(horizontal: 20)),
-            },
+          Row(
+            mainAxisAlignment: attributeDataDesc.isNotEmpty
+                ? MainAxisAlignment.spaceEvenly
+                : MainAxisAlignment.center,
+            children: [
+              CachedNetworkImage(
+                imageUrl: product!.image!,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(
+                        value: downloadProgress.progress,
+                        color: AppColors.mainColor),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                // height: 200,
+                width: 200,
+              ),
+              SizedBox(
+                width: attributeDataDesc.isNotEmpty ? 160 : 0,
+                child: Html(
+                  data: attributeDataDesc,
+                  shrinkWrap: true,
+                ),
+              ),
+            ],
           ),
           relatedBiData.value.isNotEmpty
               ? Padding(
@@ -161,18 +161,22 @@ class ProductCardModal extends HookWidget {
                   padding:
                       const EdgeInsets.only(bottom: 30, left: 30, right: 30),
                   child: SizedBox(
-                    height: 280,
+                    height: 240,
                     child: ListView.builder(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         itemCount: relatedBiData.value.length,
                         itemBuilder: (context, index) {
                           final formatCurrency = NumberFormat.currency(
-                              locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+                              locale: 'ru_RU',
+                              symbol: locale == 'uz'
+                                  ? "so'm"
+                                  : locale == 'en'
+                                      ? 'sum'
+                                      : "сум",
+                              decimalDigits: 0);
                           String productPrice = '';
-
                           productPrice = relatedBiData.value[index].price;
-
                           productPrice = formatCurrency
                               .format(double.tryParse(productPrice));
                           return Container(
@@ -193,15 +197,15 @@ class ProductCardModal extends HookWidget {
                                       children: [
                                         Image.network(
                                           relatedBiData.value[index].image,
-                                          height: 140,
-                                          width: 140,
+                                          height: 100,
+                                          width: 100,
                                         ),
                                         const Spacer(
                                           flex: 1,
                                         ),
                                         Text(
                                           relatedBiData.value[index].customName,
-                                          style: const TextStyle(fontSize: 20),
+                                          style: const TextStyle(fontSize: 16),
                                           textAlign: TextAlign.center,
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 3,

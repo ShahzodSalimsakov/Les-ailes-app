@@ -19,12 +19,10 @@ import '../models/basket_item_quantity.dart';
 import '../models/delivery_location_data.dart';
 import '../models/delivery_type.dart';
 import '../models/productSection.dart';
-import '../models/related_product.dart';
 import '../models/stock.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
-import '../utils/simplified_url.dart';
 
 class ProductCard extends HookWidget {
   final Items? product;
@@ -59,9 +57,16 @@ class ProductCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var locale = context.locale.toString();
     String? image = product!.image;
-    final formatCurrency =
-        NumberFormat.currency(locale: 'ru_RU', symbol: 'сум', decimalDigits: 0);
+    final formatCurrency = NumberFormat.currency(
+        locale: 'ru_RU',
+        symbol: locale == 'uz'
+            ? "so'm"
+            : locale == 'en'
+                ? 'sum'
+                : "сум",
+        decimalDigits: 0);
     String productPrice = '';
     productPrice = product!.price;
     productPrice = formatCurrency.format(double.tryParse(productPrice));
@@ -75,7 +80,6 @@ class ProductCard extends HookWidget {
       minHashLength: 15,
       alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
     );
-    final deliveryPrice = useState(0);
     int? lineId;
     if (basketItemQuantity != null) {
       lineId = basketItemQuantity.lineId;
@@ -198,7 +202,6 @@ class ProductCard extends HookWidget {
     }
 
     Future<void> addToBasket() async {
-      ModifierProduct? modifierProduct;
       List<Map<String, int>>? selectedModifiers;
       _isBasketLoading.value = true;
 
@@ -211,7 +214,7 @@ class ProductCard extends HookWidget {
 
       if (basket != null &&
           basket.encodedId.isNotEmpty &&
-          basket.encodedId.length > 0) {
+          basket.encodedId.isNotEmpty) {
         Map<String, String> requestHeaders = {
           'Content-type': 'application/json',
           'Accept': 'application/json'
@@ -237,7 +240,6 @@ class ProductCard extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           var json = jsonDecode(response.body);
           BasketData basketLocalData = BasketData.fromJson(json['data']);
-          int lineId;
           Basket newBasket = Basket(
               encodedId: basketLocalData.encodedId ?? '',
               lineCount: basketLocalData.lines?.length ?? 0,
@@ -293,19 +295,9 @@ class ProductCard extends HookWidget {
       return;
     }
 
-    Box<Basket> basketBox = Hive.box<Basket>('basket');
-    Basket? basket = basketBox.get('basket');
-
-
-
-
-    var locale = context.locale.toString();
     var attributeDataName = '';
     var attributeDataDesc = '';
     switch (locale) {
-      // case 'en':
-      //   attributeDataName  = products.value[index].attributeData?.name?.chopar?.en ?? '';
-      //   break;
       case 'uz':
         attributeDataName = product!.attributeData?.name?.chopar?.uz ?? '';
         attributeDataDesc =
@@ -315,6 +307,11 @@ class ProductCard extends HookWidget {
         attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
         attributeDataDesc =
             product!.attributeData?.description?.chopar?.ru ?? '';
+        break;
+      case 'en':
+        attributeDataName = product!.attributeData?.name?.chopar?.en ?? '';
+        attributeDataDesc =
+            product!.attributeData?.description?.chopar?.en ?? '';
         break;
       default:
         attributeDataName = product!.attributeData?.name?.chopar?.ru ?? '';
@@ -484,9 +481,8 @@ class ProductCard extends HookWidget {
                                       DeliveryTypeEnum.pickup) {
                                 if (currentTerminal == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Не выбран филиал самовывоза')));
+                                      SnackBar(
+                                          content: Text(tr("p_b_n_selected"))));
                                   return;
                                 }
                               }
@@ -497,16 +493,16 @@ class ProductCard extends HookWidget {
                                       DeliveryTypeEnum.deliver) {
                                 if (deliveryLocationData == null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Не указан адрес доставки')));
+                                      SnackBar(
+                                          content:
+                                              Text(tr("d_a_n_specified"))));
                                   return;
                                 } else if (deliveryLocationData.address ==
                                     null) {
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text(
-                                              'Не указан адрес доставки')));
+                                      SnackBar(
+                                          content:
+                                              Text(tr("d_a_n_specified"))));
                                   return;
                                 }
                               }
@@ -517,11 +513,6 @@ class ProductCard extends HookWidget {
 
                               addToBasket();
                             },
-                            child: _isBasketLoading.value
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
-                                : Text(productPrice),
                             style: ButtonStyle(
                               shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
@@ -531,16 +522,16 @@ class ProductCard extends HookWidget {
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   AppColors.mainColor),
                             ),
+                            child: _isBasketLoading.value
+                                ? const CircularProgressIndicator(
+                                    color: Colors.white,
+                                  )
+                                : Text(productPrice),
                           ),
                         )
                 ]),
           ));
     }
-
-    // useEffect(() {
-    //   getBasket();
-    //   return null;
-    // });
 
     return ValueListenableBuilder<Box<Stock>>(
         valueListenable: Hive.box<Stock>('stock').listenable(),
