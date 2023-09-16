@@ -28,7 +28,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   another_flushbar: ^1.10.29
-  auto_route: ^7.7.1
+  auto_route: 7.7.1
   cached_network_image: ^3.2.0
   captcha_solver: ^1.0.4
   card_scanner: ^1.0.1-prerelease
