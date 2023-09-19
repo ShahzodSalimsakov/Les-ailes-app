@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -122,8 +123,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _instanceId() async {
-    var token = await FirebaseMessaging.instance.getToken();
-    print("Print Instance Token ID: " + token!);
+    if (Platform.isIOS) {
+      FirebaseMessaging.instance.requestPermission();
+    }
+    var token = await FirebaseMessaging.instance.getAPNSToken();
   }
 
   @override
