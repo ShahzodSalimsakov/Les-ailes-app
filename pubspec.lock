@@ -937,10 +937,10 @@ packages:
     dependency: "direct main"
     description:
       name: otp_autofill
-      sha256: c924c60b9bfdf9e5721142168788e39856e8bdea507e252c6f7c0e5adbae18a4
+      sha256: "4757f7c58b0a5acaf89083015efc119df09671a5e937161961e8c4c5a51dc83f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "3.0.0"
   package_config:
     dependency: transitive
     description:
