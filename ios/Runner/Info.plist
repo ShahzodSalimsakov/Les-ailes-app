@@ -49,8 +49,10 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Приложению Les Ailes требуется доступ к месту положения во время использования приложения, чтобы добавить Ваш текущий адрес.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Приложению Les Ailes требуется доступ к камере во время использования приложения, чтобы сканировать платежную карточку и добавит в способах оплаты</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
