@@ -623,12 +623,12 @@ class BasketWidget extends HookWidget {
                                           ? Image.asset(
                                               'images/delivery_car.png',
                                               width: 30,
-                                              height: 15,
+                                              height: 35,
                                             )
                                           : Image.asset(
                                               'images/delivery_pickup.png',
                                               width: 30,
-                                              height: 15,
+                                              height: 35,
                                             ),
                                       const SizedBox(width: 10),
                                       Text(
@@ -660,7 +660,7 @@ class BasketWidget extends HookWidget {
                                         )
                                 ],
                               )
-                            : const SizedBox(),
+                            : const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),
                         _isBasketLoading.value != false
