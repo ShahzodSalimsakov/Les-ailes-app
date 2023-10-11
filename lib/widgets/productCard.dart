@@ -33,6 +33,8 @@ class ProductCard extends HookWidget {
     if (image != null) {
       return CachedNetworkImage(
         imageUrl: image,
+        height: 100,
+        width: 100,
         progressIndicatorBuilder: (context, url, downloadProgress) =>
             CircularProgressIndicator(
                 value: downloadProgress.progress, color: AppColors.mainColor),
@@ -390,31 +392,33 @@ class ProductCard extends HookWidget {
                             });
                       },
                       child: SizedBox(
-                        height: 240,
+                        height: 130,
                         child: Column(
                           children: [
                             productImage(image),
-                            const Spacer(
-                              flex: 1,
-                            ),
+                            // const Spacer(
+                            //   flex: 1,
+                            // ),
                             Text(
                               attributeDataName,
-                              style: const TextStyle(fontSize: 20),
+                              style: const TextStyle(
+                                  fontSize: 20,
+                                  overflow: TextOverflow.ellipsis),
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(
-                              height: 40,
-                              child: Html(
-                                data: attributeDataDesc,
-                                style: {
-                                  'p': Style(
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      textOverflow: TextOverflow.ellipsis,
-                                      alignment: Alignment.center),
-                                },
-                              ),
-                            ),
+                            // SizedBox(
+                            //   height: 60,
+                            //   child: Html(
+                            //     data: attributeDataDesc,
+                            //     style: {
+                            //       'p': Style(
+                            //           maxLines: 2,
+                            //           textAlign: TextAlign.center,
+                            //           textOverflow: TextOverflow.ellipsis,
+                            //           alignment: Alignment.center),
+                            //     },
+                            //   ),
+                            // ),
                           ],
                         ),
                       )),
@@ -526,7 +530,11 @@ class ProductCard extends HookWidget {
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,
                                   )
-                                : Text(productPrice),
+                                : Text(productPrice,
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500)),
                           ),
                         )
                 ]),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -52,12 +53,14 @@ class SliderCarousel extends HookWidget {
               return GestureDetector(
                 onTap: () async {
                   if (slide.androidAppId != null) {
-                      await LaunchReview.launch(androidAppId: "${slide.androidAppId}",);
-                    } else if (slide.iOSAppId != null) {
-                      await LaunchReview.launch( iOSAppId: "${slide.iOSAppId}");
-                    } else {
-                      return;
-                    }
+                    await LaunchReview.launch(
+                      androidAppId: "${slide.androidAppId}",
+                    );
+                  } else if (slide.iOSAppId != null) {
+                    await LaunchReview.launch(iOSAppId: "${slide.iOSAppId}");
+                  } else {
+                    return;
+                  }
                   // LaunchReview.launch(androidAppId: "havoqand.chopar",
                   //     iOSAppId: "1597897308");
                   // if (Platform.isAndroid && slide.androidAppId != null) {
@@ -76,12 +79,19 @@ class SliderCarousel extends HookWidget {
                           const BorderRadius.all(Radius.circular(25.0)),
                       child: Stack(
                         children: <Widget>[
-                          Image.network(
-                              (slide.asset[1] != null
-                                  ? slide.asset[1].link
-                                  : slide.asset[0].link),
-                              fit: BoxFit.cover,
-                              width: 1000.0),
+                          // Image.network(
+                          //     (slide.asset[1] != null
+                          //         ? slide.asset[1].link
+                          //         : slide.asset[0].link),
+                          //     fit: BoxFit.cover,
+                          //     width: 1000.0),
+                          CachedNetworkImage(
+                            imageUrl: (slide.asset[1] != null
+                                ? slide.asset[1].link
+                                : slide.asset[0].link),
+                            fit: BoxFit.cover,
+                            width: double.infinity,
+                          ),
                           // Image.asset('images/banner.jpg', fit: BoxFit.cover, width: double.infinity,)
                         ],
                       )),

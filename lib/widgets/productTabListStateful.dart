@@ -1,21 +1,12 @@
-import 'dart:convert';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:http/http.dart' as http;
-import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:les_ailes/widgets/slider.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
 import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
 
-import '../models/basket.dart';
 import '../models/productSection.dart';
 import '../utils/colors.dart';
 import 'ChooseCity.dart';

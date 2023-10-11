@@ -111,8 +111,8 @@ class PickupMapView extends HookWidget {
                   await controller.moveCamera(
                       CameraUpdate.newCameraPosition(CameraPosition(
                           target: Point(
-                              latitude: double.parse(currentCity!.lat),
-                              longitude: double.parse(currentCity.lon)),
+                              latitude: double.parse(currentCity!.lat!),
+                              longitude: double.parse(currentCity.lon!)),
                           zoom: 12)),
                       animation: animation);
                 } catch (e) {}

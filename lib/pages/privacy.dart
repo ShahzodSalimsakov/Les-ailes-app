@@ -20,10 +20,12 @@ class PrivacyPage extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: SafeArea(
-        child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(tr("about.privacyText"))),
+      body: ListView(
+        children: [
+          Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Text(tr("about.privacyText")))
+        ],
       ),
     );
   }

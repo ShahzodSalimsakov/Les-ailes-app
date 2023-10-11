@@ -67,7 +67,8 @@ class OrderDetailPage extends HookWidget {
           ],
         ),
       );
-    } else if (lineItem.variant?.product?.assets != null) {
+    } else if (lineItem.variant?.product?.assets != null &&
+        lineItem.variant!.product!.assets!.isNotEmpty) {
       return Image.network(
         'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
         width: 90.0,

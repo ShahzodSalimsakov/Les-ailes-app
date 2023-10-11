@@ -54,7 +54,7 @@ class ProductCardList extends HookWidget {
       itemCount: products?.length ?? 0,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: (164 / 300),
+          childAspectRatio: (164 / 200),
           crossAxisSpacing: 15,
           mainAxisSpacing: 20),
       itemBuilder: (context, indx) {

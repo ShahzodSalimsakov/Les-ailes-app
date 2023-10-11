@@ -266,6 +266,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    if (_connectionStatus == ConnectivityResult.none &&
+        result != ConnectivityResult.none) {
+      getProducts();
+    }
+
     setState(() {
       _connectionStatus = result;
     });
