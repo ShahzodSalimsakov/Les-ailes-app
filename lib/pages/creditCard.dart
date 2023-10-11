@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
+import 'package:les_ailes/utils/colors.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:http/http.dart' as http;
 
@@ -147,7 +148,7 @@ class _CreditCardPageState extends State<CreditCardPage> {
                 style: const TextStyle(fontSize: 20),
                 textAlign: TextAlign.center,
               ),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.mainColor,
               duration: const Duration(seconds: 2),
             ),
           );
@@ -157,7 +158,7 @@ class _CreditCardPageState extends State<CreditCardPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(json['message']),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.mainColor,
           ),
         );
       }
@@ -318,7 +319,7 @@ class _CreditCardPageState extends State<CreditCardPage> {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: AppColors.mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),

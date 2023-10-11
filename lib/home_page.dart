@@ -38,9 +38,11 @@ class _HomePageState extends State<HomePage> {
   bool isProductsLoading = true;
 
   Future<void> getProducts() async {
-    setState(() {
-      isProductsLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        isProductsLoading = true;
+      });
+    }
     Map<String, String> requestHeaders = {
       'Content-type': 'application/json',
       'Accept': 'application/json'
@@ -55,11 +57,13 @@ class _HomePageState extends State<HomePage> {
       // _tabController.dispose();
       // _tabController = TabController(
       //     length: productSections.length, vsync: this, initialIndex: 0);
-      setState(() {
-        products = productSections;
-        isProductsLoading = false;
-        // scrollCont.addListener(changeTabs);
-      });
+      if (mounted) {
+        setState(() {
+          products = productSections;
+          isProductsLoading = false;
+          // scrollCont.addListener(changeTabs);
+        });
+      }
       // Future.delayed(const Duration(milliseconds: 200), (){
       //   _tabController.dispose();
       //   _tabController = TabController(
