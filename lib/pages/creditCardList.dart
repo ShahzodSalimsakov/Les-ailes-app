@@ -168,7 +168,10 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
           elevation: 0,
         ),
         body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: AppColors.mainColor,
+              ))
             : _cards.isNotEmpty
                 ? ListView.builder(
                     itemCount: _cards.length,

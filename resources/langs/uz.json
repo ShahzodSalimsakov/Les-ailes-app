@@ -183,7 +183,7 @@
   },
   "addCard": "Kartani qo'shish",
   "cardNumber": "Kartani raqami",
-  "expireDate": "Amal qilish muddati:",
+  "expireDate": "Amal qilish muddati",
   "cards": {
     "deleteModalTitle": "Kartani o'chirish",
     "deleteModalText": "Kartani o'chirishni xohlaysizmi?",
@@ -197,6 +197,7 @@
     "otpApprove": "Tasdiqlash",
     "insufficientFunds": "Kartada yetarli mablag' mavjud emas",
     "balance": "Balans",
-    "choose": "Tanlang"
+    "choose": "Tanlang",
+    "fillAllFields": "Barcha maydonlarni to'ldiring"
   }
 }

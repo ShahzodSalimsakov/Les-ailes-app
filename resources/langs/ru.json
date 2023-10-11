@@ -183,7 +183,7 @@
   },
   "addCard": "Добавить карту",
   "cardNumber": "Номер карты",
-  "expireDate": "Срок действия:",
+  "expireDate": "Срок действия",
   "cards": {
     "deleteModalTitle": "Удаление карты",
     "deleteModalText": "Вы действительно хотите удалить карту?",
@@ -197,6 +197,7 @@
     "otpApprove": "Подтвердить",
     "insufficientFunds": "Недостаточно средств",
     "balance": "Баланс",
-    "choose": "Выбрать"
+    "choose": "Выбрать",
+    "fillAllFields": "Заполните все поля"
   }
 }

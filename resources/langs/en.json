@@ -183,7 +183,7 @@
   },
   "addCard": "Add card",
   "cardNumber": "Card number",
-  "expireDate": "Expiration date:",
+  "expireDate": "Expiration date",
   "p_b_n_selected": "Pickup branch is not selected",
   "d_a_n_specified": "Delivery address is not specified",
   "cards": {
@@ -199,6 +199,7 @@
     "otpApprove": "Confirm",
     "insufficientFunds": "Insufficient funds",
     "balance": "Balance",
-    "choose": "Choose"
+    "choose": "Choose",
+    "fillAllFields": "Fill in all the fields"
   }
 }

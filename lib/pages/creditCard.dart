@@ -314,8 +314,22 @@ class _CreditCardPageState extends State<CreditCardPage> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  if (_formKey.currentState!.validate()) {
+                  if (_formKey.currentState!.validate() &&
+                      myCardNumberController.text.length == 19 &&
+                      myCardExpireController.text.length == 5) {
                     addCard();
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          tr('cards.fillAllFields'),
+                          style: const TextStyle(fontSize: 20),
+                          textAlign: TextAlign.center,
+                        ),
+                        backgroundColor: AppColors.mainColor,
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -325,8 +339,9 @@ class _CreditCardPageState extends State<CreditCardPage> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 20.0)),
                 child: _isLoadingAddCard
-                    ? const CircularProgressIndicator()
-                    : Text(tr('cards.continue')),
+                    ? const CircularProgressIndicator(color: Colors.white)
+                    : Text(tr('cards.continue'),
+                        style: const TextStyle(fontSize: 20)),
               ),
             ),
           ],
