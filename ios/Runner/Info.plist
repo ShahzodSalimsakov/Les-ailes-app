@@ -53,6 +53,8 @@
 	<string>Приложению Les Ailes требуется доступ к камере во время использования приложения, чтобы сканировать платежную карточку и добавит в способах оплаты</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Приложению Les Ailes требуется доступ к месту положения во время использования приложения, чтобы добавить Ваш текущий адрес.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Приложению Les Ailes требуется доступ к месту положения, чтобы добавить Ваш текущий адрес во время использования приложения.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

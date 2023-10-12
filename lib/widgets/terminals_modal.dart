@@ -233,6 +233,8 @@ class _TerminalModalState extends State<TerminalsModal> {
                       altitude: 0,
                       heading: 0,
                       speed: 0,
+                      altitudeAccuracy: 0,
+                      headingAccuracy: 0,
                       speedAccuracy: 0);
                 }
 
@@ -240,8 +242,8 @@ class _TerminalModalState extends State<TerminalsModal> {
                   'Content-type': 'application/json',
                   'Accept': 'application/json'
                 };
-                var url = Uri.https(
-                    'api.lesailes.uz', 'api/terminals/find_nearest', {
+                var url =
+                    Uri.https('api.lesailes.uz', 'api/terminals/find_nearest', {
                   'lat': currentPosition.latitude.toString(),
                   'lon': currentPosition.longitude.toString()
                 });
