@@ -10,13 +10,13 @@ class City extends HiveObject {
   @HiveField(2)
   late String name;
   @HiveField(3)
-  late String nameUz;
+  late String? nameUz;
   @HiveField(4)
-  late String mapZoom;
+  late String? mapZoom;
   @HiveField(5)
-  late String lat;
+  late String? lat;
   @HiveField(6)
-  late String lon;
+  late String? lon;
   @HiveField(7)
   late bool active;
   @HiveField(8)

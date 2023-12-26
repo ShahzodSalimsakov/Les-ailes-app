@@ -58,6 +58,7 @@ class BasketWidget extends HookWidget {
     );
     final _isBasketLoading = useState<bool>(false);
     final deliveryPrice = useState(0);
+    final isMounted = useValueNotifier<bool>(true);
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? deliveryType = box.get('deliveryType');
 
@@ -396,42 +397,44 @@ class BasketWidget extends HookWidget {
         if (response.statusCode == 200 || response.statusCode == 201) {
           _isBasketLoading.value = true;
           var json = jsonDecode(response.body);
-          BasketData basketLocalData = BasketData.fromJson(json['data']);
-          if (basketLocalData.lines != null) {
-            basket.lineCount = basketLocalData.lines!.length;
-            basketBox.put('basket', basket);
+          if (isMounted.value) {
+            BasketData basketLocalData = BasketData.fromJson(json['data']);
+            if (basketLocalData.lines != null) {
+              basket.lineCount = basketLocalData.lines!.length;
+              basketBox.put('basket', basket);
 
-            Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
-            DeliveryType? deliveryType = box.get('deliveryType');
+              Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+              DeliveryType? deliveryType = box.get('deliveryType');
 
-            DeliveryLocationData? deliveryLocationData =
-                Hive.box<DeliveryLocationData>('deliveryLocationData')
-                    .get('deliveryLocationData');
+              DeliveryLocationData? deliveryLocationData =
+                  Hive.box<DeliveryLocationData>('deliveryLocationData')
+                      .get('deliveryLocationData');
 
-            Terminals? currentTerminal =
-                Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+              Terminals? currentTerminal =
+                  Hive.box<Terminals>('currentTerminal').get('currentTerminal');
 
-            if (deliveryType?.value == DeliveryTypeEnum.deliver) {
-              var urlDeliveryPrice = Uri.https(
-                  'api.lesailes.uz', '/api/orders/calc_basket_delivery', {
-                "lat": deliveryLocationData?.lat.toString(),
-                "lon": deliveryLocationData?.lon.toString(),
-                "terminal_id": currentTerminal?.id.toString(),
-                "total_price": basketLocalData.total.toString()
-              });
-              var deliveryPriceResponse =
-                  await http.get(urlDeliveryPrice, headers: requestHeaders);
-              if (deliveryPriceResponse.statusCode == 200) {
-                var json = jsonDecode(deliveryPriceResponse.body);
-                deliveryPrice.value = json['totalPrice'];
+              if (deliveryType?.value == DeliveryTypeEnum.deliver) {
+                var urlDeliveryPrice = Uri.https(
+                    'api.lesailes.uz', '/api/orders/calc_basket_delivery', {
+                  "lat": deliveryLocationData?.lat.toString(),
+                  "lon": deliveryLocationData?.lon.toString(),
+                  "terminal_id": currentTerminal?.id.toString(),
+                  "total_price": basketLocalData.total.toString()
+                });
+                var deliveryPriceResponse =
+                    await http.get(urlDeliveryPrice, headers: requestHeaders);
+                if (deliveryPriceResponse.statusCode == 200) {
+                  var json = jsonDecode(deliveryPriceResponse.body);
+                  deliveryPrice.value = json['totalPrice'];
+                }
+              } else {
+                deliveryPrice.value = 0;
               }
-            } else {
-              deliveryPrice.value = 0;
             }
+            basketData.value = basketLocalData;
+            fetchBiRecomendedItems(basketLocalData);
+            _isBasketLoading.value = false;
           }
-          basketData.value = basketLocalData;
-          fetchBiRecomendedItems(basketLocalData);
-          _isBasketLoading.value = false;
         }
       }
     }
@@ -511,7 +514,9 @@ class BasketWidget extends HookWidget {
     useEffect(() {
       getBasket();
       fetchRecomendedItems();
-      return null;
+      return () {
+        isMounted.value = false;
+      };
     }, [deliveryType]);
 
     return Material(
@@ -623,12 +628,12 @@ class BasketWidget extends HookWidget {
                                           ? Image.asset(
                                               'images/delivery_car.png',
                                               width: 30,
-                                              height: 15,
+                                              height: 35,
                                             )
                                           : Image.asset(
                                               'images/delivery_pickup.png',
                                               width: 30,
-                                              height: 15,
+                                              height: 35,
                                             ),
                                       const SizedBox(width: 10),
                                       Text(
@@ -660,7 +665,7 @@ class BasketWidget extends HookWidget {
                                         )
                                 ],
                               )
-                            : const SizedBox(),
+                            : const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
                         const Divider(),
                         _isBasketLoading.value != false

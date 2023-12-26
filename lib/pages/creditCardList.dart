@@ -4,17 +4,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:card_scanner/card_scanner.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:les_ailes/models/payment_card_model.dart';
-import 'package:les_ailes/pages/creditCard.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:http/http.dart' as http;
 
 import '../models/user.dart';
-import '../services/user_repository.dart';
 import '../utils/colors.dart';
 import '../utils/random.dart';
 import '../widgets/credit_card_add_sheet.dart';
@@ -57,9 +53,11 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
   }
 
   Future<void> _loadCards() async {
-    setState(() {
-      _isLoading = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoading = true;
+      });
+    }
     final Box<User> userBox = Hive.box<User>('user');
     final User? currentUser = userBox.get('user');
 
@@ -76,19 +74,20 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
         'Authorization': 'Bearer ${currentUser.userToken}',
         'X-OTP-TOKEN': hexString
       };
-
-      var url = Uri.https('api.lesailes.uz', 'api/payment_cards');
-      var response = await http.get(url, headers: requestHeaders);
-      setState(() {
-        _isLoading = false;
-      });
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        var json = jsonDecode(response.body);
-        List<PaymentCardModel> localCards = List<PaymentCardModel>.from(
-            json['data'].map((m) => PaymentCardModel.fromMap(m)).toList());
+      if (mounted) {
+        var url = Uri.https('api.lesailes.uz', 'api/payment_cards');
+        var response = await http.get(url, headers: requestHeaders);
         setState(() {
-          _cards = localCards;
+          _isLoading = false;
         });
+        if (response.statusCode == 200 || response.statusCode == 201) {
+          var json = jsonDecode(response.body);
+          List<PaymentCardModel> localCards = List<PaymentCardModel>.from(
+              json['data'].map((m) => PaymentCardModel.fromMap(m)).toList());
+          setState(() {
+            _cards = localCards;
+          });
+        }
       }
     }
   }
@@ -144,7 +143,6 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
     //     builder: (context, box, _) {
     //       User? currentUser = box.get('user');
     //       print(currentUser!.id);
-    var items = List<String>.generate(5, (i) => 'Item $i');
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -170,7 +168,10 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
           elevation: 0,
         ),
         body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: AppColors.mainColor,
+              ))
             : _cards.isNotEmpty
                 ? ListView.builder(
                     itemCount: _cards.length,
@@ -270,7 +271,7 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
                                         );
                                       },
                                       icon: const Icon(
-                                        Icons.delete_outline_rounded,
+                                        Icons.delete_outline,
                                         color: Colors.white,
                                         size: 30,
                                       ))

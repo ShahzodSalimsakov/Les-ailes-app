@@ -13,8 +13,6 @@ import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
 
 import '../models/delivery_location_data.dart';
-import '../models/delivery_type.dart';
-import '../models/stock.dart';
 import '../models/terminals.dart';
 import '../models/yandex_geo_data.dart';
 import 'delivery_fields_modal.dart';

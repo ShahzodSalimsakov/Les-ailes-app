@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
@@ -63,12 +64,17 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                       ? Stack(
                           alignment: Alignment.topCenter,
                           children: [
-                            Ink.image(
-                              image: NetworkImage(
-                                notification?['asset'][0]['link'],
-                              ),
-                              height: 200,
+                            // Ink.image(
+                            //   image: NetworkImage(
+                            //     notification?['asset'][0]['link'],
+                            //   ),
+                            //   height: 200,
+                            //   fit: BoxFit.cover,
+                            // ),
+                            CachedNetworkImage(
+                              imageUrl: notification?['asset'][0]['link'],
                               fit: BoxFit.cover,
+                              width: double.infinity,
                             ),
                           ],
                         )
@@ -97,8 +103,6 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                         notification?['text'] != null
                             ? Text(
                                 notification?['text'],
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
                                     color: Colors.black,
                                     fontSize: 16,

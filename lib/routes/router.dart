@@ -34,19 +34,11 @@ class AppRouter extends _$AppRouter {
           page: SettingsRoute.page,
         ),
         AutoRoute(path: '/about', page: AboutUsRoute.page),
+        AutoRoute(path: '/notifications', page: NotificationsRoute.page),
         AutoRoute(
-            path: '/notifications',
-            children: [
-              AutoRoute(
-                path: '',
-                page: NotificationsRoute.page,
-              ),
-              AutoRoute(
-                path: ':id',
-                page: NotificationDetailRoute.page,
-              )
-            ],
-            page: NotificationsRoute.page),
+          path: '/notifications/:id',
+          page: NotificationDetailRoute.page,
+        ),
         AutoRoute(path: '/changeLang', page: ChangeLangRoute.page),
         AutoRoute(path: '/privacy', page: PrivacyRoute.page),
         AutoRoute(path: '/terms', page: TermsRoute.page),

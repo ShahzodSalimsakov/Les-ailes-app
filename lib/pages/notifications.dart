@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -105,14 +106,21 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                     ? Stack(
                                         alignment: Alignment.topCenter,
                                         children: [
-                                          Ink.image(
-                                            image: NetworkImage(
-                                              _notifications[index]['asset'][0]
-                                                  ['link'],
-                                            ),
+                                          // Ink.image(
+                                          //   image: NetworkImage(
+                                          //     _notifications[index]['asset'][0]
+                                          //         ['link'],
+                                          //   ),
+                                          //   height: 200,
+                                          //   fit: BoxFit.cover,
+                                          // ),
+                                          CachedNetworkImage(
+                                            width: double.infinity,
+                                            imageUrl: _notifications[index]
+                                                ['asset'][0]['link'],
                                             height: 200,
                                             fit: BoxFit.cover,
-                                          ),
+                                          )
                                         ],
                                       )
                                     : Container(),

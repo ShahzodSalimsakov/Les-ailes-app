@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:niku/niku.dart' as n;
 
 class Header extends StatelessWidget {
@@ -37,18 +38,17 @@ class Header extends StatelessWidget {
               ),
               n.NikuButton(
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(color: Colors.grey.shade200, spreadRadius: 1),
-                    ],
-                  ),
-                  child: SvgPicture.asset("images/notification.svg",
-                      width: 20, height: 20),
-                ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(color: Colors.grey.shade200, spreadRadius: 1),
+                      ],
+                    ),
+                    child: const Icon(FontAwesomeIcons.bell,
+                        size: 20, color: Colors.black)),
               )..onPressed = () {
                   context.router.pushNamed("/notifications");
                 }

@@ -15,10 +15,10 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.39+39
+version: 1.0.43+43
 
 environment:
-  sdk: ">=2.17.1 <3.1.0"
+  sdk: ">=2.17.1"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -48,7 +48,7 @@ dependencies:
   flutter_rating_bar: ^4.0.0
   flutter_svg: ^1.0.3
   flutter_switch: ^0.3.2
-  font_awesome_flutter: ^10.1.0
+  font_awesome_flutter: ^10.5.0
   form_builder_phone_field: ^1.0.0-beta.0
   form_builder_validators: ^8.1.1
   geolocator: ^8.2.0
@@ -66,12 +66,12 @@ dependencies:
   maps_launcher: ^2.0.1
   mask_text_input_formatter: ^2.5.0
   modal_bottom_sheet: 3.0.0-pre
-  niku: 2.1.0
+  niku: ^2.4.3
   otp_autofill: ^3.0.0
   pin_code_fields: ^7.4.0
   scroll_to_index: ^3.0.1
   scrollable_positioned_list: ^0.3.1
-  scrolls_to_top: ^1.1.1
+  scrolls_to_top: ^2.1.1
   sms_autofill: ^2.2.0
   sticky_headers: ^0.3.0+2
   timer_count_down: ^2.2.1

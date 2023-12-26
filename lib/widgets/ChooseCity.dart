@@ -49,7 +49,7 @@ class ChooseCity extends HookWidget {
                     var cityName = '';
                     switch (locale) {
                       case "uz":
-                        cityName = cities[index].nameUz;
+                        cityName = cities[index].nameUz!;
                         break;
                       case "ru":
                         cityName = cities[index].name;
