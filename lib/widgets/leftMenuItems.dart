@@ -190,13 +190,11 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.only(
-                        bottom: 50, left: 0, right: 30, top: 0),
+                        bottom: 50, left: 20, right: 20, top: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.shade200,
                     ),
-                    height: 75,
-                    width: 233,
                     child: Row(
                       children: [
                         SvgPicture.asset('images/chat.svg',
@@ -287,13 +285,11 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     margin: const EdgeInsets.only(
-                        bottom: 50, left: 0, right: 30, top: 0),
+                        bottom: 50, left: 20, right: 20, top: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey.shade200,
                     ),
-                    height: 75,
-                    width: 233,
                     child: Row(
                       children: [
                         SvgPicture.asset('images/chat.svg',

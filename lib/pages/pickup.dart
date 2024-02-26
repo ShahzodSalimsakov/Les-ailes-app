@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
@@ -19,12 +17,9 @@ import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
 import '../models/city.dart';
 import '../models/delivery_location_data.dart';
-import '../models/delivery_type.dart';
-import '../models/stock.dart';
 import '../models/terminals.dart';
 
 import '../utils/colors.dart';
-import '../widgets/terminals_modal.dart';
 
 @RoutePage()
 class PickupPage extends HookWidget {
@@ -44,8 +39,7 @@ class PickupPage extends HookWidget {
     final tabController = useTabController(initialLength: 2);
     final defaultTabIndex = useState(0);
     final _tabKey = GlobalKey();
-    final localSelectedTerminal = useState<TempTerminals?>(null);
-    var mapObjects = useState<List<MapObject>>([]);
+    useState<List<MapObject>>([]);
     final isLoading = useState(false);
 
     tabController.addListener(() async {
@@ -60,20 +54,7 @@ class PickupPage extends HookWidget {
       transaction.put('pickupType', element);
     });
 
-    TempTerminals? selectedTerminal = useMemoized(() {
-      // TempTerminals? currentTerminal =
-      //     Hive.box<Terminals>('currentTerminal').get('currentTerminal');
-      //
-      // if (currentTerminal != null && localSelectedTerminal.value == null) {
-      //   return currentTerminal;
-      // }
 
-      if (localSelectedTerminal.value != null) {
-        return localSelectedTerminal.value;
-      }
-
-      return null;
-    }, [localSelectedTerminal.value]);
 
     Future<void> getTerminals() async {
       Map<String, String> requestHeaders = {
@@ -82,7 +63,6 @@ class PickupPage extends HookWidget {
       };
       var formData = {'city_id': currentCity?.id.toString()};
 
-      bool isLocationSet = true;
       isLoading.value = true;
       final Box<DeliveryLocationData> deliveryLocationBox =
           Hive.box<DeliveryLocationData>('deliveryLocationData');
@@ -90,9 +70,7 @@ class PickupPage extends HookWidget {
           deliveryLocationBox.get('deliveryLocationData');
 
       if (deliveryData == null) {
-        isLocationSet = false;
       } else if (deliveryData.lat == null) {
-        isLocationSet = false;
       }
 
       Location location = new Location();
@@ -126,17 +104,6 @@ class PickupPage extends HookWidget {
           'lon': _locationData.longitude.toString()
         };
       }
-      // } else {
-      //   currentPosition = Position(
-      //       longitude: deliveryData!.lon!,
-      //       latitude: deliveryData!.lat!,
-      //       timestamp: DateTime.now(),
-      //       accuracy: 0,
-      //       altitude: 0,
-      //       heading: 0,
-      //       speed: 0,
-      //       speedAccuracy: 0);
-      // }
 
       var url = Uri.https('api.lesailes.uz', 'api/terminals/pickup', formData);
       var response = await http.get(url, headers: requestHeaders);
@@ -149,7 +116,7 @@ class PickupPage extends HookWidget {
         for (var t in terminal) {
           if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
             if (t.openWork == null) {
-              return null;
+              return;
             } else {
               DateTime openWork = Date.parse(t.openWork!);
               openWork = openWork.toLocal();
@@ -161,10 +128,6 @@ class PickupPage extends HookWidget {
               closeWork = closeWork.setDay(currentTime.day);
               closeWork = closeWork.setMonth(currentTime.month);
               closeWork = closeWork.setYear(currentTime.year);
-
-              // if (closeWork.hour < openWork.hour) {
-              //   closeWork = closeWork.setDay(currentTime.day + 1);
-              // }
 
               if (closeWork.getHours < openWork.getHours) {
                 if (currentTime < openWork && currentTime > closeWork) {
@@ -225,11 +188,9 @@ class PickupPage extends HookWidget {
     return ValueListenableBuilder<Box<Terminals>>(
         valueListenable: Hive.box<Terminals>('currentTerminal').listenable(),
         builder: (context, box, _) {
-          Terminals? currentTerminal =
-              Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+          Hive.box<Terminals>('currentTerminal').get('currentTerminal');
 
-          var locale = context.locale.toString();
-          DateTime currentTime = DateTime.now();
+          context.locale.toString();
 
           return Scaffold(
             body: SafeArea(
@@ -312,7 +273,7 @@ class PickupPage extends HookWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  PickupMapSelectedTerminal(),
+                  const PickupMapSelectedTerminal(),
                   Container(
                     padding: const EdgeInsets.all(3),
                     decoration: BoxDecoration(
@@ -328,7 +289,6 @@ class PickupPage extends HookWidget {
                         ),
                         Tab(text: tr('pickup.tabMap'))
                       ],
-                      // labelPadding: const EdgeInsets.symmetric(vertical: 2),
                       indicator: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
                           color: Colors.white),
@@ -336,6 +296,8 @@ class PickupPage extends HookWidget {
                       unselectedLabelColor: Colors.black,
                       labelStyle: const TextStyle(fontSize: 15),
                       unselectedLabelStyle: const TextStyle(fontSize: 15),
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      dividerHeight: 0,
                     ),
                   ),
                   ChooseSelecteTerminal()

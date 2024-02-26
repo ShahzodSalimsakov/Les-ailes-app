@@ -25,7 +25,6 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
 
   @override
   void initState() {
-    print('davr');
     // TODO: implement initState
     super.initState();
     if (widget.notification != null) {
@@ -57,62 +56,64 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                 )),
             body: Container(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // show image if asset exists
-                  notification?['asset'] != null
-                      ? Stack(
-                          alignment: Alignment.topCenter,
-                          children: [
-                            // Ink.image(
-                            //   image: NetworkImage(
-                            //     notification?['asset'][0]['link'],
-                            //   ),
-                            //   height: 200,
-                            //   fit: BoxFit.cover,
-                            // ),
-                            CachedNetworkImage(
-                              imageUrl: notification?['asset'][0]['link'],
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                            ),
-                          ],
-                        )
-                      : Container(),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        notification?['title'] != null &&
-                                notification?['title'] != ''
-                            ? Text(
-                                notification?['title'],
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            : Container(),
-                        notification?['title'] != null
-                            ? const SizedBox(height: 10)
-                            : Container(),
-                        // show truncated text if text is too long
-                        notification?['text'] != null
-                            ? Text(
-                                notification?['text'],
-                                style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500),
-                              )
-                            : Container(),
-                      ],
+              child: ListView(
+                children:[Column(
+                  children: [
+                    // show image if asset exists
+                    notification?['asset'] != null
+                        ? Stack(
+                            alignment: Alignment.topCenter,
+                            children: [
+                              // Ink.image(
+                              //   image: NetworkImage(
+                              //     notification?['asset'][0]['link'],
+                              //   ),
+                              //   height: 200,
+                              //   fit: BoxFit.cover,
+                              // ),
+                              CachedNetworkImage(
+                                imageUrl: notification?['asset'][0]['link'],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          notification?['title'] != null &&
+                                  notification?['title'] != ''
+                              ? Text(
+                                  notification?['title'],
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              : Container(),
+                          notification?['title'] != null
+                              ? const SizedBox(height: 10)
+                              : Container(),
+                          // show truncated text if text is too long
+                          notification?['text'] != null
+                              ? Text(
+                                  notification?['text'],
+                                  style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              : Container(),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),] 
               ),
             ),
           );

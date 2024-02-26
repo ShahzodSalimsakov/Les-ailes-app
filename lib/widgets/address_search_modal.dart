@@ -29,7 +29,7 @@ class AddressSearchModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    useMemoized(() => GlobalKey<FormBuilderState>());
     final currentCity = Hive.box<City>('currentCity').get('currentCity');
     final suggestedData =
         useState<List<YandexGeoData>>(List<YandexGeoData>.empty());
@@ -370,11 +370,11 @@ class AddressSearchModal extends HookWidget {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                       prefixIcon: Center(
+                        widthFactor: 1,
                         child: Text(
                           '${currentCity!.name}, ',
                           style: const TextStyle(fontSize: 17),
                         ),
-                        widthFactor: 1,
                       ),
                     ),
                   ),

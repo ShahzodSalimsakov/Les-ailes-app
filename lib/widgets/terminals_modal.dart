@@ -170,9 +170,9 @@ class _TerminalModalState extends State<TerminalsModal> {
               },
               elevation: 2.0,
               fillColor: Colors.white,
-              child: const Icon(Icons.close, size: 14.0, color: Colors.black),
               padding: const EdgeInsets.all(10.0),
               shape: const CircleBorder(),
+              child: const Icon(Icons.close, size: 14.0, color: Colors.black),
             )),
         Positioned(
             right: 0,
@@ -259,10 +259,10 @@ class _TerminalModalState extends State<TerminalsModal> {
               },
               elevation: 2.0,
               fillColor: Colors.white,
-              child: Icon(Icons.navigation,
-                  size: 23.0, color: Colors.yellow.shade700),
               padding: const EdgeInsets.all(10.0),
               shape: const CircleBorder(),
+              child: Icon(Icons.navigation,
+                  size: 23.0, color: Colors.yellow.shade700),
             )),
       ]),
     ));

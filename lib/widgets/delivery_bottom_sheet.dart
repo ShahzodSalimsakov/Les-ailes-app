@@ -26,13 +26,12 @@ class DeliveryBottomSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _formKey = useMemoized(() => GlobalKey<FormBuilderState>());
+    useMemoized(() => GlobalKey<FormBuilderState>());
     final geoData = useState<YandexGeoData?>(null);
     var currentTerminal = useState<Terminals?>(null);
     final Box<DeliveryLocationData> deliveryLocationBox =
         Hive.box<DeliveryLocationData>('deliveryLocationData');
-    DeliveryLocationData? deliveryLocationData =
-        deliveryLocationBox.get('deliveryLocationData');
+    deliveryLocationBox.get('deliveryLocationData');
 
     var notFoundText = useState<String>('nearest_terminal_not_found');
 

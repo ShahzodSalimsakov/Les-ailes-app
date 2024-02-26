@@ -25,7 +25,7 @@
   },
   "signIn": {
     "signIn": "Kirish",
-    "enterNumber": "Telefon raqamini kiriting",
+    "enterNumber": "Telefon raqamingizni kiriting",
     "getConfirmationCode": "Tasdiqlash kodini olish",
     "proceed": "Davom etish",
     "typeOtp": "Kodni kiriting",

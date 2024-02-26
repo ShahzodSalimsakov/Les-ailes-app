@@ -118,7 +118,7 @@ class ProductCardModal extends HookWidget {
     }
 
     return Container(
-      height: MediaQuery.of(context).size.height * 0.70,
+      height: MediaQuery.of(context).size.height * 0.80,
       decoration: const BoxDecoration(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(40.0),
@@ -238,8 +238,10 @@ class ProductCardModal extends HookWidget {
                                         SizedBox(
                                           height: 50,
                                           width: 144,
-                                          child: ElevatedButton(
+                                          child: _isBasketLoading.value ? const Center(child: CircularProgressIndicator(color: AppColors.mainColor,)) : ElevatedButton(
                                             onPressed: () async {
+                                              
+            _isBasketLoading.value = true;
                                               List<Map<String, int>>?
                                                   selectedModifiers;
 
@@ -368,16 +370,17 @@ class ProductCardModal extends HookWidget {
                                                       basketLocalData;
                                                 }
                                               }
+                                              
+            _isBasketLoading.value = false;
                                               Flushbar(
                                                 title: tr('product'),
                                                 message: tr('addedToBasket'),
-                                                duration: Duration(seconds: 1),
+                                                duration: const Duration(seconds: 1),
                                                 flushbarPosition:
                                                     FlushbarPosition.BOTTOM,
                                               ).show(context);
                                               return;
                                             },
-                                            child: Text(productPrice),
                                             style: ButtonStyle(
                                               shape: MaterialStateProperty.all<
                                                       RoundedRectangleBorder>(
@@ -389,7 +392,9 @@ class ProductCardModal extends HookWidget {
                                                   MaterialStateProperty.all<
                                                           Color>(
                                                       AppColors.mainColor),
+                                                      padding: MaterialStateProperty.all(const EdgeInsets.all(0)),
                                             ),
+                                            child: Text(productPrice, style: const TextStyle(color: Colors.white),),
                                           ),
                                         )
                                       ])));

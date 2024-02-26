@@ -29,7 +29,6 @@ class AboutUsPage extends StatelessWidget {
             children: [
               Container(
                 margin: const EdgeInsets.only(bottom: 20),
-                height: 290,
                 width: double.infinity,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),

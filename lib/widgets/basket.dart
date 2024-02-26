@@ -243,7 +243,7 @@ class BasketWidget extends HookWidget {
       }
       return Container(
           margin: const EdgeInsets.symmetric(vertical: 15),
-          height: 80,
+          height: 100,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -251,69 +251,61 @@ class BasketWidget extends HookWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      productName ?? '',
-                      style: const TextStyle(
-                        fontSize: 18,
-                      ),
+                  Text(
+                    productName ?? '',
+                    style: const TextStyle(
+                      fontSize: 18,
                     ),
                   ),
                   const Spacer(),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.62,
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Text(
-                            formatCurrency.format(productTotalPrice),
-                            style: const TextStyle(fontSize: 18),
-                          ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: Text(
+                          formatCurrency.format(productTotalPrice),
+                          style: const TextStyle(fontSize: 18),
                         ),
-                        Container(
-                          height: 50.0,
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(18)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              IconButton(
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(18)),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: const Icon(
+                                Icons.remove,
+                                size: 20.0,
+                              ),
+                              onPressed: () {
+                                decreaseQuantity(lines);
+                              },
+                            ),
+                            Text(
+                              lines.quantity.toString(),
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.w700),
+                            ),
+                            IconButton(
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(
-                                  Icons.remove,
+                                  Icons.add,
                                   size: 20.0,
                                 ),
                                 onPressed: () {
-                                  decreaseQuantity(lines);
-                                },
-                              ),
-                              Text(
-                                lines.quantity.toString(),
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w700),
-                              ),
-                              IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: const Icon(
-                                    Icons.add,
-                                    size: 20.0,
-                                  ),
-                                  onPressed: () {
-                                    increaseQuantity(lines);
-                                  })
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
+                                  increaseQuantity(lines);
+                                })
+                          ],
+                        ),
+                      )
+                    ],
                   )
                 ],
               )
@@ -539,6 +531,7 @@ class BasketWidget extends HookWidget {
                   floating: false,
                   expandedHeight: 100.0,
                   foregroundColor: Colors.black,
+                  centerTitle: true,
                   actions: [
                     GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
@@ -551,21 +544,22 @@ class BasketWidget extends HookWidget {
                     onTap: () {
                       clearBasket();
                     },
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: Center(
-                          child: Image.asset(
-                        'images/delete.png',
-                        width: 25,
-                        height: 25,
-                      )),
-                    ),
+                    child: Center(
+                        child: Image.asset(
+                      'images/delete.png',
+                      width: 25,
+                      height: 25,
+                    )),
                   ),
+
                   flexibleSpace: FlexibleSpaceBar(
+                    titlePadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                     centerTitle: true,
                     collapseMode: CollapseMode.parallax,
                     title: Text(
                       tr("basket.basket"),
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -792,7 +786,7 @@ class BasketWidget extends HookWidget {
                                                             .value[index]
                                                             .customName,
                                                         style: const TextStyle(
-                                                            fontSize: 20),
+                                                            fontSize: 16),
                                                         textAlign:
                                                             TextAlign.center,
                                                         overflow: TextOverflow
@@ -999,9 +993,10 @@ class BasketWidget extends HookWidget {
                                                                         Color>(
                                                                     AppColors
                                                                         .mainColor),
+                                                                        padding: const MaterialStatePropertyAll(EdgeInsets.all(0))
                                                           ),
                                                           child: Text(
-                                                              productPrice),
+                                                              productPrice, style: const TextStyle(color: Colors.white, fontSize: 16)),
                                                         ),
                                                       )
                                                     ])));
@@ -1084,7 +1079,7 @@ class BasketWidget extends HookWidget {
                                                         topProducts.value[index]
                                                             .customName,
                                                         style: const TextStyle(
-                                                            fontSize: 20),
+                                                            fontSize: 16),
                                                         textAlign:
                                                             TextAlign.center,
                                                         overflow: TextOverflow
@@ -1291,9 +1286,10 @@ class BasketWidget extends HookWidget {
                                                                         Color>(
                                                                     AppColors
                                                                         .mainColor),
+                                                                        padding: const MaterialStatePropertyAll(EdgeInsets.all(0))
                                                           ),
                                                           child: Text(
-                                                              productPrice),
+                                                              productPrice, style: const TextStyle(color: Colors.white, fontSize: 16)),
                                                         ),
                                                       )
                                                     ])));

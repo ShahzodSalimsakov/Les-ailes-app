@@ -277,7 +277,7 @@ class OrderCardList extends HookWidget {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
                                   tr('cards.choose'),
-                                  style: const TextStyle(fontSize: 20),
+                                  style: const TextStyle(fontSize: 20, color: Colors.white),
                                 ),
                               )),
                         ),

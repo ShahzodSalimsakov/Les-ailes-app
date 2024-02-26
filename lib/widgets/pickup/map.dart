@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:les_ailes/utils/colors.dart';
 import 'package:yandex_mapkit/yandex_mapkit.dart';
 import 'package:niku/niku.dart' as n;
 
@@ -119,27 +120,27 @@ class PickupMapView extends HookWidget {
               }
             }),
         Positioned(
+          top: 15,
+          right: 15,
           child: SizedBox(
               // height: 50,
               // width: 50,
               child: n.NikuButton.elevated(const Icon(
             Icons.close,
-            color: Colors.black,
+            color: Colors.white,
             size: 30,
           ))
-                ..bg = Colors.white
+                ..bg = AppColors.mainColor
                 ..rounded = 40
                 ..elevation = 3
                 ..px = 3
-                ..py = 15
+                ..py = 17
                 ..onPressed = () {
                   Box<PickupType> transaction =
                       Hive.box<PickupType>('pickupType');
                   transaction.delete('pickupType');
                   Navigator.of(context).pop();
                 }),
-          top: 15,
-          right: 15,
         )
       ],
     );

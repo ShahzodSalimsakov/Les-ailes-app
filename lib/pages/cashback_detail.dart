@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
@@ -31,7 +30,6 @@ class _CashbackDetailPageState extends State<CashbackDetailPage> {
     const iikoCardOrgId = "c7dfe002-70a0-11e8-80e1-d8d38565926f";
     final start = dateRange.start;
     final end = dateRange.end;
-    final difference = dateRange.duration;
     var res = [];
     Box box = Hive.box<User>('user');
     User currentUser = box.get('user');
@@ -231,7 +229,7 @@ class _CashbackDetailPageState extends State<CashbackDetailPage> {
               ),
               textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
-                  primary: Colors.white, // button text color
+                  foregroundColor: Colors.white, // button text color
                 ),
               ),
             ),

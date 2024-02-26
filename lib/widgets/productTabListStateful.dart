@@ -76,7 +76,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
     }
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -116,7 +116,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
               SliverAppBar(
                 pinned: true,
                 // floating: false,
-                expandedHeight: 450.0,
+                expandedHeight: 470.0,
                 backgroundColor: Colors.white,
                 automaticallyImplyLeading: false,
                 flexibleSpace: FlexibleSpaceBar(
@@ -144,19 +144,17 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
                       color: AppColors.mainColor),
                   labelColor: Colors.white,
                   unselectedLabelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  labelPadding: const EdgeInsets.all(10),
+                  tabAlignment: TabAlignment.center,
                   isScrollable: true,
-                  padding: const EdgeInsets.all(5),
                   tabs: widget.products.map((section) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 10),
-                      child: Text(
-                        locale == 'uz'
-                            ? section.attributeData?.name?.chopar?.uz ?? ''
-                            : locale == 'en'
-                                ? section.attributeData?.name?.chopar?.en ?? ''
-                                : section.attributeData?.name?.chopar?.ru ?? '',
-                      ),
+                    return Text(
+                      locale == 'uz'
+                          ? section.attributeData?.name?.chopar?.uz ?? ''
+                          : locale == 'en'
+                              ? section.attributeData?.name?.chopar?.en ?? ''
+                              : section.attributeData?.name?.chopar?.ru ?? '',
                     );
                   }).toList(),
                   onTap: (index) {

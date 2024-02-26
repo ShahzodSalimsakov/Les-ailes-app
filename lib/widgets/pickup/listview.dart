@@ -43,7 +43,7 @@ class PickupListView extends HookWidget {
 
             var fromTime = '';
             var toTime = '';
-            if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
+            if (currentTime.weekday >= 1 || currentTime.weekday <= 5) {
               fromTime = DateFormat.Hm()
                   .format(Date.parse(terminal.openWork!).toLocal());
               toTime = DateFormat.Hm()

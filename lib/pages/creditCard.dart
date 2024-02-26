@@ -341,7 +341,7 @@ class _CreditCardPageState extends State<CreditCardPage> {
                 child: _isLoadingAddCard
                     ? const CircularProgressIndicator(color: Colors.white)
                     : Text(tr('cards.continue'),
-                        style: const TextStyle(fontSize: 20)),
+                        style: const TextStyle(fontSize: 20, color: Colors.white)),
               ),
             ),
           ],

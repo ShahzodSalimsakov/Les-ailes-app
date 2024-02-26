@@ -144,7 +144,7 @@ class OrderDetailPage extends HookWidget {
       DateTime createdAt =
           DateTime.parse(order.value!.createdAt ?? '').toLocal();
       // createdAt = createdAt.toLocal();
-      DateFormat createdAtFormat = DateFormat('d MMMM. H:m', 'ru');
+      DateFormat createdAtFormat = DateFormat('d MMMM. HH:mm', 'ru');
       final formatCurrency = NumberFormat.currency(
           locale: 'ru_RU',
           symbol: locale == 'uz'
@@ -162,7 +162,8 @@ class OrderDetailPage extends HookWidget {
           ? ', подъезд: ${order.value!.entrance}'
           : '';
       String doorCode = order.value!.doorCode != null
-          ? ', код на двери: ${order.value!.doorCode}'
+          ? ', код на двери: ${order.value!.doorCode
+          }'
           : '';
       String address =
           '${order.value!.billingAddress}$house$flat$entrance$doorCode';
@@ -302,27 +303,27 @@ class OrderDetailPage extends HookWidget {
                         ],
                       ),
                     ),
-                    Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: AppColors.plum,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(26)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 7,
-                              offset: const Offset(
-                                  0, 3), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 16),
-                        margin: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 15),
-                        child: const Text("")),
+                    // Container(
+                    //     width: double.infinity,
+                    //     decoration: BoxDecoration(
+                    //       color: AppColors.plum,
+                    //       borderRadius:
+                    //           const BorderRadius.all(Radius.circular(26)),
+                    //       boxShadow: [
+                    //         BoxShadow(
+                    //           color: Colors.grey.withOpacity(0.5),
+                    //           spreadRadius: 2,
+                    //           blurRadius: 7,
+                    //           offset: const Offset(
+                    //               0, 3), // changes position of shadow
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     padding: const EdgeInsets.symmetric(
+                    //         horizontal: 20, vertical: 16),
+                    //     margin: const EdgeInsets.symmetric(
+                    //         vertical: 10, horizontal: 15),
+                    //     child: const Text("")),
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -487,7 +488,7 @@ class OrderDetailPage extends HookWidget {
                         ],
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 16),
+                          horizontal: 15, vertical: 16),
                       margin: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 15),
                       child: Column(
@@ -530,21 +531,14 @@ class OrderDetailPage extends HookWidget {
                                                       .total)),
                                               style: const TextStyle(
                                                   fontSize: 18)),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
                                           Text(
                                             double.parse(order.value!.basket!
                                                         .lines![index].total) >
                                                     0
-                                                ? lineItem.quantity.toString() +
-                                                    'X'
+                                                ? '${lineItem.quantity}X'
                                                 : '',
                                             style: const TextStyle(
                                                 color: AppColors.green),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
                                           ),
                                           Text(
                                             double.parse(order.value!.basket!
@@ -572,7 +566,7 @@ class OrderDetailPage extends HookWidget {
                                 );
                               },
                               separatorBuilder: (context, index) {
-                                return const Divider();
+                                return const Divider(thickness: 0.5,);
                               },
                               itemCount:
                                   order.value!.basket?.lines?.length ?? 0),
@@ -735,7 +729,7 @@ class OrderDetailPage extends HookWidget {
                                   order.value?.deliveryType == 'deliver'
                                       ? Text(tr("delivery"),
                                           style: const TextStyle(fontSize: 18))
-                                      : SizedBox(),
+                                      : const SizedBox(),
                                   order.value?.deliveryType == 'deliver'
                                       ? RatingBar.builder(
                                           initialRating: 0,
@@ -755,7 +749,7 @@ class OrderDetailPage extends HookWidget {
                                             delivery.value = rating;
                                           },
                                         )
-                                      : SizedBox(),
+                                      : const SizedBox(),
                                   const SizedBox(
                                     height: 10,
                                   ),
@@ -792,7 +786,7 @@ class OrderDetailPage extends HookWidget {
                                                   content: Text(
                                                       tr("reviewSended"))));
                                           RegisteredReview newRegisteredView =
-                                              new RegisteredReview();
+                                              RegisteredReview();
                                           newRegisteredView.orderId =
                                               order.value!.id;
                                           box.put(order.value!.id,

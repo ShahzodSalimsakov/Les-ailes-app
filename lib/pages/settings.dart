@@ -35,50 +35,50 @@ class _SettingsPageState extends State<SettingsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
             children: [
-              Container(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  margin: const EdgeInsets.only(top: 40, bottom: 50),
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(width: 1.0, color: AppColors.grey),
-                      bottom: BorderSide(width: 1.0, color: AppColors.grey),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            width: 180,
-                            child: Text(tr("settings.reportPoints"),
-                                style: const TextStyle(fontSize: 20)),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                          ),
-                          Text(tr("settings.pushNotify"),
-                              style: TextStyle(
-                                  fontSize: 15, color: Colors.grey.shade400)),
-                        ],
-                      ),
-                      FlutterSwitch(
-                        width: 50.0,
-                        height: 30.0,
-                        value: status,
-                        padding: 2,
-                        borderRadius: 30.0,
-                        inactiveColor: Colors.grey.shade300,
-                        activeColor: AppColors.green,
-                        onToggle: (val) {
-                          setState(() {
-                            status = val;
-                          });
-                        },
-                      ),
-                    ],
-                  )),
+              // Container(
+              //     padding: const EdgeInsets.symmetric(vertical: 20),
+              //     margin: const EdgeInsets.only(top: 40, bottom: 50),
+              //     decoration: const BoxDecoration(
+              //       border: Border(
+              //         top: BorderSide(width: 1.0, color: AppColors.grey),
+              //         bottom: BorderSide(width: 1.0, color: AppColors.grey),
+              //       ),
+              //     ),
+              //     child: Row(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Column(
+              //           crossAxisAlignment: CrossAxisAlignment.start,
+              //           children: [
+              //             SizedBox(
+              //               width: 180,
+              //               child: Text(tr("settings.reportPoints"),
+              //                   style: const TextStyle(fontSize: 20)),
+              //             ),
+              //             const SizedBox(
+              //               height: 6,
+              //             ),
+              //             Text(tr("settings.pushNotify"),
+              //                 style: TextStyle(
+              //                     fontSize: 15, color: Colors.grey.shade400)),
+              //           ],
+              //         ),
+              //         FlutterSwitch(
+              //           width: 50.0,
+              //           height: 30.0,
+              //           value: status,
+              //           padding: 2,
+              //           borderRadius: 30.0,
+              //           inactiveColor: Colors.grey.shade300,
+              //           activeColor: AppColors.green,
+              //           onToggle: (val) {
+              //             setState(() {
+              //               status = val;
+              //             });
+              //           },
+              //         ),
+              //       ],
+              //     )),
               GestureDetector(
                 onTap: () {
                   context.router.pushNamed("/changeLang");

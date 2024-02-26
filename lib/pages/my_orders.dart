@@ -46,7 +46,7 @@ class MyOrdersPage extends HookWidget {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-            onPressed: () => context.router.navigateBack(),
+            onPressed: () => context.router.back(),
           ),
           title: Text(tr("leftMenu.myOrders"),
               style: const TextStyle(color: Colors.black)),
@@ -63,7 +63,7 @@ class MyOrdersPage extends HookWidget {
                           DateTime.parse(orders.value[index].createdAt ?? '')
                               .toLocal();
                       DateFormat createdAtFormat =
-                          DateFormat('d MMMM. H:m', 'ru');
+                          DateFormat('d MMMM. HH:mm', 'ru');
                       Order order = orders.value[index];
 
                       final hashids = HashIds(

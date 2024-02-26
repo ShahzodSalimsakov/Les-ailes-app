@@ -295,16 +295,16 @@ class DeliveryPage extends HookWidget {
             },
           ) /*)*/,
           Positioned(
-              top: 50,
+              top: 30,
               child: RawMaterialButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 elevation: 2.0,
-                fillColor: Colors.white,
-                child: const Icon(Icons.close, size: 14.0, color: Colors.black),
+                fillColor: AppColors.mainColor,
                 padding: const EdgeInsets.all(10.0),
                 shape: const CircleBorder(),
+                child: const Icon(Icons.close, size: 30.0, color: Colors.white),
               )),
           Positioned(
               right: 0,
@@ -314,15 +314,15 @@ class DeliveryPage extends HookWidget {
                   lookForLocation();
                 },
                 elevation: 6.0,
-                fillColor: Colors.white,
-                child: isLookingLocation.value
-                    ? const CircularProgressIndicator(
-                        color: AppColors.mainColor,
-                      )
-                    : const Icon(Icons.navigation,
-                        size: 23.0, color: AppColors.mainColor),
+                fillColor: AppColors.mainColor,
                 padding: const EdgeInsets.all(10.0),
                 shape: const CircleBorder(),
+                child: isLookingLocation.value
+                    ? const CircularProgressIndicator(
+                        color: Colors.white,
+                      )
+                    : const Icon(Icons.navigation,
+                        size: 23.0, color: Colors.white),
               )),
         ]),
       )),
@@ -331,35 +331,3 @@ class DeliveryPage extends HookWidget {
     );
   }
 }
-
-// class DeliveryPage extends StatefulWidget {
-//   final YandexGeoData? geoData;
-//   const DeliveryPage({Key? key, this.geoData}) : super(key: key);
-//
-//   @override
-//   State<DeliveryPage> createState() => _DeliveryPageState();
-// }
-//
-// class _DeliveryPageState extends State<DeliveryPage> {
-//   late YandexMapController controller;
-//   Placemark? _placemark;
-//
-//   bool isLookingLocation = false;
-//
-//   showBottomSheet(Point point) {
-//     showModalBottomSheet(
-//       isScrollControlled: true,
-//       context: context,
-//       backgroundColor: Colors.white,
-//       builder: (context) => DeliveryModalSheet(currentPoint: point),
-//     );
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     Terminals? currentTerminal =
-//     Hive.box<Terminals>('currentTerminal').get('currentTerminal');
-//     final List<MapObject> mapObjects = [];
-//
-//   }
-// }
