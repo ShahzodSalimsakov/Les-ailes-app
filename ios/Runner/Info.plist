@@ -58,6 +58,9 @@
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>Приложению Les Ailes требуется доступ к месту положения, чтобы добавить Ваш текущий
 			адрес во время использования приложения.</string>
+		<key>NSMotionUsageDescription</key>
+		<string>Приложению Les Ailes требуется доступ к месту положения, чтобы определить Ваш
+			текущий место на карте во время использования приложения.</string>
 		<key>UIApplicationSupportsIndirectInputEvents</key>
 		<true />
 		<key>UIBackgroundModes</key>
