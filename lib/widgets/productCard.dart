@@ -525,6 +525,7 @@ class ProductCard extends HookWidget {
                               )),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   AppColors.mainColor),
+                                  padding: MaterialStateProperty.all(const EdgeInsets.all(0))
                             ),
                             child: _isBasketLoading.value
                                 ? const CircularProgressIndicator(
