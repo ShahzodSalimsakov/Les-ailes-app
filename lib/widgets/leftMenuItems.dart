@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:les_ailes/widgets/cashback.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
@@ -26,6 +28,15 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
   final userRepository = UserRepository();
   Future<void>? _launched;
 
+  PackageInfo _packageInfo = PackageInfo(
+    appName: 'Unknown',
+    packageName: 'Unknown',
+    version: 'Unknown',
+    buildNumber: 'Unknown',
+    buildSignature: 'Unknown',
+    installerStore: 'Unknown',
+  );
+
   @override
   Future<void> _launchInBrowser(String url) async {
     if (!await launch(
@@ -36,6 +47,13 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
     )) {
       throw 'Could not launch $url';
     }
+  }
+
+  Future<void> _initPackageInfo() async {
+    final info = await PackageInfo.fromPlatform();
+    setState(() {
+      _packageInfo = info;
+    });
   }
 
   logout() async {
@@ -59,6 +77,13 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
     Box<BasketItemQuantity> basketItemQuantityBox =
         Hive.box<BasketItemQuantity>('basketItemQuantity');
     await basketItemQuantityBox.clear();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initPackageInfo();
   }
 
   @override
@@ -225,6 +250,13 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    _packageInfo.version,
+                    style: const TextStyle(color: Colors.grey, fontSize: 18),
+                  ),
+                )
               ],
             );
           } else {
@@ -320,6 +352,13 @@ class _LeftMenuItemsWidgetState extends State<LeftMenuItemsWidget> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text(
+                    _packageInfo.version,
+                    style: const TextStyle(color: Colors.grey, fontSize: 18),
+                  ),
+                )
               ],
             );
           }

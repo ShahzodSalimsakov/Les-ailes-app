@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:card_scanner/card_scanner.dart';
+import 'package:credit_card_scanner/credit_card_scanner.dart';
 import 'package:flutter/material.dart';
 
 class OptionConfigureWidget extends StatefulWidget {

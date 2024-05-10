@@ -12,6 +12,7 @@ import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.dart';
 import 'package:les_ailes/utils/colors.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'models/additional_phone_number.dart';
 import 'models/basket.dart';
 import 'models/city.dart';
@@ -89,13 +90,18 @@ void main() async {
   // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
   // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
 
+  // Retrieve and register appVersion
+  // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  // String appVersion = packageInfo.version;
+  // getIt.registerSingleton<String>(appVersion, instanceName: 'appVersion');
+
   runApp(
     EasyLocalization(
-      child: MyApp(),
       supportedLocales: const [Locale('en'), Locale('ru'), Locale('uz')],
       path: 'resources/langs',
       fallbackLocale: const Locale('ru'),
       startLocale: const Locale('ru'),
+      child: MyApp(),
     ),
   );
 }

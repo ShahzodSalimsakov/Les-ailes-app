@@ -154,8 +154,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-
   late double pinnedHeaderHeight;
 
   @override
@@ -168,34 +166,33 @@ class _HomePageState extends State<HomePage> {
             kToolbarHeight;
     return Scaffold(
       drawer: const LeftMenu(),
-      body: 
-          _connectionStatus.toString() == 'ConnectivityResult.none'
-              ? Center(
-                  child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
-                    const SizedBox(
-                      height: 50,
+      body: _connectionStatus.toString() == 'ConnectivityResult.none'
+          ? Center(
+              child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(tr('checkInet'), style: const TextStyle(fontSize: 20)),
+                const SizedBox(
+                  height: 50,
+                ),
+                const Icon(
+                  Icons.wifi_off_outlined,
+                  color: AppColors.mainColor,
+                  size: 100,
+                )
+              ],
+            ))
+          : isProductsLoading
+              ? Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  color: AppColors.mainColor,
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    const Icon(
-                      Icons.wifi_off_outlined,
-                      color: AppColors.mainColor,
-                      size: 100,
-                    )
-                  ],
-                ))
-              : isProductsLoading
-                  ? Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: AppColors.mainColor,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                        ),
-                      ))
-                  : ProductTabListStateful(products: products),
+                  ))
+              : ProductTabListStateful(products: products),
       bottomNavigationBar: Container(
         color: Colors.transparent,
         child: const FixedBasket(),

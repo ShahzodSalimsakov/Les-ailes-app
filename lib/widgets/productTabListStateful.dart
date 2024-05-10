@@ -150,6 +150,7 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
                   isScrollable: true,
                   overlayColor: MaterialStateProperty.all(Colors.transparent),
                   padding: const EdgeInsets.symmetric(horizontal: 10),
+                  dividerColor: Colors.transparent,
                   tabs: widget.products.map((section) {
                     return Text(
                       locale == 'uz'

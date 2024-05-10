@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:http/http.dart' as http;
 import 'package:launch_review/launch_review.dart';
 import 'package:les_ailes/utils/colors.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 import '../models/mainSlider.dart';
 
@@ -61,15 +60,6 @@ class SliderCarousel extends HookWidget {
                   } else {
                     return;
                   }
-                  // LaunchReview.launch(androidAppId: "havoqand.chopar",
-                  //     iOSAppId: "1597897308");
-                  // if (Platform.isAndroid && slide.androidAppId != null) {
-                  //   await launchUrl(Uri.parse('${slide.androidAppId}'));
-                  // } else if (Platform.isIOS && slide.iOSAppId != null) {
-                  //   await launchUrl(Uri.parse('${slide.iOSAppId}'));
-                  // } else {
-                  //   return;
-                  // }
                 },
                 child: Container(
                   height: 220,
@@ -79,12 +69,6 @@ class SliderCarousel extends HookWidget {
                           const BorderRadius.all(Radius.circular(25.0)),
                       child: Stack(
                         children: <Widget>[
-                          // Image.network(
-                          //     (slide.asset[1] != null
-                          //         ? slide.asset[1].link
-                          //         : slide.asset[0].link),
-                          //     fit: BoxFit.cover,
-                          //     width: 1000.0),
                           CachedNetworkImage(
                             imageUrl: (slide.asset[1] != null
                                 ? slide.asset[1].link
@@ -92,7 +76,6 @@ class SliderCarousel extends HookWidget {
                             fit: BoxFit.cover,
                             width: double.infinity,
                           ),
-                          // Image.asset('images/banner.jpg', fit: BoxFit.cover, width: double.infinity,)
                         ],
                       )),
                 ),
@@ -103,6 +86,7 @@ class SliderCarousel extends HookWidget {
         carouselController: _controller,
         options: CarouselOptions(
             height: 200,
+            clipBehavior: Clip.none,
             viewportFraction: 1.0,
             autoPlay: banner.value.length > 1 ? true : false,
             enlargeCenterPage: true,
