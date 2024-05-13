@@ -513,6 +513,7 @@ class BasketWidget extends HookWidget {
 
     return Material(
         child: Scaffold(
+          backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Stack(
@@ -532,6 +533,7 @@ class BasketWidget extends HookWidget {
                   expandedHeight: 100.0,
                   foregroundColor: Colors.black,
                   centerTitle: true,
+                  surfaceTintColor: Colors.white,
                   actions: [
                     GestureDetector(
                         onTap: () => Navigator.of(context).pop(),
@@ -661,7 +663,7 @@ class BasketWidget extends HookWidget {
                               )
                             : const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
-                        const Divider(),
+                        const Divider(thickness: 0.5,),
                         _isBasketLoading.value != false
                             ? const CircularProgressIndicator(
                                 color: AppColors.mainColor,
@@ -673,7 +675,7 @@ class BasketWidget extends HookWidget {
                                 scrollDirection: Axis.vertical,
                                 itemCount: basketData.value?.lines?.length ?? 0,
                                 separatorBuilder: (context, index) {
-                                  return const Divider();
+                                  return const Divider(thickness: 0.5,);
                                 },
                                 itemBuilder: (context, index) {
                                   final item = basketData.value!.lines![index];

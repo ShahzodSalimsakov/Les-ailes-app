@@ -366,7 +366,7 @@ class ProductCard extends HookWidget {
               BoxShadow(
                 color: Colors.grey,
                 offset: Offset(0.0, 0.0), //(x,y)
-                blurRadius: 1.0,
+                blurRadius: 0.1,
               ),
             ],
           ),
@@ -518,15 +518,16 @@ class ProductCard extends HookWidget {
                               addToBasket();
                             },
                             style: ButtonStyle(
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              )),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  AppColors.mainColor),
-                                  padding: MaterialStateProperty.all(const EdgeInsets.all(0))
-                            ),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                )),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        AppColors.mainColor),
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.all(0))),
                             child: _isBasketLoading.value
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,

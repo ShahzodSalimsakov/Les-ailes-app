@@ -123,7 +123,9 @@ class ProductCardModal extends HookWidget {
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(40.0),
         topRight: Radius.circular(40.0),
-      )),
+      ), 
+      color: Colors.white
+      ),
       // height: 200,
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(

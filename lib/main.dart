@@ -4,7 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/basket_item_quantity.dart';
 import 'package:les_ailes/models/payment_card_model.dart';
@@ -12,7 +11,6 @@ import 'package:les_ailes/models/pickup_type.dart';
 import 'package:les_ailes/models/temp_terminals.dart';
 import 'package:les_ailes/routes/router.dart';
 import 'package:les_ailes/utils/colors.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'models/additional_phone_number.dart';
 import 'models/basket.dart';
 import 'models/city.dart';
@@ -29,10 +27,6 @@ import 'models/terminals.dart';
 import 'models/user.dart';
 
 import './firebase_options.dart';
-
-// void main() {
-//   runApp(const MyApp());
-// }
 
 GetIt getIt = GetIt.instance;
 
@@ -65,9 +59,6 @@ void main() async {
   Hive.registerAdapter(RegisteredReviewAdapter());
   Hive.registerAdapter(BasketItemQuantityAdapter());
   Hive.registerAdapter(PaymentCardModelAdapter());
-  // Hive.registerAdapter(HomeIsScrolledAdapter());
-  // Hive.registerAdapter(HomeScrollPositionAdapter());
-
   await Hive.openBox<User>('user');
   await Hive.openBox<City>('currentCity');
   await Hive.openBox<Basket>('basket');
@@ -87,13 +78,6 @@ void main() async {
   await Hive.openBox<RegisteredReview>('registeredReview');
   await Hive.openBox<BasketItemQuantity>('basketItemQuantity');
   await Hive.openBox<PaymentCardModel>('paymentCardModel');
-  // await Hive.openBox<HomeIsScrolled>('homeIsScrolled');
-  // await Hive.openBox<HomeScrollPosition>('homeScrollPosition');
-
-  // Retrieve and register appVersion
-  // PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  // String appVersion = packageInfo.version;
-  // getIt.registerSingleton<String>(appVersion, instanceName: 'appVersion');
 
   runApp(
     EasyLocalization(
@@ -101,13 +85,13 @@ void main() async {
       path: 'resources/langs',
       fallbackLocale: const Locale('ru'),
       startLocale: const Locale('ru'),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

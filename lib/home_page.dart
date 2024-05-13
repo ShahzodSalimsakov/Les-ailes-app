@@ -165,6 +165,7 @@ class _HomePageState extends State<HomePage> {
             //pinned SliverAppBar height in header
             kToolbarHeight;
     return Scaffold(
+      backgroundColor: Colors.white,
       drawer: const LeftMenu(),
       body: _connectionStatus.toString() == 'ConnectivityResult.none'
           ? Center(
