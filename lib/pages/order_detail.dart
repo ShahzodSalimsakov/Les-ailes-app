@@ -162,8 +162,7 @@ class OrderDetailPage extends HookWidget {
           ? ', подъезд: ${order.value!.entrance}'
           : '';
       String doorCode = order.value!.doorCode != null
-          ? ', код на двери: ${order.value!.doorCode
-          }'
+          ? ', код на двери: ${order.value!.doorCode}'
           : '';
       String address =
           '${order.value!.billingAddress}$house$flat$entrance$doorCode';
@@ -284,7 +283,7 @@ class OrderDetailPage extends HookWidget {
                           const SizedBox(
                             height: 17,
                           ),
-                          Row(
+                          Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(createdAtFormat.format(createdAt),
@@ -460,7 +459,8 @@ class OrderDetailPage extends HookWidget {
                                           'Отследить заказ'.toUpperCase(),
                                           style: const TextStyle(
                                               fontSize: 20,
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white),
                                         )
                                       ],
                                     ),
@@ -531,6 +531,10 @@ class OrderDetailPage extends HookWidget {
                                                       .total)),
                                               style: const TextStyle(
                                                   fontSize: 18)),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
                                           Text(
                                             double.parse(order.value!.basket!
                                                         .lines![index].total) >
@@ -566,7 +570,9 @@ class OrderDetailPage extends HookWidget {
                                 );
                               },
                               separatorBuilder: (context, index) {
-                                return const Divider(thickness: 0.5,);
+                                return const Divider(
+                                  thickness: 0.5,
+                                );
                               },
                               itemCount:
                                   order.value!.basket?.lines?.length ?? 0),

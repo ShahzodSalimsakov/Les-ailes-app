@@ -75,7 +75,7 @@ class PayTypeListWidget extends HookWidget {
               //     Hive.box<PayType>('payType').put('payType', newPayType);
               //     Navigator.of(context).pop();
               //   },
-              (currentTerminal?.myUzCardActive != null)
+              (currentTerminal?.myUzCardActive != false)
                   ? (n.NikuButton(ListTile(
                       leading: const Icon(
                         Icons.credit_card,

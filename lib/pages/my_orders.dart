@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
@@ -147,9 +148,8 @@ class MyOrdersPage extends HookWidget {
                                 const SizedBox(
                                   height: 17,
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Text(createdAtFormat.format(createdAt),
                                         style: const TextStyle(
