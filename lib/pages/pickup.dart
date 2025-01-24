@@ -54,8 +54,6 @@ class PickupPage extends HookWidget {
       transaction.put('pickupType', element);
     });
 
-
-
     Future<void> getTerminals() async {
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
@@ -70,8 +68,7 @@ class PickupPage extends HookWidget {
           deliveryLocationBox.get('deliveryLocationData');
 
       if (deliveryData == null) {
-      } else if (deliveryData.lat == null) {
-      }
+      } else if (deliveryData.lat == null) {}
 
       Location location = new Location();
 
@@ -116,14 +113,16 @@ class PickupPage extends HookWidget {
         for (var t in terminal) {
           if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
             if (t.openWork == null) {
-              return;
+              t.isWorking = false;
+              resultTerminals.add(t);
+              continue;
             } else {
-              DateTime openWork = Date.parse(t.openWork!);
+              DateTime openWork = DateTime.parse(t.openWork!);
               openWork = openWork.toLocal();
               openWork = openWork.setDay(currentTime.day);
               openWork = openWork.setMonth(currentTime.month);
               openWork = openWork.setYear(currentTime.year);
-              DateTime closeWork = Date.parse(t.closeWork!);
+              DateTime closeWork = DateTime.parse(t.closeWork!);
               closeWork = closeWork.toLocal();
               closeWork = closeWork.setDay(currentTime.day);
               closeWork = closeWork.setMonth(currentTime.month);
@@ -145,14 +144,16 @@ class PickupPage extends HookWidget {
             }
           } else {
             if (t.openWeekend == null) {
-              return null;
+              t.isWorking = false;
+              resultTerminals.add(t);
+              continue;
             } else {
-              DateTime openWork = Date.parse(t.openWeekend!);
+              DateTime openWork = DateTime.parse(t.openWeekend!);
               openWork = openWork.toLocal();
               openWork = openWork.setDay(currentTime.day);
               openWork = openWork.setMonth(currentTime.month);
               openWork = openWork.setYear(currentTime.year);
-              DateTime closeWork = Date.parse(t.closeWeekend!);
+              DateTime closeWork = DateTime.parse(t.closeWeekend!);
               closeWork = closeWork.toLocal();
               closeWork = closeWork.setDay(currentTime.day);
               closeWork = closeWork.setMonth(currentTime.month);

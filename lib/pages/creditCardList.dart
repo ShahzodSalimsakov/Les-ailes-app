@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:credit_card_scanner/credit_card_scanner.dart';
 import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -25,18 +24,6 @@ class CreditCardListPage extends StatefulWidget {
 
 class _CreditCardListPageState extends State<CreditCardListPage> {
   bool _isLoading = false;
-  CardDetails? _cardDetails;
-  CardScanOptions scanOptions = const CardScanOptions(
-    scanCardHolderName: true,
-    // enableDebugLogs: true,
-    validCardsToScanBeforeFinishingScan: 5,
-    possibleCardHolderNamePositions: [
-      CardHolderNameScanPosition.aboveCardNumber,
-    ],
-  );
-  final myCardNumberController = TextEditingController();
-  final myCardExpireController = TextEditingController();
-
   List<PaymentCardModel> _cards = [];
 
   @override
@@ -124,25 +111,8 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
     }
   }
 
-  Future<void> scanCard() async {
-    final CardDetails? cardDetails =
-        await CardScanner.scanCard(scanOptions: scanOptions);
-    if (!mounted || cardDetails == null) return;
-    setState(() {
-      _cardDetails = cardDetails;
-      myCardNumberController.text = _cardDetails!.cardNumber;
-      myCardExpireController.text = _cardDetails!.expiryDate;
-      print(_cardDetails?.cardNumber);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // return ValueListenableBuilder<Box<User>>(
-    //     valueListenable: Hive.box<User>('user').listenable(),
-    //     builder: (context, box, _) {
-    //       User? currentUser = box.get('user');
-    //       print(currentUser!.id);
     return Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -318,92 +288,5 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
                       ],
                     ),
                   ));
-    // });
-
-    // Scaffold(
-    //   appBar: AppBar(
-    //     leading: IconButton(
-    //       icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-    //       onPressed: () => context.back(),
-    //     ),
-    //     title: Text(tr("leftMenu.myCards"),
-    //         style: const TextStyle(color: Colors.black)),
-    //     centerTitle: true,
-    //     backgroundColor: Colors.transparent,
-    //     elevation: 0,
-    //   ),
-    //   body: Padding(
-    //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //       children: [
-    //         Container(
-    //             padding: const EdgeInsets.all(10),
-    //             decoration: BoxDecoration(
-    //               color: Colors.white,
-    //               borderRadius: BorderRadius.circular(20),
-    //               boxShadow: [
-    //                 BoxShadow(
-    //                   color: Colors.grey.withOpacity(0.5),
-    //                   spreadRadius: 5,
-    //                   blurRadius: 7,
-    //                   offset: Offset(0, 3), // changes position of shadow
-    //                 ),
-    //               ],
-    //             ),
-    //             child: Column(
-    //               children: [
-    //                 FormBuilder(
-    //                   key: _formKey,
-    //                   child: Column(
-    //                     crossAxisAlignment: CrossAxisAlignment.start,
-    //                     children: [
-    //                       Stack(
-    //                         children: [
-    //                           TextField(
-    //                             decoration: InputDecoration(
-    //                               labelText: 'Номер карты',
-    //                               border: const OutlineInputBorder(
-    //                                   borderRadius: BorderRadius.all(
-    //                                       Radius.circular(20.0))),
-    //                               prefixIcon: IconButton(
-    //                                   onPressed: () async {
-    //                                     scanCard();
-    //                                   },
-    //                                   icon: Image.asset(
-    //                                       'images/scanCardIcon.png')),
-    //                               hintText: '0000 0000 0000 0000',
-    //                             ),
-    //                             inputFormatters: [maskFormatter],
-    //                             keyboardType: TextInputType.number,
-    //                             controller: myCardNumberController,
-    //                           ),
-    //                         ],
-    //                       ),
-    //                       const SizedBox(height: 10),
-    //                       SizedBox(
-    //                         width: 150,
-    //                         child: TextField(
-    //                           decoration: const InputDecoration(
-    //                               labelText: 'Дата окончания',
-    //                               border: OutlineInputBorder(
-    //                                   borderRadius: BorderRadius.all(
-    //                                       Radius.circular(20.0))),
-    //                               hintText: 'ММ/ГГ'),
-    //                           inputFormatters: [maskExpire],
-    //                           keyboardType: TextInputType.number,
-    //                           controller: myCardExpireController,
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ],
-    //             )),
-    //         Text('$_cardDetails'),
-    //       ],
-    //     ),
-    //   ),
-    // );
   }
 }

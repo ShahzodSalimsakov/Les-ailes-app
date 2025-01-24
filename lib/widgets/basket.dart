@@ -58,7 +58,7 @@ class BasketWidget extends HookWidget {
     );
     final _isBasketLoading = useState<bool>(false);
     final deliveryPrice = useState(0);
-    final isMounted = useValueNotifier<bool>(true);
+    final isMounted = useRef(true);
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? deliveryType = box.get('deliveryType');
 
@@ -338,7 +338,7 @@ class BasketWidget extends HookWidget {
     }, [basketData.value, deliveryPrice.value]);
 
     Future<void> fetchBiRecomendedItems(BasketData basketData) async {
-      if (basket != null) {
+      if (basket != null && isMounted.value) {
         List<String> productIds = [];
 
         if (basketData?.lines != null) {
@@ -359,6 +359,7 @@ class BasketWidget extends HookWidget {
             {"productIds": productIds});
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
+          if (!isMounted.value) return;
           var json = jsonDecode(response.body);
           if (json['data'] != null) {
             List<RelatedProduct> localBiRelatedProduct =
@@ -377,7 +378,7 @@ class BasketWidget extends HookWidget {
     }
 
     Future<void> getBasket() async {
-      if (basket != null) {
+      if (basket != null && isMounted.value) {
         Map<String, String> requestHeaders = {
           'Content-type': 'application/json',
           'Accept': 'application/json'
@@ -387,52 +388,52 @@ class BasketWidget extends HookWidget {
             Uri.https('api.lesailes.uz', '/api/baskets/${basket.encodedId}');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
+          if (!isMounted.value) return;
           _isBasketLoading.value = true;
           var json = jsonDecode(response.body);
-          if (isMounted.value) {
-            BasketData basketLocalData = BasketData.fromJson(json['data']);
-            if (basketLocalData.lines != null) {
-              basket.lineCount = basketLocalData.lines!.length;
-              basketBox.put('basket', basket);
+          BasketData basketLocalData = BasketData.fromJson(json['data']);
+          if (basketLocalData.lines != null) {
+            basket.lineCount = basketLocalData.lines!.length;
+            basketBox.put('basket', basket);
 
-              Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
-              DeliveryType? deliveryType = box.get('deliveryType');
+            Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
+            DeliveryType? deliveryType = box.get('deliveryType');
 
-              DeliveryLocationData? deliveryLocationData =
-                  Hive.box<DeliveryLocationData>('deliveryLocationData')
-                      .get('deliveryLocationData');
+            DeliveryLocationData? deliveryLocationData =
+                Hive.box<DeliveryLocationData>('deliveryLocationData')
+                    .get('deliveryLocationData');
 
-              Terminals? currentTerminal =
-                  Hive.box<Terminals>('currentTerminal').get('currentTerminal');
+            Terminals? currentTerminal =
+                Hive.box<Terminals>('currentTerminal').get('currentTerminal');
 
-              if (deliveryType?.value == DeliveryTypeEnum.deliver) {
-                var urlDeliveryPrice = Uri.https(
-                    'api.lesailes.uz', '/api/orders/calc_basket_delivery', {
-                  "lat": deliveryLocationData?.lat.toString(),
-                  "lon": deliveryLocationData?.lon.toString(),
-                  "terminal_id": currentTerminal?.id.toString(),
-                  "total_price": basketLocalData.total.toString()
-                });
-                var deliveryPriceResponse =
-                    await http.get(urlDeliveryPrice, headers: requestHeaders);
-                if (deliveryPriceResponse.statusCode == 200) {
-                  var json = jsonDecode(deliveryPriceResponse.body);
-                  deliveryPrice.value = json['totalPrice'];
-                }
-              } else {
-                deliveryPrice.value = 0;
+            if (deliveryType?.value == DeliveryTypeEnum.deliver) {
+              var urlDeliveryPrice = Uri.https(
+                  'api.lesailes.uz', '/api/orders/calc_basket_delivery', {
+                "lat": deliveryLocationData?.lat.toString(),
+                "lon": deliveryLocationData?.lon.toString(),
+                "terminal_id": currentTerminal?.id.toString(),
+                "total_price": basketLocalData.total.toString()
+              });
+              var deliveryPriceResponse =
+                  await http.get(urlDeliveryPrice, headers: requestHeaders);
+              if (deliveryPriceResponse.statusCode == 200) {
+                if (!isMounted.value) return;
+                var json = jsonDecode(deliveryPriceResponse.body);
+                deliveryPrice.value = json['totalPrice'];
               }
+            } else {
+              deliveryPrice.value = 0;
             }
-            basketData.value = basketLocalData;
-            fetchBiRecomendedItems(basketLocalData);
-            _isBasketLoading.value = false;
           }
+          basketData.value = basketLocalData;
+          fetchBiRecomendedItems(basketLocalData);
+          _isBasketLoading.value = false;
         }
       }
     }
 
     Future<void> fetchRecomendedItems() async {
-      if (basket != null) {
+      if (basket != null && isMounted.value) {
         Map<String, String> requestHeaders = {
           'Content-type': 'application/json',
           'Accept': 'application/json'
@@ -442,6 +443,7 @@ class BasketWidget extends HookWidget {
             'api.lesailes.uz', '/api/baskets/related/${basket.encodedId}');
         var response = await http.get(url, headers: requestHeaders);
         if (response.statusCode == 200 || response.statusCode == 201) {
+          if (!isMounted.value) return;
           var json = jsonDecode(response.body);
           List<RelatedProduct> localRelatedProduct = List<RelatedProduct>.from(
               json['data'].map((m) => RelatedProduct.fromJson(m)).toList());
@@ -504,6 +506,7 @@ class BasketWidget extends HookWidget {
     }, [basketData.value]);
 
     useEffect(() {
+      isMounted.value = true;
       getBasket();
       fetchRecomendedItems();
       return () {
@@ -513,7 +516,7 @@ class BasketWidget extends HookWidget {
 
     return Material(
         child: Scaffold(
-          backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Stack(
@@ -555,8 +558,8 @@ class BasketWidget extends HookWidget {
                   ),
 
                   flexibleSpace: FlexibleSpaceBar(
-                    titlePadding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    titlePadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
                     centerTitle: true,
                     collapseMode: CollapseMode.parallax,
                     title: Text(
@@ -663,7 +666,9 @@ class BasketWidget extends HookWidget {
                               )
                             : const WayToReceiveAnOrder(),
                         const SizedBox(height: 20),
-                        const Divider(thickness: 0.5,),
+                        const Divider(
+                          thickness: 0.5,
+                        ),
                         _isBasketLoading.value != false
                             ? const CircularProgressIndicator(
                                 color: AppColors.mainColor,
@@ -675,7 +680,9 @@ class BasketWidget extends HookWidget {
                                 scrollDirection: Axis.vertical,
                                 itemCount: basketData.value?.lines?.length ?? 0,
                                 separatorBuilder: (context, index) {
-                                  return const Divider(thickness: 0.5,);
+                                  return const Divider(
+                                    thickness: 0.5,
+                                  );
                                 },
                                 itemBuilder: (context, index) {
                                   final item = basketData.value!.lines![index];
@@ -982,23 +989,31 @@ class BasketWidget extends HookWidget {
                                                             return;
                                                           },
                                                           style: ButtonStyle(
-                                                            shape: MaterialStateProperty.all<
-                                                                    RoundedRectangleBorder>(
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18.0),
-                                                            )),
-                                                            backgroundColor:
-                                                                MaterialStateProperty.all<
-                                                                        Color>(
-                                                                    AppColors
-                                                                        .mainColor),
-                                                                        padding: const MaterialStatePropertyAll(EdgeInsets.all(0))
-                                                          ),
+                                                              shape: MaterialStateProperty.all<
+                                                                      RoundedRectangleBorder>(
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            18.0),
+                                                              )),
+                                                              backgroundColor:
+                                                                  MaterialStateProperty.all<
+                                                                          Color>(
+                                                                      AppColors
+                                                                          .mainColor),
+                                                              padding:
+                                                                  const MaterialStatePropertyAll(
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              0))),
                                                           child: Text(
-                                                              productPrice, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                                              productPrice,
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      16)),
                                                         ),
                                                       )
                                                     ])));
@@ -1275,23 +1290,31 @@ class BasketWidget extends HookWidget {
                                                             return;
                                                           },
                                                           style: ButtonStyle(
-                                                            shape: MaterialStateProperty.all<
-                                                                    RoundedRectangleBorder>(
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          18.0),
-                                                            )),
-                                                            backgroundColor:
-                                                                MaterialStateProperty.all<
-                                                                        Color>(
-                                                                    AppColors
-                                                                        .mainColor),
-                                                                        padding: const MaterialStatePropertyAll(EdgeInsets.all(0))
-                                                          ),
+                                                              shape: MaterialStateProperty.all<
+                                                                      RoundedRectangleBorder>(
+                                                                  RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            18.0),
+                                                              )),
+                                                              backgroundColor:
+                                                                  MaterialStateProperty.all<
+                                                                          Color>(
+                                                                      AppColors
+                                                                          .mainColor),
+                                                              padding:
+                                                                  const MaterialStatePropertyAll(
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              0))),
                                                           child: Text(
-                                                              productPrice, style: const TextStyle(color: Colors.white, fontSize: 16)),
+                                                              productPrice,
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      16)),
                                                         ),
                                                       )
                                                     ])));
@@ -1490,9 +1513,8 @@ class BasketWidget extends HookWidget {
                       // Check deliveryType is chosen
                       if (deliveryType == null) {
                         _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Не выбран способ доставки')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(tr('notSelectedDeliveryType'))));
                         return;
                       }
 
@@ -1500,10 +1522,8 @@ class BasketWidget extends HookWidget {
                       if (deliveryType.value == DeliveryTypeEnum.pickup) {
                         if (currentTerminal == null) {
                           _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content:
-                                      Text('Не выбран филиал самовывоза')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(tr('notSelectedPickupTerminal'))));
                           return;
                         }
                       }
@@ -1512,15 +1532,13 @@ class BasketWidget extends HookWidget {
                       if (deliveryType.value == DeliveryTypeEnum.deliver) {
                         if (deliveryLocationData == null) {
                           _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Не указан адрес доставки')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(tr('notSelectedDeliveryAddress'))));
                           return;
                         } else if (deliveryLocationData.address == null) {
                           _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Не указан адрес доставки')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(tr('notSelectedDeliveryAddress'))));
                           return;
                         }
                       }
@@ -1529,22 +1547,19 @@ class BasketWidget extends HookWidget {
 
                       if (deliveryTime == null) {
                         _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Не указано время доставки')));
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(tr('notSelectedDeliveryTime'))));
                         return;
                       } else if (deliveryTime.value == DeliveryTimeEnum.later) {
                         if (deliverLaterTime == null) {
                           _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Не указано время доставки')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(tr('notSelectedDeliveryTime'))));
                           return;
                         } else if (deliverLaterTime.value.length == 0) {
                           _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Не указано время доставки')));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(tr('notSelectedDeliveryTime'))));
                           return;
                         }
                       }
@@ -1552,8 +1567,7 @@ class BasketWidget extends HookWidget {
                       if (payType == null) {
                         _isOrderLoading.value = false;
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Не указан способ оплаты')));
+                            SnackBar(content: Text(tr('notSelectedPayType'))));
                         return;
                       }
 

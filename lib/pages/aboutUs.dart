@@ -188,64 +188,64 @@ class AboutUsPage extends StatelessWidget {
                       ],
                     )),
               ),
-              GestureDetector(
-                onTap: () {
-                  context.router.pushNamed('/terms');
-                },
-                child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(width: 1.0, color: AppColors.grey),
-                        bottom: BorderSide(width: 1.0, color: AppColors.grey),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              // width: 180,
-                              child: Text(tr("about.terms"),
-                                  style: const TextStyle(fontSize: 20)),
-                            ),
-                          ],
-                        ),
-                        const Icon(Icons.arrow_forward_ios)
-                      ],
-                    )),
-              ),
-              GestureDetector(
-                onTap: () {
-                  context.router.pushNamed('/franchise');
-                },
-                child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        top: BorderSide(width: 1.0, color: AppColors.grey),
-                        bottom: BorderSide(width: 1.0, color: AppColors.grey),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              // width: 180,
-                              child: Text(tr("about.franchise"),
-                                  style: const TextStyle(fontSize: 20)),
-                            ),
-                          ],
-                        ),
-                        const Icon(Icons.arrow_forward_ios)
-                      ],
-                    )),
-              ),
+              // GestureDetector(
+              //   onTap: () {
+              //     context.router.pushNamed('/terms');
+              //   },
+              //   child: Container(
+              //       padding: const EdgeInsets.symmetric(vertical: 20),
+              //       decoration: const BoxDecoration(
+              //         border: Border(
+              //           top: BorderSide(width: 1.0, color: AppColors.grey),
+              //           bottom: BorderSide(width: 1.0, color: AppColors.grey),
+              //         ),
+              //       ),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               SizedBox(
+              //                 // width: 180,
+              //                 child: Text(tr("about.terms"),
+              //                     style: const TextStyle(fontSize: 20)),
+              //               ),
+              //             ],
+              //           ),
+              //           const Icon(Icons.arrow_forward_ios)
+              //         ],
+              //       )),
+              // ),
+              // GestureDetector(
+              //   onTap: () {
+              //     context.router.pushNamed('/franchise');
+              //   },
+              //   child: Container(
+              //       padding: const EdgeInsets.symmetric(vertical: 20),
+              //       decoration: const BoxDecoration(
+              //         border: Border(
+              //           top: BorderSide(width: 1.0, color: AppColors.grey),
+              //           bottom: BorderSide(width: 1.0, color: AppColors.grey),
+              //         ),
+              //       ),
+              //       child: Row(
+              //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //         children: [
+              //           Column(
+              //             crossAxisAlignment: CrossAxisAlignment.start,
+              //             children: [
+              //               SizedBox(
+              //                 // width: 180,
+              //                 child: Text(tr("about.franchise"),
+              //                     style: const TextStyle(fontSize: 20)),
+              //               ),
+              //             ],
+              //           ),
+              //           const Icon(Icons.arrow_forward_ios)
+              //         ],
+              //       )),
+              // ),
             ],
           ),
         ),

@@ -35,23 +35,31 @@ class ProductCard extends HookWidget {
         imageUrl: image,
         height: 100,
         width: 100,
-        progressIndicatorBuilder: (context, url, downloadProgress) =>
-            CircularProgressIndicator(
-                value: downloadProgress.progress, color: AppColors.mainColor),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
+        fit: BoxFit.cover,
+        memCacheHeight: 200,
+        memCacheWidth: 200,
+        placeholder: (context, url) => const Center(
+          child: CircularProgressIndicator(
+            color: AppColors.mainColor,
+            strokeWidth: 2,
+          ),
+        ),
+        errorWidget: (context, url, error) => const Center(
+          child: Icon(Icons.error_outline, color: Colors.red),
+        ),
       );
-      // return Image.network(
-      //   image,
-      //   width: 164.0,
-      //   height: 164.0,
-      //   // width: MediaQuery.of(context).size.width / 2.5,
-      // );
     } else {
       return ClipOval(
         child: SvgPicture.network(
           'https://lesailes.uz/no_photo.svg',
           width: 175.0,
           height: 175.0,
+          placeholderBuilder: (BuildContext context) => const Center(
+            child: CircularProgressIndicator(
+              color: AppColors.mainColor,
+              strokeWidth: 2,
+            ),
+          ),
         ),
       );
     }

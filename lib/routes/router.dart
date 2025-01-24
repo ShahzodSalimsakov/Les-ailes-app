@@ -8,7 +8,6 @@ import 'package:les_ailes/pages/settings.dart';
 import 'package:les_ailes/pages/signIn.dart';
 import '../message_handler.dart';
 import '../models/yandex_geo_data.dart';
-import '../pages/cashback_detail.dart';
 import '../pages/changeLang.dart';
 import '../pages/creditCard.dart';
 import '../pages/creditCardList.dart';
@@ -24,7 +23,7 @@ import '../pages/terms.dart';
 part 'router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
-class AppRouter extends _$AppRouter {
+class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(path: '/', page: MessageHandlerRoute.page),
@@ -52,7 +51,6 @@ class AppRouter extends _$AppRouter {
         ),
         AutoRoute(path: '/my_orders/:orderId', page: OrderDetailRoute.page),
         AutoRoute(path: '/my_addresses', page: MyAddressesRoute.page),
-        AutoRoute(path: '/cashback_detail', page: CashbackDetailRoute.page),
         AutoRoute(path: '/my_creditCard', page: CreditCardRoute.page),
         AutoRoute(path: '/my_creditCardList', page: CreditCardListRoute.page),
         AutoRoute(path: '/my_creditCardOtp', page: CreditCardOtpRoute.page),

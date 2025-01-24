@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_phone_field/form_builder_phone_field.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:niku/niku.dart' as n;
@@ -142,35 +142,41 @@ class _ProfilePageState extends State<ProfilePage> {
                                       const SizedBox(
                                         height: 20,
                                       ),
-                                      FormBuilderPhoneField(
-                                        style: const TextStyle(fontSize: 20),
-                                        name: 'phone',
-                                        initialValue: currentUser?.phone ?? '',
-                                        validator:
-                                            FormBuilderValidators.compose([
-                                          FormBuilderValidators.required(
-                                              errorText:
-                                                  'Поле обязательно для заполнения'),
-                                          FormBuilderValidators.minLength(13,
-                                              errorText: 'Заполнено неверно')
-                                        ]),
-                                        decoration: InputDecoration(
-                                          labelText: tr('profile.phone'),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 20),
+                                      // Removing phone field as it requires verification
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 12),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey.shade300),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
                                         ),
-                                        // onChanged: _onChanged,
-                                        priorityListByIsoCode: const ['UZ'],
-                                        defaultSelectedCountryIsoCode: 'UZ',
-                                        countryFilterByIsoCode: const ['Uz'],
-                                        isSearchable: false,
-                                        autocorrect: true,
-                                        // validator: ,
-                                        // validator: FormBuilderValidators.compose([
-                                        //   FormBuilderValidators.numeric(context),
-                                        //   FormBuilderValidators.required(context),
-                                        // ]),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  tr('profile.phone'),
+                                                  style: TextStyle(
+                                                    color: Colors.grey.shade600,
+                                                    fontSize: 12,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  currentUser?.phone ?? '',
+                                                  style: const TextStyle(
+                                                      fontSize: 20),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   )),
@@ -282,68 +288,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               ],
                             ),
                           )),
-                      // Align(
-                      //     alignment: Alignment.bottomCenter,
-                      //     child: Container(
-                      //       color: Colors.white,
-                      //       child: SizedBox(
-                      //           width: double.infinity,
-                      //           child: n.NikuButton.elevated(Text(
-                      //             tr('save'),
-                      //             style: const TextStyle(fontSize: 20),
-                      //           ))
-                      //             ..bg = AppColors.mainColor
-                      //             ..color = Colors.white
-                      //             ..rounded = 20
-                      //             ..py = 20
-                      //             ..my = 10
-                      //             ..onPressed = () async {
-                      //               _formKey.currentState!.save();
-                      //               if (_formKey.currentState != null &&
-                      //                   _formKey.currentState!.validate()) {
-                      //                 setState(() {
-                      //                   isLoading = true;
-                      //                 });
-                      //                 Map<String, String> requestHeaders = {
-                      //                   'Content-type': 'application/json',
-                      //                   'Accept': 'application/json',
-                      //                   'Authorization':
-                      //                       'Bearer ${currentUser!.userToken}'
-                      //                 };
-                      //                 var url = Uri.https(
-                      //                     'api.lesailes.uz', '/api/me');
-                      //                 var values = {
-                      //                   ..._formKey.currentState!.value
-                      //                 };
-                      //                 if (values['email'] == null) {
-                      //                   values['email'] = '';
-                      //                 }
-
-                      //                 if (values['birth'] != null) {
-                      //                   values['birth'] =
-                      //                       DateFormat('yyyy-MM-dd')
-                      //                           .format(values['birth']);
-                      //                 }
-
-                      //                 var response = await http.post(url,
-                      //                     headers: requestHeaders,
-                      //                     body: jsonEncode(values));
-                      //                 if (response.statusCode == 200) {
-                      //                   var result = jsonDecode(response.body);
-                      //                   User authorizedUser =
-                      //                       User.fromJson(result['data']);
-                      //                   Box<User> transaction =
-                      //                       Hive.box<User>('user');
-                      //                   transaction.put('user', authorizedUser);
-                      //                   Navigator.of(context).pop();
-                      //                 }
-
-                      //                 setState(() {
-                      //                   isLoading = false;
-                      //                 });
-                      //               }
-                      //             }),
-                      //     )),
                     ],
                   )),
             ),

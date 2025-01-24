@@ -21,6 +21,7 @@ class PickupListView extends HookWidget {
     DateTime currentTime = DateTime.now();
     return Expanded(
       child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
           itemCount: terminals.length,
           itemBuilder: (context, index) {
             var terminal = terminals[index];
@@ -43,16 +44,21 @@ class PickupListView extends HookWidget {
 
             var fromTime = '';
             var toTime = '';
-            if (currentTime.weekday >= 1 || currentTime.weekday <= 5) {
-              fromTime = DateFormat.Hm()
-                  .format(Date.parse(terminal.openWork!).toLocal());
-              toTime = DateFormat.Hm()
-                  .format(Date.parse(terminal.closeWork!).toLocal());
+            if (currentTime.weekday >= 1 && currentTime.weekday <= 5) {
+              if (terminal.openWork != null && terminal.closeWork != null) {
+                fromTime = DateFormat.Hm()
+                    .format(DateTime.parse(terminal.openWork!).toLocal());
+                toTime = DateFormat.Hm()
+                    .format(DateTime.parse(terminal.closeWork!).toLocal());
+              }
             } else {
-              fromTime =
-                  DateFormat.Hm().format(Date.parse(terminal.openWeekend!));
-              toTime =
-                  DateFormat.Hm().format(Date.parse(terminal.closeWeekend!));
+              if (terminal.openWeekend != null &&
+                  terminal.closeWeekend != null) {
+                fromTime = DateFormat.Hm()
+                    .format(DateTime.parse(terminal.openWeekend!).toLocal());
+                toTime = DateFormat.Hm()
+                    .format(DateTime.parse(terminal.closeWeekend!).toLocal());
+              }
             }
 
             return ValueListenableBuilder<Box<TempTerminals>>(
@@ -60,9 +66,10 @@ class PickupListView extends HookWidget {
                     Hive.box<TempTerminals>('tempTerminal').listenable(),
                 builder: (context, box, _) {
                   TempTerminals? selectedTerminal = box.get('tempTerminal');
-                  return InkWell(
+                  return GestureDetector(
+                      behavior: HitTestBehavior.opaque,
                       onTap: () async {
-                        if (!terminal.isWorking!) {
+                        if (terminal.isWorking != true) {
                           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content:
                                   Text(tr('pickup.terminalIsNotWorking'))));
@@ -73,20 +80,20 @@ class PickupListView extends HookWidget {
                             Hive.box<TempTerminals>('tempTerminal');
                         transaction.put('tempTerminal', terminal);
                       },
-                      child: Opacity(
-                          opacity: terminal.isWorking! ? 1 : 0.5,
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
+                      child: Card(
+                        elevation: 5,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
+                        child: Opacity(
+                          opacity: terminal.isWorking == true ? 1 : 0.5,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
@@ -94,20 +101,13 @@ class PickupListView extends HookWidget {
                                         terminalName,
                                         style: n.NikuTextStyle(fontSize: 18),
                                       )..mb = 10,
-                                      SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.7,
-                                          child: address.isNotEmpty
-                                              ? n.NikuText(
-                                                  '${tr('pickup.addressLabel')}: $address',
-                                                  style: n.NikuTextStyle(
-                                                      fontSize: 14),
-                                                )
-                                              : const SizedBox(
-                                                  height: 0,
-                                                )),
+                                      address.isNotEmpty
+                                          ? n.NikuText(
+                                              '${tr('pickup.addressLabel')}: $address',
+                                              style:
+                                                  n.NikuTextStyle(fontSize: 14),
+                                            )
+                                          : const SizedBox(height: 0),
                                       n.NikuText(
                                         tr('pickup.workSchedule', namedArgs: {
                                           'fromTime': fromTime,
@@ -119,41 +119,42 @@ class PickupListView extends HookWidget {
                                       )..mt = 10
                                     ],
                                   ),
-                                  selectedTerminal != null &&
-                                          selectedTerminal.id == terminal.id
-                                      ? Container(
-                                          // height: 26,
-                                          // width: 26,
+                                ),
+                                const SizedBox(width: 10),
+                                selectedTerminal != null &&
+                                        selectedTerminal.id == terminal.id
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            border: Border.all(
+                                                color: Colors.grey.shade200,
+                                                width: 2)),
+                                        child: Container(
                                           decoration: BoxDecoration(
                                               borderRadius:
                                                   BorderRadius.circular(20),
-                                              border: Border.all(
-                                                  color: Colors.grey.shade200,
-                                                  width: 2)),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20),
-                                                color: AppColors.mainColor),
-                                            height: 24,
-                                            width: 24,
-                                            margin: const EdgeInsets.all(2),
-                                          ),
-                                        )
-                                      : Container(
-                                          height: 26,
-                                          width: 26,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20),
-                                              border: Border.all(
-                                                  color: Colors.grey.shade200,
-                                                  width: 2)),
-                                        )
-                                ],
-                              ),
+                                              color: AppColors.mainColor),
+                                          height: 24,
+                                          width: 24,
+                                          margin: const EdgeInsets.all(2),
+                                        ),
+                                      )
+                                    : Container(
+                                        height: 26,
+                                        width: 26,
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            border: Border.all(
+                                                color: Colors.grey.shade200,
+                                                width: 2)),
+                                      )
+                              ],
                             ),
-                          )));
+                          ),
+                        ),
+                      ));
                 });
           }),
     );

@@ -198,6 +198,13 @@
     "insufficientFunds": "Kartada yetarli mablag' mavjud emas",
     "balance": "Balans",
     "choose": "Tanlang",
-    "fillAllFields": "Barcha maydonlarni to'ldiring"
-  }
+    "fillAllFields": "Barcha maydonlarni to'ldiring",
+    "enterCardNumber": "Kartani raqamini kiriting",
+    "enterExpiryDate": "Kartani amal qilish muddatini kiriting"
+  },
+  "notSelectedDeliveryType": "Yetkazib berish usulini tanlang",
+  "notSelectedPickupTerminal": "Filialni tanlang",
+  "notSelectedDeliveryAddress": "Yetkazib berish manzilini aniqlang",
+  "notSelectedDeliveryTime": "Yetkazib berish vaqti tanlang",
+  "notSelectedPayType": "To'lov usulini tanlang"
 }

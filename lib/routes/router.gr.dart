@@ -9,175 +9,6 @@
 
 part of 'router.dart';
 
-abstract class _$AppRouter extends RootStackRouter {
-  // ignore: unused_element
-  _$AppRouter({super.navigatorKey});
-
-  @override
-  final Map<String, PageFactory> pagesMap = {
-    MessageHandlerRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const MessageHandlerPage(),
-      );
-    },
-    AboutUsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const AboutUsPage(),
-      );
-    },
-    CashbackDetailRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CashbackDetailPage(),
-      );
-    },
-    ChangeLangRoute.name: (routeData) {
-      final args = routeData.argsAs<ChangeLangRouteArgs>(
-          orElse: () => const ChangeLangRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: ChangeLangPage(key: args.key),
-      );
-    },
-    CreditCardRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CreditCardPage(),
-      );
-    },
-    CreditCardListRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const CreditCardListPage(),
-      );
-    },
-    CreditCardOtpRoute.name: (routeData) {
-      final args = routeData.argsAs<CreditCardOtpRouteArgs>(
-          orElse: () => const CreditCardOtpRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: CreditCardOtpPage(key: args.key),
-      );
-    },
-    DeliveryRoute.name: (routeData) {
-      final args = routeData.argsAs<DeliveryRouteArgs>(
-          orElse: () => const DeliveryRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: DeliveryPage(
-          key: args.key,
-          geoData: args.geoData,
-        ),
-      );
-    },
-    FranchiseRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const FranchisePage(),
-      );
-    },
-    MyAddressesRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const MyAddressesPage(),
-      );
-    },
-    MyOrdersRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const MyOrdersPage(),
-      );
-    },
-    NotificationsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const NotificationsPage(),
-      );
-    },
-    NotificationDetailRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<NotificationDetailRouteArgs>(
-          orElse: () =>
-              NotificationDetailRouteArgs(id: pathParams.getString('id')));
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: NotificationDetailPage(
-          key: args.key,
-          id: args.id,
-          notification: args.notification,
-        ),
-      );
-    },
-    OrderDetailRoute.name: (routeData) {
-      final pathParams = routeData.inheritedPathParams;
-      final args = routeData.argsAs<OrderDetailRouteArgs>(
-          orElse: () =>
-              OrderDetailRouteArgs(orderId: pathParams.getString('orderId')));
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: OrderDetailPage(
-          key: args.key,
-          orderId: args.orderId,
-        ),
-      );
-    },
-    PickupRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: PickupPage(),
-      );
-    },
-    PrivacyRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const PrivacyPage(),
-      );
-    },
-    ProfileRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const ProfilePage(),
-      );
-    },
-    SettingsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const SettingsPage(),
-      );
-    },
-    SignInRoute.name: (routeData) {
-      final args = routeData.argsAs<SignInRouteArgs>(
-          orElse: () => const SignInRouteArgs());
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: SignInPage(key: args.key),
-      );
-    },
-    TermsRoute.name: (routeData) {
-      return AutoRoutePage<dynamic>(
-        routeData: routeData,
-        child: const TermsPage(),
-      );
-    },
-  };
-}
-
-/// generated route for
-/// [MessageHandlerPage]
-class MessageHandlerRoute extends PageRouteInfo<void> {
-  const MessageHandlerRoute({List<PageRouteInfo>? children})
-      : super(
-          MessageHandlerRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'MessageHandlerRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
 /// generated route for
 /// [AboutUsPage]
 class AboutUsRoute extends PageRouteInfo<void> {
@@ -189,21 +20,12 @@ class AboutUsRoute extends PageRouteInfo<void> {
 
   static const String name = 'AboutUsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [CashbackDetailPage]
-class CashbackDetailRoute extends PageRouteInfo<void> {
-  const CashbackDetailRoute({List<PageRouteInfo>? children})
-      : super(
-          CashbackDetailRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CashbackDetailRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AboutUsPage();
+    },
+  );
 }
 
 /// generated route for
@@ -220,8 +42,14 @@ class ChangeLangRoute extends PageRouteInfo<ChangeLangRouteArgs> {
 
   static const String name = 'ChangeLangRoute';
 
-  static const PageInfo<ChangeLangRouteArgs> page =
-      PageInfo<ChangeLangRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<ChangeLangRouteArgs>(
+          orElse: () => const ChangeLangRouteArgs());
+      return ChangeLangPage(key: args.key);
+    },
+  );
 }
 
 class ChangeLangRouteArgs {
@@ -236,20 +64,6 @@ class ChangeLangRouteArgs {
 }
 
 /// generated route for
-/// [CreditCardPage]
-class CreditCardRoute extends PageRouteInfo<void> {
-  const CreditCardRoute({List<PageRouteInfo>? children})
-      : super(
-          CreditCardRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'CreditCardRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
 /// [CreditCardListPage]
 class CreditCardListRoute extends PageRouteInfo<void> {
   const CreditCardListRoute({List<PageRouteInfo>? children})
@@ -260,7 +74,12 @@ class CreditCardListRoute extends PageRouteInfo<void> {
 
   static const String name = 'CreditCardListRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CreditCardListPage();
+    },
+  );
 }
 
 /// generated route for
@@ -277,8 +96,14 @@ class CreditCardOtpRoute extends PageRouteInfo<CreditCardOtpRouteArgs> {
 
   static const String name = 'CreditCardOtpRoute';
 
-  static const PageInfo<CreditCardOtpRouteArgs> page =
-      PageInfo<CreditCardOtpRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<CreditCardOtpRouteArgs>(
+          orElse: () => const CreditCardOtpRouteArgs());
+      return CreditCardOtpPage(key: args.key);
+    },
+  );
 }
 
 class CreditCardOtpRouteArgs {
@@ -290,6 +115,25 @@ class CreditCardOtpRouteArgs {
   String toString() {
     return 'CreditCardOtpRouteArgs{key: $key}';
   }
+}
+
+/// generated route for
+/// [CreditCardPage]
+class CreditCardRoute extends PageRouteInfo<void> {
+  const CreditCardRoute({List<PageRouteInfo>? children})
+      : super(
+          CreditCardRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'CreditCardRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const CreditCardPage();
+    },
+  );
 }
 
 /// generated route for
@@ -310,8 +154,17 @@ class DeliveryRoute extends PageRouteInfo<DeliveryRouteArgs> {
 
   static const String name = 'DeliveryRoute';
 
-  static const PageInfo<DeliveryRouteArgs> page =
-      PageInfo<DeliveryRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<DeliveryRouteArgs>(
+          orElse: () => const DeliveryRouteArgs());
+      return DeliveryPage(
+        key: args.key,
+        geoData: args.geoData,
+      );
+    },
+  );
 }
 
 class DeliveryRouteArgs {
@@ -341,7 +194,31 @@ class FranchiseRoute extends PageRouteInfo<void> {
 
   static const String name = 'FranchiseRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const FranchisePage();
+    },
+  );
+}
+
+/// generated route for
+/// [MessageHandlerPage]
+class MessageHandlerRoute extends PageRouteInfo<void> {
+  const MessageHandlerRoute({List<PageRouteInfo>? children})
+      : super(
+          MessageHandlerRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'MessageHandlerRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MessageHandlerPage();
+    },
+  );
 }
 
 /// generated route for
@@ -355,7 +232,12 @@ class MyAddressesRoute extends PageRouteInfo<void> {
 
   static const String name = 'MyAddressesRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MyAddressesPage();
+    },
+  );
 }
 
 /// generated route for
@@ -369,21 +251,12 @@ class MyOrdersRoute extends PageRouteInfo<void> {
 
   static const String name = 'MyOrdersRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
-}
-
-/// generated route for
-/// [NotificationsPage]
-class NotificationsRoute extends PageRouteInfo<void> {
-  const NotificationsRoute({List<PageRouteInfo>? children})
-      : super(
-          NotificationsRoute.name,
-          initialChildren: children,
-        );
-
-  static const String name = 'NotificationsRoute';
-
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MyOrdersPage();
+    },
+  );
 }
 
 /// generated route for
@@ -408,8 +281,20 @@ class NotificationDetailRoute
 
   static const String name = 'NotificationDetailRoute';
 
-  static const PageInfo<NotificationDetailRouteArgs> page =
-      PageInfo<NotificationDetailRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<NotificationDetailRouteArgs>(
+          orElse: () =>
+              NotificationDetailRouteArgs(id: pathParams.getString('id')));
+      return NotificationDetailPage(
+        key: args.key,
+        id: args.id,
+        notification: args.notification,
+      );
+    },
+  );
 }
 
 class NotificationDetailRouteArgs {
@@ -432,6 +317,25 @@ class NotificationDetailRouteArgs {
 }
 
 /// generated route for
+/// [NotificationsPage]
+class NotificationsRoute extends PageRouteInfo<void> {
+  const NotificationsRoute({List<PageRouteInfo>? children})
+      : super(
+          NotificationsRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'NotificationsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const NotificationsPage();
+    },
+  );
+}
+
+/// generated route for
 /// [OrderDetailPage]
 class OrderDetailRoute extends PageRouteInfo<OrderDetailRouteArgs> {
   OrderDetailRoute({
@@ -450,8 +354,19 @@ class OrderDetailRoute extends PageRouteInfo<OrderDetailRouteArgs> {
 
   static const String name = 'OrderDetailRoute';
 
-  static const PageInfo<OrderDetailRouteArgs> page =
-      PageInfo<OrderDetailRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final pathParams = data.inheritedPathParams;
+      final args = data.argsAs<OrderDetailRouteArgs>(
+          orElse: () =>
+              OrderDetailRouteArgs(orderId: pathParams.getString('orderId')));
+      return OrderDetailPage(
+        key: args.key,
+        orderId: args.orderId,
+      );
+    },
+  );
 }
 
 class OrderDetailRouteArgs {
@@ -481,7 +396,12 @@ class PickupRoute extends PageRouteInfo<void> {
 
   static const String name = 'PickupRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return PickupPage();
+    },
+  );
 }
 
 /// generated route for
@@ -495,7 +415,12 @@ class PrivacyRoute extends PageRouteInfo<void> {
 
   static const String name = 'PrivacyRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PrivacyPage();
+    },
+  );
 }
 
 /// generated route for
@@ -509,7 +434,12 @@ class ProfileRoute extends PageRouteInfo<void> {
 
   static const String name = 'ProfileRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const ProfilePage();
+    },
+  );
 }
 
 /// generated route for
@@ -523,7 +453,12 @@ class SettingsRoute extends PageRouteInfo<void> {
 
   static const String name = 'SettingsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const SettingsPage();
+    },
+  );
 }
 
 /// generated route for
@@ -540,7 +475,14 @@ class SignInRoute extends PageRouteInfo<SignInRouteArgs> {
 
   static const String name = 'SignInRoute';
 
-  static const PageInfo<SignInRouteArgs> page = PageInfo<SignInRouteArgs>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args =
+          data.argsAs<SignInRouteArgs>(orElse: () => const SignInRouteArgs());
+      return SignInPage(key: args.key);
+    },
+  );
 }
 
 class SignInRouteArgs {
@@ -565,5 +507,10 @@ class TermsRoute extends PageRouteInfo<void> {
 
   static const String name = 'TermsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TermsPage();
+    },
+  );
 }

@@ -64,15 +64,15 @@ class PickupMapSelectedTerminal extends HookWidget {
                       var toTime = '';
                       if (currentTime.weekday >= 1 &&
                           currentTime.weekday <= 5) {
-                        fromTime = DateFormat.Hm()
-                            .format(Date.parse(terminal.openWork!).toLocal());
-                        toTime = DateFormat.Hm()
-                            .format(Date.parse(terminal.closeWork!).toLocal());
+                        fromTime = DateFormat.Hm().format(
+                            DateTime.parse(terminal.openWork!).toLocal());
+                        toTime = DateFormat.Hm().format(
+                            DateTime.parse(terminal.closeWork!).toLocal());
                       } else {
                         fromTime = DateFormat.Hm()
-                            .format(Date.parse(terminal.openWeekend!));
+                            .format(DateTime.parse(terminal.openWeekend!));
                         toTime = DateFormat.Hm()
-                            .format(Date.parse(terminal.closeWeekend!));
+                            .format(DateTime.parse(terminal.closeWeekend!));
                       }
 
                       return SizedBox(
@@ -135,7 +135,8 @@ class PickupMapSelectedTerminal extends HookWidget {
                               ),
                               MapSelection(
                                   latitude: double.parse(terminal.latitude!),
-                                  longitude: double.parse(terminal.longitude!), desc: address)
+                                  longitude: double.parse(terminal.longitude!),
+                                  desc: address)
                             ],
                           ),
                         ),

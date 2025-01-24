@@ -5,7 +5,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
-import 'package:niku/niku.dart' as n;
 
 @RoutePage()
 class NotificationDetailPage extends StatefulWidget {
@@ -52,12 +51,12 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                 backgroundColor: Colors.white,
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
-                  onPressed: () => context.router.pop(),
+                  onPressed: () => context.router.maybePop(),
                 )),
             body: Container(
               padding: const EdgeInsets.all(16),
-              child: ListView(
-                children:[Column(
+              child: ListView(children: [
+                Column(
                   children: [
                     // show image if asset exists
                     notification?['asset'] != null
@@ -113,8 +112,8 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                       ),
                     ),
                   ],
-                ),] 
-              ),
+                ),
+              ]),
             ),
           );
   }

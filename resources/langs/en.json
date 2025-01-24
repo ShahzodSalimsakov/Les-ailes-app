@@ -200,6 +200,13 @@
     "insufficientFunds": "Insufficient funds",
     "balance": "Balance",
     "choose": "Choose",
-    "fillAllFields": "Fill in all the fields"
-  }
+    "fillAllFields": "Fill in all the fields",
+    "enterCardNumber": "Enter card number",
+    "enterExpiryDate": "Enter expiry date"
+  },
+  "notSelectedDeliveryType": "Not selected delivery type",
+  "notSelectedPickupTerminal": "Not selected pickup terminal",
+  "notSelectedDeliveryAddress": "Not selected delivery address",
+  "notSelectedDeliveryTime": "Not selected delivery time",
+  "notSelectedPayType": "Not selected payment method"
 }

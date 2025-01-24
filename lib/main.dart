@@ -108,7 +108,13 @@ class MyApp extends StatelessWidget {
       locale: context.locale,
       debugShowCheckedModeBanner: false,
       title: 'Les Ailes',
-      theme: ThemeData(fontFamily: 'ProximaSoft'),
+      theme: ThemeData(
+        fontFamily: 'ProximaSoft',
+        textTheme: const TextTheme(
+          titleLarge: TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
+          titleMedium: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400),
+        ),
+      ),
       routerDelegate: AutoRouterDelegate(router),
       routeInformationParser: router.defaultRouteParser(),
     );

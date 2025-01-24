@@ -11,9 +11,7 @@ import 'dart:convert';
 import '../models/mainSlider.dart';
 
 class SliderCarousel extends HookWidget {
-  final CarouselController _controller = CarouselController();
-
-  SliderCarousel({Key? key}) : super(key: key);
+  const SliderCarousel({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +81,6 @@ class SliderCarousel extends HookWidget {
             },
           );
         }).toList(),
-        carouselController: _controller,
         options: CarouselOptions(
             height: 200,
             clipBehavior: Clip.none,
@@ -97,20 +94,16 @@ class SliderCarousel extends HookWidget {
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: banner.value.asMap().entries.map((entry) {
-          return GestureDetector(
-            onTap: () => _controller.animateToPage(entry.key),
-            child: Container(
-              width: 8,
-              height: 8,
-              margin:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white
-                          : AppColors.green)
-                      .withOpacity(_current.value == entry.key ? 0.9 : 0.2)),
-            ),
+          return Container(
+            width: 8,
+            height: 8,
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4.0),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: (Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : AppColors.green)
+                    .withOpacity(_current.value == entry.key ? 0.9 : 0.2)),
           );
         }).toList(),
       ),

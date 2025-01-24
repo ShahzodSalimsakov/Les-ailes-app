@@ -198,6 +198,13 @@
     "insufficientFunds": "Недостаточно средств",
     "balance": "Баланс",
     "choose": "Выбрать",
-    "fillAllFields": "Заполните все поля"
-  }
+    "fillAllFields": "Заполните все поля",
+    "enterCardNumber": "Введите номер карты",
+    "enterExpiryDate": "Введите срок действия"
+  },
+  "notSelectedDeliveryType": "Не выбран способ доставки",
+  "notSelectedPickupTerminal": "Не выбран филиал самовывоза",
+  "notSelectedDeliveryAddress": "Не указан адрес доставки",
+  "notSelectedDeliveryTime": "Не указано время доставки",
+  "notSelectedPayType": "Не указан способ оплаты"
 }

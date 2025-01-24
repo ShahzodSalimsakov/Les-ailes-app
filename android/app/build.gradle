@@ -29,6 +29,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace "com.havoqandpeople.les"
     compileSdkVersion flutter.compileSdkVersion
 
     compileOptions {

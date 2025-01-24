@@ -7,6 +7,7 @@ import 'package:captcha_solver/captcha_solver.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hex/hex.dart';
@@ -16,8 +17,6 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:otp_autofill/otp_autofill.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
-
-// import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:timer_count_down/timer_count_down.dart';
 
 import '../models/user.dart';
@@ -28,9 +27,8 @@ import '../utils/random.dart';
 class SignInPage extends HookWidget {
   final GlobalKey<FormBuilderState> formKey = GlobalKey<FormBuilderState>();
   final GlobalKey<FormState> otpFormKey = GlobalKey<FormState>();
-
-  // final TextEditingController controller = TextEditingController();
   final TextEditingController nameFieldController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
   final initialCountry = 'UZ';
   final number = PhoneNumber(isoCode: 'UZ');
   late OTPTextEditController controller;
@@ -332,7 +330,11 @@ class SignInPage extends HookWidget {
                                           MaterialStateProperty.all<Color>(
                                               AppColors.mainColor),
                                     ),
-                                    child: Text(tr("signIn.signIn"), style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                    child: Text(
+                                      tr("signIn.signIn"),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
                                   ),
                                 ))
                           ],
@@ -365,55 +367,61 @@ class SignInPage extends HookWidget {
                             const SizedBox(height: 40.0),
                             Container(
                               margin:
-                                  const EdgeInsets.symmetric(horizontal: 25.0),
+                                  const EdgeInsets.symmetric(horizontal: 40),
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  border: Border.all(
-                                      width: 1.0, color: Colors.grey),
-                                  color: AppColors.grey),
-                              width: double.infinity,
-                              alignment: Alignment.center,
-                              child: SizedBox(
-                                width: MediaQuery.of(context).size.width * 0.8, 
-                                child: InternationalPhoneNumberInput(
-                                  onInputChanged: (PhoneNumber number) {
-                                    phoneNumber.value =
-                                        number.phoneNumber ?? '';
-                                  },
-                                  onInputValidated: (bool value) {
-                                    _isValid.value = value;
-                                  },
-                                  countries: ['UZ'],
-                                  selectorConfig: const SelectorConfig(
-                                    selectorType:
-                                        PhoneInputSelectorType.BOTTOM_SHEET,
-                                    showFlags: true,
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: const Text(
+                                      "+998",
+                                      style:
+                                          TextStyle(fontSize: 16, height: 1.4),
+                                    ),
                                   ),
-                                  ignoreBlank: false,
-                                  autoValidateMode: AutovalidateMode.disabled,
-                                  selectorTextStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 24.0),
-                                  initialValue: number,
-                                  formatInput: true,
-                                  countrySelectorScrollControlled: false,
-                                  keyboardType: TextInputType.number,
-                                  inputBorder: InputBorder.none,
-                                  hintText: '',
-                                  errorMessage: tr("wrongNumber"),
-                                  spaceBetweenSelectorAndTextField: 0,
-                                  textStyle: const TextStyle(
-                                      color: Colors.black, fontSize: 24.0),
-                                  // inputDecoration: InputDecoration(border: ),
-                                  onSaved: (PhoneNumber number) {},
-                                  autoFocus: true,
-                                ),
+                                  Container(
+                                    width: 1,
+                                    height: 24,
+                                    color: Colors.grey,
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: phoneController,
+                                      keyboardType: TextInputType.phone,
+                                      style: const TextStyle(fontSize: 16),
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        LengthLimitingTextInputFormatter(9),
+                                      ],
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 14),
+                                        hintText: "90 123 45 67",
+                                      ),
+                                      onChanged: (value) {
+                                        if (value.length == 9) {
+                                          phoneNumber.value = "+998$value";
+                                          _isValid.value = true;
+                                        } else {
+                                          _isValid.value = false;
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             _isShowNameField.value
                                 ? Container(
                                     // height: 50,
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 15.0, vertical: 20),
                                     child: TextFormField(
@@ -639,7 +647,11 @@ class SignInPage extends HookWidget {
                                           MaterialStateProperty.all<Color>(
                                               AppColors.mainColor),
                                     ),
-                                    child: Text(tr("signIn.proceed"), style: const TextStyle(color: Colors.white, fontSize: 20),),
+                                    child: Text(
+                                      tr("signIn.proceed"),
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 20),
+                                    ),
                                   ),
                                 ))
                           ],

@@ -172,19 +172,23 @@ class WayToReceiveAnOrder extends StatelessWidget {
           String deliveryText = tr("main.deliveryOrPickup");
           Box<Terminals> terminalBox = Hive.box<Terminals>('currentTerminal');
           Terminals? currentTerminal = terminalBox.get('currentTerminal');
-          if (deliveryLocationData != null) {
-            if (deliveryType!.value == DeliveryTypeEnum.deliver) {
-              deliveryText = deliveryLocationData?.address ?? '';
+
+          if (deliveryLocationData != null &&
+              deliveryType?.value == DeliveryTypeEnum.deliver) {
+            deliveryText = deliveryLocationData.address ?? '';
+            if (deliveryText.isNotEmpty) {
               String house = deliveryLocationData.house != null
-                  ? ', дом: ${deliveryLocationData.house}'
+                  ? ', ${tr("delivery.house")}: ${deliveryLocationData.house}'
                   : '';
               String flat = deliveryLocationData.flat != null
-                  ? ', кв.: ${deliveryLocationData.flat}'
+                  ? ', ${tr("delivery.flat")}: ${deliveryLocationData.flat}'
                   : '';
               String entrance = deliveryLocationData.entrance != null
-                  ? ', подъезд: ${deliveryLocationData.entrance}'
+                  ? ', ${tr("delivery.entrance")}: ${deliveryLocationData.entrance}'
                   : '';
               deliveryText = '$deliveryText$house$flat$entrance';
+            } else {
+              deliveryText = tr("delivery.selectAddress");
             }
           }
 
@@ -198,7 +202,7 @@ class WayToReceiveAnOrder extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        deliveryType!.value == DeliveryTypeEnum.deliver
+                        deliveryType.value == DeliveryTypeEnum.deliver
                             ? Image.asset(
                                 'images/delivery_car.png',
                                 width: 30,
@@ -227,7 +231,8 @@ class WayToReceiveAnOrder extends StatelessWidget {
                               style: n.NikuTextStyle(color: Colors.grey),
                             ))
                         : n.NikuText(
-                            currentTerminal!.name,
+                            currentTerminal?.name ??
+                                tr("main.selectPickupPoint"),
                             style: n.NikuTextStyle(
                                 color: Colors.black, fontSize: 20),
                           )

@@ -58,7 +58,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
         actions: [
           GestureDetector(
               onTap: () {
-                context.router.pop();
+                context.router.maybePop();
               },
               child: const Padding(
                 padding: EdgeInsets.only(right: 28),
