@@ -232,6 +232,27 @@ class DeliverFieldsModal extends HookWidget {
                               json['data']['items']
                                   .map((m) => Terminals.fromJson(m))
                                   .toList());
+
+                          if (terminal.isEmpty) {
+                            isLoading.value = false;
+                            await Future.delayed(Duration.zero);
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    tr('deliveryNotAvailable'),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                  backgroundColor: AppColors.mainColor,
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                              Navigator.of(context).pop();
+                            }
+                            return;
+                          }
+
                           Box<Terminals> transaction =
                               Hive.box<Terminals>('currentTerminal');
                           transaction.put('currentTerminal', terminal[0]);

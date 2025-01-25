@@ -64,15 +64,29 @@ class PickupMapSelectedTerminal extends HookWidget {
                       var toTime = '';
                       if (currentTime.weekday >= 1 &&
                           currentTime.weekday <= 5) {
-                        fromTime = DateFormat.Hm().format(
-                            DateTime.parse(terminal.openWork!).toLocal());
-                        toTime = DateFormat.Hm().format(
-                            DateTime.parse(terminal.closeWork!).toLocal());
+                        if (terminal.openWork != null &&
+                            terminal.closeWork != null) {
+                          var openWorkTime =
+                              DateTime.parse(terminal.openWork!).toLocal();
+                          var closeWorkTime =
+                              DateTime.parse(terminal.closeWork!).toLocal();
+                          fromTime =
+                              '${openWorkTime.hour.toString().padLeft(2, '0')}:${openWorkTime.minute.toString().padLeft(2, '0')}';
+                          toTime =
+                              '${closeWorkTime.hour.toString().padLeft(2, '0')}:${closeWorkTime.minute.toString().padLeft(2, '0')}';
+                        }
                       } else {
-                        fromTime = DateFormat.Hm()
-                            .format(DateTime.parse(terminal.openWeekend!));
-                        toTime = DateFormat.Hm()
-                            .format(DateTime.parse(terminal.closeWeekend!));
+                        if (terminal.openWeekend != null &&
+                            terminal.closeWeekend != null) {
+                          var openWeekendTime =
+                              DateTime.parse(terminal.openWeekend!).toLocal();
+                          var closeWeekendTime =
+                              DateTime.parse(terminal.closeWeekend!).toLocal();
+                          fromTime =
+                              '${openWeekendTime.hour.toString().padLeft(2, '0')}:${openWeekendTime.minute.toString().padLeft(2, '0')}';
+                          toTime =
+                              '${closeWeekendTime.hour.toString().padLeft(2, '0')}:${closeWeekendTime.minute.toString().padLeft(2, '0')}';
+                        }
                       }
 
                       return SizedBox(

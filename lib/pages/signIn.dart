@@ -272,7 +272,7 @@ class SignInPage extends HookWidget {
                             _isFinishedTimer.value
                                 ? InkWell(
                                     child: Text(
-                                      tr("getNewCode"),
+                                      tr("signIn.getNewCode"),
                                       style: const TextStyle(
                                           color: AppColors.mainColor,
                                           decoration: TextDecoration.underline),
@@ -289,7 +289,7 @@ class SignInPage extends HookWidget {
                                           MainAxisAlignment.center,
                                       children: [
                                         Text(
-                                          'Код не пришел\n получить новый код через ${time.ceil().toString()} сек.',
+                                          '${tr("signIn.codeNotReceived")}\n${tr("signIn.getNewCode")} ${time.ceil().toString()} ${tr("sec")}',
                                           textAlign: TextAlign.center,
                                           style: const TextStyle(
                                               color: Colors.grey),

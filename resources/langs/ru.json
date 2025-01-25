@@ -29,7 +29,9 @@
     "getConfirmationCode": "Получить код подтверждения",
     "proceed": "Продолжить",
     "typeOtp": "Введите код",
-    "logout": "Выйти"
+    "logout": "Выйти",
+    "codeNotReceived": "Код не пришел",
+    "getNewCode": "Получить новый код"
   },
   "settings": {
     "settings": "Настройки",
@@ -63,7 +65,15 @@
     "email": "Эл.почта",
     "phone": "Телефон",
     "deleteProfile": "Удалить профиль",
-    "enterYourBirthday": "Укажите день рождения"
+    "enterYourBirthday": "Укажите день рождения",
+    "errorDeleteProfile": "Ошибка при удалении профиля",
+    "logout": "Выйти",
+    "logoutConfirm": "Вы действительно хотите выйти?",
+    "error": "Ошибка",
+    "updateError": "Ошибка при обновлении профиля",
+    "profileUpdated": "Профиль обновлен успешно",
+    "profileDeleted": "Профиль удален успешно",
+    "requiredField": "Поле обязательно для заполнения"
   },
   "save": "Сохранить",
   "deliveryBottomSheet": {

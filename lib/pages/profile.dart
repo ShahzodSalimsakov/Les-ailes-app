@@ -26,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _formKey = GlobalKey<FormBuilderState>();
   bool isLoading = false;
 
-  logout() async {
+  Future<void> logout() async {
     Box<User> transaction = Hive.box<User>('user');
     User currentUser = transaction.get('user')!;
     Map<String, String> requestHeaders = {
@@ -39,14 +39,129 @@ class _ProfilePageState extends State<ProfilePage> {
     var response = await http.post(url,
         headers: requestHeaders, body: jsonEncode(formData));
     if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
+      await transaction.delete('user');
+      Box<Basket> basketBox = Hive.box<Basket>('basket');
+      await basketBox.delete('basket');
+      Box<BasketItemQuantity> basketItemQuantityBox =
+          Hive.box<BasketItemQuantity>('basketItemQuantity');
+      await basketItemQuantityBox.clear();
     }
-    transaction.delete('user');
-    Box<Basket> basketBox = Hive.box<Basket>('basket');
-    basketBox.delete('basket');
-    Box<BasketItemQuantity> basketItemQuantityBox =
-        Hive.box<BasketItemQuantity>('basketItemQuantity');
-    await basketItemQuantityBox.clear();
+  }
+
+  Future<void> _handleDelete(User currentUser) async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${currentUser.userToken}'
+      };
+      var url = Uri.https('api.lesailes.uz', '/api/delete');
+
+      var response = await http.post(url, headers: requestHeaders);
+      if (response.statusCode == 200) {
+        await logout();
+        if (mounted) {
+          Navigator.of(context).pop();
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(tr('profile.errorDeleteProfile')),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('profile.errorDeleteProfile')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _handleSave(User currentUser) async {
+    try {
+      if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+        return;
+      }
+
+      setState(() {
+        isLoading = true;
+      });
+
+      _formKey.currentState!.save();
+      final formData = _formKey.currentState!.value;
+
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${currentUser.userToken}'
+      };
+
+      var url = Uri.https('api.lesailes.uz', '/api/profile/update');
+      var response = await http.post(
+        url,
+        headers: requestHeaders,
+        body: jsonEncode({
+          'name': formData['name'],
+          'email': formData['email'],
+          'birth': formData['birth'] != null
+              ? DateFormat('yyyy-MM-dd').format(formData['birth'])
+              : null,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(tr('profile.profileUpdated')),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(tr('profile.updateError')),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('profile.error')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -68,228 +183,172 @@ class _ProfilePageState extends State<ProfilePage> {
               elevation: 0,
             ),
             body: SafeArea(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Stack(
-                    children: [
-                      Container(
-                          margin: const EdgeInsets.only(top: 5),
-                          // height: MediaQuery.of(context).size.height * 0.53,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              FormBuilder(
-                                  key: _formKey,
-                                  autovalidateMode: AutovalidateMode.always,
-                                  child: Column(
-                                    children: [
-                                      FormBuilderTextField(
-                                        name: 'name',
-                                        initialValue: currentUser?.name ?? '',
-                                        // validator: (value) => value?.length == 0 ? 'Поле обязательно для заполнения' : '',
-                                        validator:
-                                            FormBuilderValidators.compose([
-                                          FormBuilderValidators.required(
-                                              errorText:
-                                                  'Поле обязательно для заполнения')
-                                        ]),
-                                        style: const TextStyle(fontSize: 20),
-                                        decoration: InputDecoration(
-                                            labelText: tr("profile.name"),
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                    horizontal: 20),
-                                            fillColor: AppColors.grey),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      FormBuilderDateTimePicker(
-                                        name: 'birth',
-                                        // onChanged: _onChanged,
-                                        inputType: InputType.date,
-                                        style: const TextStyle(fontSize: 20),
-                                        decoration: InputDecoration(
-                                          labelText: tr('profile.birthDay'),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 20),
-                                        ),
-                                        initialTime:
-                                            const TimeOfDay(hour: 8, minute: 0),
-                                        initialValue: currentUser?.birth != null
-                                            ? DateTime.parse(
-                                                currentUser!.birth!)
-                                            : DateTime.now(),
-                                        // enabled: true,
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      FormBuilderTextField(
-                                        style: const TextStyle(fontSize: 20),
-                                        name: 'email',
-                                        initialValue: currentUser?.email ?? '',
-                                        decoration: InputDecoration(
-                                          labelText: tr('profile.email'),
-                                          contentPadding:
-                                              const EdgeInsets.symmetric(
-                                                  horizontal: 20),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20,
-                                      ),
-                                      // Removing phone field as it requires verification
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 20, vertical: 12),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey.shade300),
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 5),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 20),
+                            child: FormBuilder(
+                              key: _formKey,
+                              autovalidateMode:
+                                  AutovalidateMode.onUserInteraction,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  FormBuilderTextField(
+                                    name: 'name',
+                                    initialValue: currentUser?.name ?? '',
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.required(
+                                          errorText:
+                                              tr('profile.requiredField'))
+                                    ]),
+                                    style: const TextStyle(fontSize: 20),
+                                    decoration: InputDecoration(
+                                      labelText: tr("profile.name"),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                      fillColor: AppColors.grey,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  FormBuilderDateTimePicker(
+                                    name: 'birth',
+                                    inputType: InputType.date,
+                                    style: const TextStyle(fontSize: 20),
+                                    decoration: InputDecoration(
+                                      labelText: tr('profile.birthDay'),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                    ),
+                                    initialTime:
+                                        const TimeOfDay(hour: 8, minute: 0),
+                                    initialValue: currentUser?.birth != null
+                                        ? DateTime.parse(currentUser!.birth!)
+                                        : null,
+                                  ),
+                                  const SizedBox(height: 20),
+                                  FormBuilderTextField(
+                                    name: 'email',
+                                    initialValue: currentUser?.email ?? '',
+                                    style: const TextStyle(fontSize: 20),
+                                    decoration: InputDecoration(
+                                      labelText: tr('profile.email'),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 20),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: Colors.grey.shade300),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  tr('profile.phone'),
-                                                  style: TextStyle(
-                                                    color: Colors.grey.shade600,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 4),
-                                                Text(
-                                                  currentUser?.phone ?? '',
-                                                  style: const TextStyle(
-                                                      fontSize: 20),
-                                                ),
-                                              ],
+                                            Text(
+                                              tr('profile.phone'),
+                                              style: TextStyle(
+                                                color: Colors.grey.shade600,
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              currentUser?.phone ?? '',
+                                              style:
+                                                  const TextStyle(fontSize: 20),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  )),
-                            ],
-                          )),
-                      Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            color: Colors.white,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: n.NikuButton.elevated(Text(
-                                      tr('profile.deleteProfile'),
-                                      style: const TextStyle(fontSize: 20),
-                                    ))
-                                      ..bg = Colors.white
-                                      ..border = const BorderSide(
-                                          color: AppColors.mainColor, width: 2)
-                                      ..color = AppColors.mainColor
-                                      ..rounded = 20
-                                      ..py = 20
-                                      ..my = 10
-                                      ..onPressed = () async {
-                                        setState(() {
-                                          isLoading = true;
-                                        });
-                                        Map<String, String> requestHeaders = {
-                                          'Content-type': 'application/json',
-                                          'Accept': 'application/json',
-                                          'Authorization':
-                                              'Bearer ${currentUser!.userToken}'
-                                        };
-                                        var url = Uri.https(
-                                            'api.lesailes.uz', '/api/delete');
-
-                                        var response = await http.post(url,
-                                            headers: requestHeaders);
-                                        if (response.statusCode == 200) {
-                                          await logout();
-                                          Navigator.of(context).pop();
-                                        }
-
-                                        setState(() {
-                                          isLoading = false;
-                                        });
-                                      }),
-                                SizedBox(
-                                    width: double.infinity,
-                                    child: n.NikuButton.elevated(Text(
-                                      tr('save'),
-                                      style: const TextStyle(fontSize: 20),
-                                    ))
-                                      ..bg = AppColors.mainColor
-                                      ..color = Colors.white
-                                      ..rounded = 20
-                                      ..py = 20
-                                      ..my = 10
-                                      ..onPressed = () async {
-                                        _formKey.currentState!.save();
-                                        if (_formKey.currentState != null &&
-                                            _formKey.currentState!.validate()) {
-                                          setState(() {
-                                            isLoading = true;
-                                          });
-                                          Map<String, String> requestHeaders = {
-                                            'Content-type': 'application/json',
-                                            'Accept': 'application/json',
-                                            'Authorization':
-                                                'Bearer ${currentUser!.userToken}'
-                                          };
-                                          var url = Uri.https(
-                                              'api.lesailes.uz', '/api/me');
-                                          var values = {
-                                            ..._formKey.currentState!.value
-                                          };
-                                          if (values['email'] == null) {
-                                            values['email'] = '';
-                                          }
-
-                                          if (values['birth'] != null) {
-                                            values['birth'] =
-                                                DateFormat('yyyy-MM-dd')
-                                                    .format(values['birth']);
-                                          }
-
-                                          var response = await http.post(url,
-                                              headers: requestHeaders,
-                                              body: jsonEncode(values));
-                                          if (response.statusCode == 200) {
-                                            var result =
-                                                jsonDecode(response.body);
-                                            User authorizedUser =
-                                                User.fromJson(result['data']);
-                                            Box<User> transaction =
-                                                Hive.box<User>('user');
-                                            transaction.put(
-                                                'user', authorizedUser);
-                                            Navigator.of(context).pop();
-                                          }
-
-                                          setState(() {
-                                            isLoading = false;
-                                          });
-                                        }
-                                      })
-                              ],
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 40),
+                                ],
+                              ),
                             ),
-                          )),
-                    ],
-                  )),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isLoading)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10),
+                              child: CircularProgressIndicator(
+                                color: AppColors.mainColor,
+                              ),
+                            ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: n.NikuButton.elevated(
+                              Text(
+                                tr('profile.deleteProfile'),
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            )
+                              ..bg = Colors.white
+                              ..border = const BorderSide(
+                                  color: AppColors.mainColor, width: 2)
+                              ..color = AppColors.mainColor
+                              ..rounded = 20
+                              ..py = 20
+                              ..my = 10
+                              ..onPressed = isLoading
+                                  ? null
+                                  : () => _handleDelete(currentUser!),
+                          ),
+                          SizedBox(
+                            width: double.infinity,
+                            child: n.NikuButton.elevated(
+                              Text(
+                                tr('save'),
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            )
+                              ..bg = AppColors.mainColor
+                              ..color = Colors.white
+                              ..rounded = 20
+                              ..py = 20
+                              ..my = 10
+                              ..onPressed = isLoading
+                                  ? null
+                                  : () => _handleSave(currentUser!),
+                          ),
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         });

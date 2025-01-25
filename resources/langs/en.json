@@ -29,7 +29,9 @@
     "getConfirmationCode": "Get confirmation code",
     "proceed": "Proceed",
     "typeOtp": "Type code",
-    "logout": "logout"
+    "logout": "logout",
+    "codeNotReceived": "Code not received",
+    "getNewCode": "Get a new code"
   },
   "settings": {
     "settings": "Settings",
@@ -63,7 +65,15 @@
     "email": "Email",
     "phone": "Phone",
     "deleteProfile": "Delete profile",
-    "enterYourBirthday": "Enter your birthday"
+    "enterYourBirthday": "Enter your birthday",
+    "errorDeleteProfile": "Error deleting profile",
+    "logout": "Logout",
+    "logoutConfirm": "Are you sure you want to logout?",
+    "error": "Error",
+    "updateError": "Error updating profile",
+    "profileUpdated": "Profile updated successfully",
+    "profileDeleted": "Profile deleted successfully",
+    "requiredField": "Field is required"
   },
   "save": "Save",
   "deliveryBottomSheet": {
@@ -208,5 +218,6 @@
   "notSelectedPickupTerminal": "Not selected pickup terminal",
   "notSelectedDeliveryAddress": "Not selected delivery address",
   "notSelectedDeliveryTime": "Not selected delivery time",
-  "notSelectedPayType": "Not selected payment method"
+  "notSelectedPayType": "Not selected payment method",
+  "deliveryNotAvailable": "Delivery in this area is temporarily unavailable"
 }

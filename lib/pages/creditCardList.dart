@@ -282,7 +282,8 @@ class _CreditCardListPageState extends State<CreditCardListPage> {
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 tr('cards.addCard'),
-                                style: const TextStyle(fontSize: 20),
+                                style: const TextStyle(
+                                    fontSize: 20, color: Colors.white),
                               ),
                             ))
                       ],
