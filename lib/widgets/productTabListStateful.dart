@@ -1,11 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:les_ailes/widgets/productCardList.dart';
 import 'package:les_ailes/widgets/slider.dart';
 import 'package:les_ailes/widgets/way_to_receive_an_order.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:vertical_scrollable_tabview/vertical_scrollable_tabview.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../models/productSection.dart';
 import '../utils/colors.dart';
@@ -163,6 +166,11 @@ class _ProductListStatefulState extends State<ProductTabListStateful>
                   onTap: (index) {
                     VerticalScrollableTabBarStatus.setIndex(index);
                   },
+                ),
+                systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
                 ),
               ),
             ],

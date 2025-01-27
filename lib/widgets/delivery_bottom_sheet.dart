@@ -28,48 +28,83 @@ class DeliveryBottomSheet extends HookWidget {
   Widget build(BuildContext context) {
     useMemoized(() => GlobalKey<FormBuilderState>());
     final geoData = useState<YandexGeoData?>(null);
-    var currentTerminal = useState<Terminals?>(null);
+    final currentTerminal = useState<Terminals?>(null);
+    final isMounted = useRef(true);
+    final isLoading = useState(false);
+    final addressLoadingNotifier = useState(ValueNotifier<bool>(false));
+    final notFoundText = useState<String>('nearest_terminal_not_found');
     final Box<DeliveryLocationData> deliveryLocationBox =
         Hive.box<DeliveryLocationData>('deliveryLocationData');
     deliveryLocationBox.get('deliveryLocationData');
 
-    var notFoundText = useState<String>('nearest_terminal_not_found');
+    useEffect(() {
+      isMounted.value = true;
+      return () {
+        isMounted.value = false;
+      };
+    }, []);
 
     Future<void> getPointData() async {
       if (currentPoint != null) {
-        Map<String, String> requestHeaders = {
-          'Content-type': 'application/json',
-          'Accept': 'application/json'
-        };
-        var url = Uri.https('api.lesailes.uz', 'api/geocode', {
-          'lat': currentPoint!.latitude.toString(),
-          'lon': currentPoint!.longitude.toString()
-        });
-        var response = await http.get(url, headers: requestHeaders);
-        if (response.statusCode == 200) {
-          var json = jsonDecode(response.body);
-          geoData.value = YandexGeoData.fromJson(json['data']);
+        try {
+          if (isMounted.value) {
+            isLoading.value = true;
+          }
 
-          var url = Uri.https('api.lesailes.uz', 'api/terminals/find_nearest', {
+          Map<String, String> requestHeaders = {
+            'Content-type': 'application/json',
+            'Accept': 'application/json'
+          };
+          var url = Uri.https('api.lesailes.uz', 'api/geocode', {
             'lat': currentPoint!.latitude.toString(),
             'lon': currentPoint!.longitude.toString()
           });
-          response = await http.get(url, headers: requestHeaders);
+          var response = await http.get(url, headers: requestHeaders);
+          if (!isMounted.value) return;
+
           if (response.statusCode == 200) {
             var json = jsonDecode(response.body);
-            List<Terminals> terminal = List<Terminals>.from(json['data']
-                    ['items']
-                .map((m) => Terminals.fromJson(m))
-                .toList());
-            notFoundText.value = json['data']['errorMessage'];
-            if (terminal.isNotEmpty) {
-              currentTerminal.value = terminal[0];
-            } else {
-              currentTerminal.value = null;
+            if (isMounted.value) {
+              geoData.value = YandexGeoData.fromJson(json['data']);
             }
-          } else {
+
+            var url =
+                Uri.https('api.lesailes.uz', 'api/terminals/find_nearest', {
+              'lat': currentPoint!.latitude.toString(),
+              'lon': currentPoint!.longitude.toString()
+            });
+            response = await http.get(url, headers: requestHeaders);
+            if (!isMounted.value) return;
+
+            if (response.statusCode == 200) {
+              var json = jsonDecode(response.body);
+              List<Terminals> terminal = List<Terminals>.from(json['data']
+                      ['items']
+                  .map((m) => Terminals.fromJson(m))
+                  .toList());
+              if (!isMounted.value) return;
+
+              notFoundText.value = json['data']['errorMessage'];
+              if (terminal.isNotEmpty) {
+                currentTerminal.value = terminal[0];
+              } else {
+                currentTerminal.value = null;
+              }
+            } else {
+              if (isMounted.value) {
+                currentTerminal.value = null;
+                notFoundText.value = 'nearest_terminal_not_found';
+              }
+            }
+          }
+        } catch (e) {
+          if (isMounted.value) {
             currentTerminal.value = null;
             notFoundText.value = 'nearest_terminal_not_found';
+          }
+        } finally {
+          if (isMounted.value) {
+            isLoading.value = false;
           }
         }
       }
@@ -81,7 +116,6 @@ class DeliveryBottomSheet extends HookWidget {
     }, [currentPoint]);
 
     return Container(
-        // height: 200,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -92,14 +126,41 @@ class DeliveryBottomSheet extends HookWidget {
             n.NikuButton(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SizedBox(
+                if (isLoading.value || addressLoadingNotifier.value.value) ...[
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.7,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.mainColor,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Text(
+                          tr('loading'),
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: n.NikuText(
                       currentTerminal.value == null
                           ? tr(notFoundText.value)
                           : geoData.value?.title,
                       style: n.NikuTextStyle(color: Colors.grey, fontSize: 18),
-                    )),
+                    ),
+                  ),
+                ],
                 const Icon(Icons.keyboard_arrow_down, color: Colors.grey)
               ],
             ))
@@ -111,8 +172,10 @@ class DeliveryBottomSheet extends HookWidget {
                     expand: false,
                     context: context,
                     backgroundColor: Colors.transparent,
-                    builder: (context) =>
-                        AddressSearchModal(onSetLocation: onSetLocation));
+                    builder: (context) => AddressSearchModal(
+                          onSetLocation: onSetLocation,
+                          isAddressLoading: addressLoadingNotifier.value,
+                        ));
               },
             Container(
               width: double.infinity,
@@ -122,12 +185,16 @@ class DeliveryBottomSheet extends HookWidget {
                 tr('deliveryBottomSheet.continue'),
                 style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
               ))
-                ..bg = currentTerminal.value == null
+                ..bg = isLoading.value ||
+                        addressLoadingNotifier.value.value ||
+                        currentTerminal.value == null
                     ? Colors.grey.shade200
                     : AppColors.mainColor
                 ..rounded = 20
                 ..onPressed = () {
-                  if (currentTerminal.value == null) {
+                  if (isLoading.value ||
+                      addressLoadingNotifier.value.value ||
+                      currentTerminal.value == null) {
                     return;
                   }
 

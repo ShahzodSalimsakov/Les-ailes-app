@@ -12,6 +12,9 @@ import '../models/user.dart';
 import '../utils/colors.dart';
 import 'package:http/http.dart' as http;
 import 'package:niku/niku.dart' as n;
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 @RoutePage()
 class MyAddressesPage extends HookWidget {
@@ -49,6 +52,11 @@ class MyAddressesPage extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
+        systemOverlayStyle: const SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Brightness.dark,
+          statusBarBrightness: Brightness.light,
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),

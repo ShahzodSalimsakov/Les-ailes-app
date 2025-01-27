@@ -32,10 +32,10 @@ GetIt getIt = GetIt.instance;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  await EasyLocalization.ensureInitialized();
   getIt.registerSingleton<AppRouter>(AppRouter());
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
@@ -79,9 +79,20 @@ void main() async {
   await Hive.openBox<BasketItemQuantity>('basketItemQuantity');
   await Hive.openBox<PaymentCardModel>('paymentCardModel');
 
+  // Фиксируем стиль status bar
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.dark,
+    statusBarBrightness: Brightness.light,
+  ));
+
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('ru'), Locale('uz')],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ru'),
+        Locale('uz'),
+      ],
       path: 'resources/langs',
       fallbackLocale: const Locale('ru'),
       startLocale: const Locale('ru'),
@@ -95,12 +106,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-      statusBarColor: AppColors.mainColor, // Color for Android
-      statusBarBrightness:
-          Brightness.light, // Dark == white status bar -- for IOS.
-      // systemNavigationBarColor: Colors.transparent
-    ));
     final router = getIt<AppRouter>();
     return MaterialApp.router(
       localizationsDelegates: context.localizationDelegates,

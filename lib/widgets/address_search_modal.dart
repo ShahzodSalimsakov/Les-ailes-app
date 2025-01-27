@@ -21,11 +21,36 @@ import '../utils/debouncer.dart';
 
 class AddressSearchModal extends HookWidget {
   final void Function(Point)? onSetLocation;
-
+  final ValueNotifier<bool> isAddressLoading;
   final _debouncer = Debouncer(milliseconds: 500);
   final TextEditingController queryController = TextEditingController();
 
-  AddressSearchModal({Key? key, required this.onSetLocation}) : super(key: key);
+  AddressSearchModal({
+    Key? key,
+    this.onSetLocation,
+    required this.isAddressLoading,
+  }) : super(key: key);
+
+  void onSavedAddressClick(
+      DeliveryLocationData location, BuildContext context) async {
+    final navigatorContext = context;
+    try {
+      isAddressLoading.value = true;
+      if (onSetLocation != null &&
+          location.lat != null &&
+          location.lon != null) {
+        onSetLocation!(Point(
+          latitude: location.lat!,
+          longitude: location.lon!,
+        ));
+      }
+      if (navigatorContext.mounted) {
+        Navigator.of(navigatorContext).pop();
+      }
+    } finally {
+      isAddressLoading.value = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,163 +112,20 @@ class AddressSearchModal extends HookWidget {
                 return ListTile(
                   onTap: () async {
                     MyAddress address = myAddresses.value[index];
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => DeliveryModal(
-                    //           geoData: suggestedData.value[index],
-                    //         )));
                     if (address.lat != null) {
-                      onSetLocation!(Point(
-                        latitude: double.parse(address.lat!),
-                        longitude: double.parse(address.lon!),
-                      ));
-                      // Navigator.of(context).pop();
-                      DeliveryLocationData deliveryData = DeliveryLocationData(
-                          house: address.house ?? '',
-                          flat: address.flat ?? '',
-                          entrance: address.entrance ?? '',
-                          doorCode: address.doorCode ?? '',
-                          label: address.label ?? '',
-                          lat: double.parse(address.lat!),
-                          lon: double.parse(address.lon!),
-                          address: address.address ?? '');
-                      // geoData.addressItems?.forEach((item) async {
-                      //   if (item.kind == 'province' || item.kind == 'area') {
-                      //     Map<String, String> requestHeaders = {
-                      //       'Content-type': 'application/json',
-                      //       'Accept': 'application/json'
-                      //     };
-                      //     var url =
-                      //     Uri.https('api.lesailes.uz', '/api/cities/public');
-                      //     var response =
-                      //     await http.get(url, headers: requestHeaders);
-                      //     if (response.statusCode == 200) {
-                      //       var json = jsonDecode(response.body);
-                      //       List<City> cityList = List<City>.from(
-                      //           json['data'].map((m) => City.fromJson(m)).toList());
-                      //       for (var element in cityList) {
-                      //         if (element.name == item.name) {
-                      //           Hive.box<City>('currentCity')
-                      //               .put('currentCity', element);
-                      //         }
-                      //       }
-                      //     }
-                      //   }
-                      // });
-                      final Box<DeliveryLocationData> deliveryLocationBox =
-                          Hive.box<DeliveryLocationData>(
-                              'deliveryLocationData');
-                      deliveryLocationBox.put(
-                          'deliveryLocationData', deliveryData);
-                      Map<String, String> requestHeaders = {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json'
-                      };
-
-                      var url = Uri.https(
-                          'api.lesailes.uz',
-                          'api/terminals/find_nearest',
-                          {'lat': address.lat, 'lon': address.lon});
-                      var response =
-                          await http.get(url, headers: requestHeaders);
-                      if (response.statusCode == 200) {
-                        var json = jsonDecode(response.body);
-                        List<Terminals> terminal = List<Terminals>.from(
-                            json['data']['items']
-                                .map((m) => Terminals.fromJson(m))
-                                .toList());
-                        Box<Terminals> transaction =
-                            Hive.box<Terminals>('currentTerminal');
-                        transaction.put('currentTerminal', terminal[0]);
-
-                        var stockUrl = Uri.https(
-                            'api.lesailes.uz',
-                            'api/terminals/get_stock',
-                            {'terminal_id': terminal[0].id.toString()});
-                        var stockResponse =
-                            await http.get(stockUrl, headers: requestHeaders);
-                        if (stockResponse.statusCode == 200) {
-                          var json = jsonDecode(stockResponse.body);
-                          Stock newStockData = Stock(
-                              prodIds: List<int>.from(json[
-                                  'data']) /* json['data'].map((id) => id as int).toList()*/);
-                          Box<Stock> box = Hive.box<Stock>('stock');
-                          box.put('stock', newStockData);
-                        }
-
-                        Box<DeliveryType> box =
-                            Hive.box<DeliveryType>('deliveryType');
-                        DeliveryType newDeliveryType = DeliveryType();
-                        newDeliveryType.value = DeliveryTypeEnum.deliver;
-                        box.put('deliveryType', newDeliveryType);
-
-                        Navigator.of(context)
-                          ..pop()
-                          ..pop();
-                      } else {
-                        print(response.body);
-                      }
-                      // DeliveryLocationData deliveryData = DeliveryLocationData(
-                      //     house: address.house ?? '',
-                      //     flat: address.flat ?? '',
-                      //     entrance: address.entrance ?? '',
-                      //     doorCode: address.doorCode ?? '',
-                      //     lat: double.parse(address.lat!),
-                      //     lon: double.parse(address.lon!),
-                      //     address: address.address ?? '');
-                      // final Box<DeliveryLocationData> deliveryLocationBox =
-                      // Hive.box<DeliveryLocationData>(
-                      //     'deliveryLocationData');
-                      // deliveryLocationBox.put(
-                      //     'deliveryLocationData', deliveryData);
-                      // Box<DeliveryType> box =
-                      // Hive.box<DeliveryType>('deliveryType');
-                      // DeliveryType newDeliveryType = DeliveryType();
-                      // newDeliveryType.value = DeliveryTypeEnum.deliver;
-                      // box.put('deliveryType', newDeliveryType);
-                      //
-                      // Map<String, String> requestHeaders = {
-                      //   'Content-type': 'application/json',
-                      //   'Accept': 'application/json'
-                      // };
-                      //
-                      // var url = Uri.https(
-                      //     'api.lesailes.uz', 'api/terminals/find_nearest', {
-                      //   'lat': address.lat!.toString(),
-                      //   'lon': address.lon!.toString()
-                      // });
-                      // var response =
-                      // await http.get(url, headers: requestHeaders);
-                      // if (response.statusCode == 200) {
-                      //   var json = jsonDecode(response.body);
-                      //   List<Terminals> terminal = List<Terminals>.from(
-                      //       json['data']['items']
-                      //           .map((m) => Terminals.fromJson(m))
-                      //           .toList());
-                      //   Box<Terminals> transaction =
-                      //   Hive.box<Terminals>('currentTerminal');
-                      //   if (terminal.isNotEmpty) {
-                      //     transaction.put('currentTerminal', terminal[0]);
-                      //
-                      //     var stockUrl = Uri.https(
-                      //         'api.lesailes.uz',
-                      //         'api/terminals/get_stock',
-                      //         {'terminal_id': terminal[0].id.toString()});
-                      //     var stockResponse =
-                      //     await http.get(stockUrl, headers: requestHeaders);
-                      //     if (stockResponse.statusCode == 200) {
-                      //       var json = jsonDecode(stockResponse.body);
-                      //       Stock newStockData = Stock(
-                      //           prodIds: List<int>.from(json[
-                      //           'data']) /* json['data'].map((id) => id as int).toList()*/);
-                      //       Box<Stock> box = Hive.box<Stock>('stock');
-                      //       box.put('stock', newStockData);
-                      //     }
-                      //   }
-                      //
-                      //   Navigator.of(context).pop();
-                      // }
+                      final currentContext = context;
+                      onSavedAddressClick(
+                          DeliveryLocationData(
+                            house: address.house ?? '',
+                            flat: address.flat ?? '',
+                            entrance: address.entrance ?? '',
+                            doorCode: address.doorCode ?? '',
+                            label: address.label ?? '',
+                            lat: double.parse(address.lat!),
+                            lon: double.parse(address.lon!),
+                            address: address.address ?? '',
+                          ),
+                          currentContext);
                     }
                   },
                   title: Row(
@@ -296,20 +178,23 @@ class AddressSearchModal extends HookWidget {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
-                  onSetLocation!(Point(
-                    latitude: double.parse(
-                        suggestedData.value[index].coordinates.lat),
-                    longitude: double.parse(
-                        suggestedData.value[index].coordinates.long),
-                  ));
-                  Navigator.of(context).pop();
-
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => DeliveryModal(
-                  //           geoData: suggestedData.value[index],
-                  //         )));
+                  onSavedAddressClick(
+                      DeliveryLocationData(
+                        house: '',
+                        flat: '',
+                        entrance: '',
+                        doorCode: '',
+                        label: suggestedData.value[index].title,
+                        lat: double.parse(
+                            suggestedData.value[index].coordinates.lat),
+                        lon: double.parse(
+                            suggestedData.value[index].coordinates.long),
+                        address: suggestedData.value[index].description,
+                      ),
+                      context);
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
                 },
                 title: Text(suggestedData.value[index].title),
                 subtitle: Text(suggestedData.value[index].description),
@@ -348,6 +233,7 @@ class AddressSearchModal extends HookWidget {
                   ),
                 ]),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   Icons.search,
@@ -357,25 +243,29 @@ class AddressSearchModal extends HookWidget {
                   width: 10,
                 ),
                 Flexible(
-                  child: TextField(
-                    style: const TextStyle(
-                      fontSize: 17,
-                    ),
-                    controller: queryController,
-                    onChanged: (String val) {
-                      _debouncer.run(() => getSuggestions(val));
-                    },
-                    decoration: InputDecoration(
-                      hintText: 'Введите адрес',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                      prefixIcon: Center(
-                        widthFactor: 1,
-                        child: Text(
-                          '${currentCity!.name}, ',
-                          style: const TextStyle(fontSize: 17),
-                        ),
+                  child: Center(
+                    child: TextField(
+                      style: const TextStyle(
+                        fontSize: 17,
                       ),
+                      controller: queryController,
+                      onChanged: (String val) {
+                        _debouncer.run(() => getSuggestions(val));
+                      },
+                      decoration: InputDecoration(
+                        hintText: 'Введите адрес',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                        prefixIcon: Center(
+                          widthFactor: 1,
+                          child: Text(
+                            '${currentCity!.name}, ',
+                            style: const TextStyle(fontSize: 17),
+                          ),
+                        ),
+                        isCollapsed: true,
+                      ),
+                      textAlignVertical: TextAlignVertical.center,
                     ),
                   ),
                 ),
@@ -390,7 +280,9 @@ class AddressSearchModal extends HookWidget {
                   child: n.NikuButton(n.NikuText(tr('cancel'),
                       style: n.NikuTextStyle(color: Colors.black)))
                     ..onPressed = () {
-                      Navigator.of(context).pop();
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
                     },
                 )
               ],

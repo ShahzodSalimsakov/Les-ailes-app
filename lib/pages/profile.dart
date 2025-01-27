@@ -106,7 +106,22 @@ class _ProfilePageState extends State<ProfilePage> {
       });
 
       _formKey.currentState!.save();
-      final formData = _formKey.currentState!.value;
+      var values = {..._formKey.currentState!.value};
+
+      print('Form values: $values');
+
+      // Обработка email
+      if (values['email'] == null) {
+        values['email'] = '';
+      }
+
+      // Добавляем текущий номер телефона пользователя
+      values['phone'] = currentUser.phone;
+
+      // Обработка даты рождения
+      if (values['birth'] != null) {
+        values['birth'] = DateFormat('yyyy-MM-dd').format(values['birth']);
+      }
 
       Map<String, String> requestHeaders = {
         'Content-type': 'application/json',
@@ -114,43 +129,46 @@ class _ProfilePageState extends State<ProfilePage> {
         'Authorization': 'Bearer ${currentUser.userToken}'
       };
 
-      var url = Uri.https('api.lesailes.uz', '/api/profile/update');
+      print('Request headers: $requestHeaders');
+      print('Request body: ${jsonEncode(values)}');
+
+      var url = Uri.https('api.lesailes.uz', '/api/me');
       var response = await http.post(
         url,
         headers: requestHeaders,
-        body: jsonEncode({
-          'name': formData['name'],
-          'email': formData['email'],
-          'birth': formData['birth'] != null
-              ? DateFormat('yyyy-MM-dd').format(formData['birth'])
-              : null,
-        }),
+        body: jsonEncode(values),
       );
 
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(tr('profile.profileUpdated')),
-              backgroundColor: Colors.green,
-            ),
-          );
+        var result = jsonDecode(response.body);
+        if (result['data'] != null) {
+          User authorizedUser = User.fromJson(result['data']);
+          Box<User> transaction = Hive.box<User>('user');
+          await transaction.put('user', authorizedUser);
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        } else {
+          print('No data in response: $result');
+          throw Exception('No data in response');
         }
       } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(tr('profile.updateError')),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
+        var errorBody = jsonDecode(response.body);
+        print('Error response: $errorBody');
+        throw Exception(
+            'Update failed: ${errorBody['message'] ?? 'Unknown error'}');
       }
     } catch (e) {
+      print('Error updating profile: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(tr('profile.error')),
+            content: Text(e.toString().contains('Exception:')
+                ? e.toString().split('Exception: ')[1]
+                : tr('profile.updateError')),
             backgroundColor: Colors.red,
           ),
         );
@@ -172,6 +190,11 @@ class _ProfilePageState extends State<ProfilePage> {
           User? currentUser = box.get('user');
           return Scaffold(
             appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                 onPressed: () => Navigator.of(context).pop(),

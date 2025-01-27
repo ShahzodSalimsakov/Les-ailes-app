@@ -61,6 +61,7 @@ class BasketWidget extends HookWidget {
     final isMounted = useRef(true);
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? deliveryType = box.get('deliveryType');
+    final loadingItems = useState<Set<int>>({});
 
     Future<void> destroyLine(int lineId) async {
       Map<String, String> requestHeaders = {
@@ -208,24 +209,10 @@ class BasketWidget extends HookWidget {
     }
 
     Widget basketItems(Lines lines) {
-      var locale = context.locale.toString();
-      final formatCurrency = NumberFormat.currency(
-          locale: 'ru_RU',
-          symbol: locale == 'uz'
-              ? "so'm"
-              : locale == 'en'
-                  ? 'sum'
-                  : 'сум',
-          decimalDigits: 0);
+      context.locale.toString();
       String? productName = '';
-      var productTotalPrice = 0;
       if (lines.child != null && lines.child!.length > 1) {
         productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
-        productTotalPrice = (int.parse(
-                    double.parse(lines.total ?? '0.0000').toStringAsFixed(0)) +
-                int.parse(double.parse(lines.child![0].total ?? '0.0000')
-                    .toStringAsFixed(0))) *
-            lines.quantity;
         String childsName = lines.child!
             .where((Child child) =>
                 lines.variant!.product!.boxId != child.variant!.product!.id)
@@ -238,79 +225,76 @@ class BasketWidget extends HookWidget {
         }
       } else {
         productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
-        productTotalPrice =
-            int.parse(double.parse(lines.total ?? '0.0000').toStringAsFixed(0));
       }
       return Container(
-          margin: const EdgeInsets.symmetric(vertical: 15),
-          height: 100,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              renderProductImage(context, lines),
-              Column(
+        margin: const EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            renderProductImage(context, lines),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     productName ?? '',
-                    style: const TextStyle(
-                      fontSize: 18,
-                    ),
+                    style: const TextStyle(fontSize: 16),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 4),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(right: 10),
+                      Expanded(
                         child: Text(
-                          formatCurrency.format(productTotalPrice),
-                          style: const TextStyle(fontSize: 18),
+                          '${NumberFormat.currency(
+                            symbol: '',
+                            decimalDigits: 0,
+                          ).format(lines.variant?.price ?? 0)} ${tr('sum')}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.grey.shade100,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(18)),
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: const Icon(
-                                Icons.remove,
-                                size: 20.0,
-                              ),
-                              onPressed: () {
-                                decreaseQuantity(lines);
-                              },
+                              icon: const Icon(Icons.remove),
+                              onPressed: () => decreaseQuantity(lines),
+                              padding: const EdgeInsets.all(8),
+                              constraints: const BoxConstraints(),
                             ),
                             Text(
-                              lines.quantity.toString(),
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.w700),
+                              '${lines.quantity}',
+                              style: const TextStyle(fontSize: 16),
                             ),
                             IconButton(
-                                padding: EdgeInsets.zero,
-                                icon: const Icon(
-                                  Icons.add,
-                                  size: 20.0,
-                                ),
-                                onPressed: () {
-                                  increaseQuantity(lines);
-                                })
+                              icon: const Icon(Icons.add),
+                              onPressed: () => increaseQuantity(lines),
+                              padding: const EdgeInsets.all(8),
+                              constraints: const BoxConstraints(),
+                            ),
                           ],
                         ),
-                      )
+                      ),
                     ],
-                  )
+                  ),
                 ],
-              )
-            ],
-          ));
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     String totalPrice = useMemoized(() {
@@ -591,16 +575,19 @@ class BasketWidget extends HookWidget {
                     if (deliveryLocationData != null) {
                       if (deliveryType!.value == DeliveryTypeEnum.deliver) {
                         deliveryText = deliveryLocationData.address ?? '';
-                        String house = deliveryLocationData.house!.length > 1
-                            ? ', дом: ${deliveryLocationData.house}'
+                        String house = deliveryLocationData.house != null &&
+                                deliveryLocationData.house!.isNotEmpty
+                            ? ', ${tr("house")}: ${deliveryLocationData.house}'
                             : '';
-                        String flat = deliveryLocationData.flat!.length > 1
-                            ? ', кв: ${deliveryLocationData.flat}'
+                        String flat = deliveryLocationData.flat != null &&
+                                deliveryLocationData.flat!.isNotEmpty
+                            ? ', ${tr("flat")}: ${deliveryLocationData.flat}'
                             : '';
-                        String entrance =
-                            deliveryLocationData.entrance!.length > 1
-                                ? ', подъезд: ${deliveryLocationData.entrance}'
-                                : '';
+                        String entrance = deliveryLocationData.entrance !=
+                                    null &&
+                                deliveryLocationData.entrance!.isNotEmpty
+                            ? ', ${tr("entrance")}: ${deliveryLocationData.entrance}'
+                            : '';
                         deliveryText = '$deliveryText$house$flat$entrance';
                       }
                     }
@@ -810,13 +797,28 @@ class BasketWidget extends HookWidget {
                                                         width: 144,
                                                         child: ElevatedButton(
                                                           onPressed: () async {
+                                                            if (loadingItems
+                                                                .value
+                                                                .contains(
+                                                                    relatedBiData
+                                                                        .value[
+                                                                            index]
+                                                                        .id)) {
+                                                              return; // Prevent multiple clicks while loading
+                                                            }
+                                                            // Add item to loading set
+                                                            loadingItems.value =
+                                                                {
+                                                              ...loadingItems
+                                                                  .value,
+                                                              relatedBiData
+                                                                  .value[index]
+                                                                  .id
+                                                            };
                                                             List<
                                                                     Map<String,
                                                                         int>>?
                                                                 selectedModifiers;
-                                                            _isBasketLoading
-                                                                .value = true;
-
                                                             int selectedProdId =
                                                                 relatedBiData
                                                                     .value[
@@ -911,7 +913,23 @@ class BasketWidget extends HookWidget {
                                                                 basketData
                                                                         .value =
                                                                     basketLocalData;
+                                                                // Remove item from relatedBiData list
+                                                                relatedBiData
+                                                                    .value = List<
+                                                                        RelatedProduct>.from(
+                                                                    relatedBiData
+                                                                        .value
+                                                                        .where((item) =>
+                                                                            item.id !=
+                                                                            selectedProdId));
                                                               }
+                                                              // Remove item from loading set
+                                                              loadingItems
+                                                                  .value = {
+                                                                ...loadingItems
+                                                                    .value
+                                                              }..remove(
+                                                                  selectedProdId);
                                                             } else {
                                                               Map<String,
                                                                       String>
@@ -1007,13 +1025,30 @@ class BasketWidget extends HookWidget {
                                                                       EdgeInsets
                                                                           .all(
                                                                               0))),
-                                                          child: Text(
-                                                              productPrice,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      16)),
+                                                          child: loadingItems
+                                                                  .value
+                                                                  .contains(relatedBiData
+                                                                      .value[
+                                                                          index]
+                                                                      .id)
+                                                              ? const SizedBox(
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    strokeWidth:
+                                                                        2,
+                                                                  ),
+                                                                )
+                                                              : Text(
+                                                                  productPrice,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16)),
                                                         ),
                                                       )
                                                     ])));
@@ -1111,13 +1146,28 @@ class BasketWidget extends HookWidget {
                                                         width: 144,
                                                         child: ElevatedButton(
                                                           onPressed: () async {
+                                                            if (loadingItems
+                                                                .value
+                                                                .contains(
+                                                                    topProducts
+                                                                        .value[
+                                                                            index]
+                                                                        .id)) {
+                                                              return; // Prevent multiple clicks while loading
+                                                            }
+                                                            // Add item to loading set
+                                                            loadingItems.value =
+                                                                {
+                                                              ...loadingItems
+                                                                  .value,
+                                                              topProducts
+                                                                  .value[index]
+                                                                  .id
+                                                            };
                                                             List<
                                                                     Map<String,
                                                                         int>>?
                                                                 selectedModifiers;
-                                                            _isBasketLoading
-                                                                .value = true;
-
                                                             int selectedProdId =
                                                                 topProducts
                                                                     .value[
@@ -1212,7 +1262,23 @@ class BasketWidget extends HookWidget {
                                                                 basketData
                                                                         .value =
                                                                     basketLocalData;
+                                                                // Remove item from topProducts list
+                                                                topProducts
+                                                                    .value = List<
+                                                                        RelatedProduct>.from(
+                                                                    topProducts
+                                                                        .value
+                                                                        .where((item) =>
+                                                                            item.id !=
+                                                                            selectedProdId));
                                                               }
+                                                              // Remove item from loading set
+                                                              loadingItems
+                                                                  .value = {
+                                                                ...loadingItems
+                                                                    .value
+                                                              }..remove(
+                                                                  selectedProdId);
                                                             } else {
                                                               Map<String,
                                                                       String>
@@ -1308,13 +1374,30 @@ class BasketWidget extends HookWidget {
                                                                       EdgeInsets
                                                                           .all(
                                                                               0))),
-                                                          child: Text(
-                                                              productPrice,
-                                                              style: const TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      16)),
+                                                          child: loadingItems
+                                                                  .value
+                                                                  .contains(topProducts
+                                                                      .value[
+                                                                          index]
+                                                                      .id)
+                                                              ? const SizedBox(
+                                                                  width: 20,
+                                                                  height: 20,
+                                                                  child:
+                                                                      CircularProgressIndicator(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    strokeWidth:
+                                                                        2,
+                                                                  ),
+                                                                )
+                                                              : Text(
+                                                                  productPrice,
+                                                                  style: const TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          16)),
                                                         ),
                                                       )
                                                     ])));
@@ -1352,23 +1435,6 @@ class BasketWidget extends HookWidget {
                                         ],
                                       )
                                     : const SizedBox(),
-                                // Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         tr("deliveryOrPickup.delivery") + ':',
-                                //         style: TextStyle(
-                                //             fontSize: 20,
-                                //             color: Colors.grey.shade400),
-                                //       ),
-                                //       Text(
-                                //         '12 000',
-                                //         style: TextStyle(
-                                //             fontSize: 20,
-                                //             color: Colors.grey.shade400),
-                                //       )
-                                //     ]),
                                 Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1382,35 +1448,6 @@ class BasketWidget extends HookWidget {
                                         style: const TextStyle(fontSize: 18),
                                       )
                                     ]),
-                                // Row(
-                                //     mainAxisAlignment:
-                                //         MainAxisAlignment.spaceBetween,
-                                //     children: [
-                                //       Text(
-                                //         tr("basket.willReturn") +
-                                //             ' 5% ' +
-                                //             tr("basket.fromOrder") +
-                                //             ':',
-                                //         style: const TextStyle(
-                                //             fontSize: 18,
-                                //             color: AppColors.plum),
-                                //       ),
-                                //       const Spacer(),
-                                //       Image.asset(
-                                //         'images/coin.png',
-                                //         height: 16,
-                                //         width: 16,
-                                //       ),
-                                //       const SizedBox(
-                                //         width: 5,
-                                //       ),
-                                //       Text(
-                                //         cashback,
-                                //         style: const TextStyle(
-                                //             fontSize: 18,
-                                //             color: AppColors.plum),
-                                //       )
-                                //     ]),
                                 Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -1438,9 +1475,6 @@ class BasketWidget extends HookWidget {
                           height: 10,
                         ),
                         AdditionalPhoneNumberWidget(),
-                        // const SizedBox(
-                        //   height: 5,
-                        // ),
                         const OrderCommentWidget(),
                         const SizedBox(
                           height: 50,
@@ -1708,42 +1742,11 @@ class BasketWidget extends HookWidget {
                               backgroundColor: Colors.transparent,
                               builder: (context) => OrderSuccess(order: order));
 
-                          // showPlatformDialog(
-                          //     context: context,
-                          //     builder: (_) => PlatformAlertDialog(
-                          //           title: Text(
-                          //             tr("order_is_accepted"),
-                          //             textAlign: TextAlign.center,
-                          //           ),
-                          //           content: Text(
-                          //             tr("order_is_accepted_content"),
-                          //             textAlign: TextAlign.center,
-                          //           ),
-                          //         ));
                           _isOrderLoading.value = false;
-                          // Future.delayed(
-                          //     const Duration(
-                          //         milliseconds: 2000), () {
-                          //   Navigator.pushReplacement(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //       builder: (context) =>
-                          //           OrderDetail(
-                          //               orderId: hashids
-                          //                   .encode(order.id)),
-                          //     ),
-                          //   );
-                          // });
                         }
-                        // BasketData basketData = new BasketData.fromJson(json['data']);
-                        // Basket newBasket = new Basket(
-                        //     encodedId: basketData.encodedId ?? '',
-                        //     lineCount: basketData.lines?.length ?? 0);
-                        // basketBox.put('basket', newBasket);
                       } else {
                         var errResponse = jsonDecode(response.body);
                         _isOrderLoading.value = false;
-                        // print(response.body);
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(errResponse['error']['message'])));
                         return;

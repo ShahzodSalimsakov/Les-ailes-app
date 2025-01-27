@@ -5,6 +5,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:les_ailes/utils/colors.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/services.dart';
 
 @RoutePage()
 class NotificationDetailPage extends StatefulWidget {
@@ -52,6 +54,11 @@ class _NotificationDetailPageState extends State<NotificationDetailPage> {
                 leading: IconButton(
                   icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                   onPressed: () => context.router.maybePop(),
+                ),
+                systemOverlayStyle: const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: Brightness.dark,
+                  statusBarBrightness: Brightness.light,
                 )),
             body: Container(
               padding: const EdgeInsets.all(16),

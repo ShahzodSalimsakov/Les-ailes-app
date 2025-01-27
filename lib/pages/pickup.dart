@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dart_date/dart_date.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:les_ailes/models/pickup_type.dart';
@@ -194,6 +195,24 @@ class PickupPage extends HookWidget {
           context.locale.toString();
 
           return Scaffold(
+            appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+              title: Text(
+                tr('pickup.pageTitle'),
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             body: SafeArea(
                 child: SizedBox(
                     width: double.infinity,
@@ -207,34 +226,6 @@ class PickupPage extends HookWidget {
                                 left: 15, right: 15, bottom: 175),
                             child: Column(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 15, vertical: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      n.NikuText(
-                                        tr('pickup.pageTitle'),
-                                        style: n.NikuTextStyle(fontSize: 24),
-                                      ),
-                                      n.NikuButton(const Icon(
-                                        Icons.close_outlined,
-                                        size: 25,
-                                        color: Colors.black,
-                                      ))
-                                        ..p = 0
-                                        ..m = 0
-                                        ..onPressed = () {
-                                          Box<PickupType> transaction =
-                                              Hive.box<PickupType>(
-                                                  'pickupType');
-                                          transaction.delete('pickupType');
-                                          Navigator.of(context).pop();
-                                        }
-                                    ],
-                                  ),
-                                ),
                                 isLoading.value == true
                                     ? const Expanded(
                                         child: Center(

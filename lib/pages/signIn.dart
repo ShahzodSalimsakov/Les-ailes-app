@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:captcha_solver/captcha_solver.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +15,6 @@ import 'package:otp_autofill/otp_autofill.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
 import 'package:timer_count_down/timer_count_down.dart';
-
 import '../models/user.dart';
 import '../utils/colors.dart';
 import '../utils/random.dart';
@@ -47,6 +43,7 @@ class SignInPage extends HookWidget {
     final _isFinishedTimer = useState<bool>(false);
     final signature = useState<String>('');
     final _gender = useState(1);
+    final isLoading = useState(false);
 
     Future<void> trySignIn() async {
       _isSendingPhone.value = true;
@@ -114,15 +111,12 @@ class SignInPage extends HookWidget {
     }
 
     void listenForCode() async {
-      // Timer(const Duration(milliseconds: 700),  ()
-      // async  {
       await SmsAutoFill().listenForCode;
       print('listen for code');
-      // });
     }
 
     useEffect(() {
-      // listenForCode();
+      listenForCode();
 
       controller = OTPTextEditController(
         codeLength: 4,
@@ -133,13 +127,10 @@ class SignInPage extends HookWidget {
             final exp = RegExp(r'(\d{4})');
             return exp.stringMatch(code ?? '') ?? '';
           },
-          // strategies: [
-          //   SampleStrategy(),
-          // ],
         );
 
       return () {
-        // SmsAutoFill().unregisterListener();
+        SmsAutoFill().unregisterListener();
         controller.stopListen();
         print('Unregistered');
       };
@@ -533,109 +524,147 @@ class SignInPage extends HookWidget {
                                 child: SizedBox(
                                   height: 60,
                                   child: ElevatedButton(
-                                    onPressed: () async {
-                                      if (_isSendingPhone.value) {
-                                        return;
-                                      }
-                                      formKey.currentState!.save();
-                                      if (formKey.currentState != null &&
-                                          formKey.currentState!.validate()) {
-                                        _isSendingPhone.value = true;
-                                        Map<String, String> requestHeaders = {
-                                          'Content-type': 'application/json',
-                                          'Accept': 'application/json'
-                                        };
-                                        var url = Uri.https(
-                                            'api.lesailes.uz', '/api/keldi');
-                                        var response = await http.get(url,
-                                            headers: requestHeaders);
-                                        if (response.statusCode == 200) {
-                                          var json = jsonDecode(response.body);
-                                          Codec<String, String> stringToBase64 =
-                                              utf8.fuse(base64);
-                                          String decoded = stringToBase64
-                                              .decode(json['result']);
-
-                                          final buff =
-                                              utf8.encode('X79PC6D4bKzW');
-                                          final base64data =
-                                              base64.encode(buff);
-                                          final randomString =
-                                              randomAlphaNumeric(6);
-                                          final hexBuffer = utf8.encode(
-                                              '$randomString$base64data');
-                                          final hexString =
-                                              HEX.encode(hexBuffer);
-
-                                          Map<String, String> requestHeaders = {
-                                            'Content-type': 'application/json',
-                                            'Accept': 'application/json',
-                                            'Authorization': 'Bearer $hexString'
-                                          };
-                                          url = Uri.https(
-                                              'api.lesailes.uz', '/api/ss_zz');
-                                          var formData = {
-                                            'phone': phoneNumber.value
-                                          };
-                                          if (_isShowNameField.value) {
-                                            formData['name'] =
-                                                nameFieldController.text;
-                                          }
-                                          var values = {
-                                            ...formKey.currentState!.value
-                                          };
-                                          if (values['birth'] != null) {
-                                            formData['birth'] =
-                                                values['birth'] = DateFormat(
-                                                        'yyyy-MM-dd')
-                                                    .format(values['birth']);
-                                          }
-                                          formData['gender'] =
-                                              _gender.value!.toString();
-                                          response = await http.post(url,
-                                              headers: requestHeaders,
-                                              body: jsonEncode(formData));
-                                          if (response.statusCode == 200) {
-                                            json = jsonDecode(response.body);
-                                            if (json['error'] != null) {
-                                              if (json['error'] ==
-                                                  'name_field_is_required') {
-                                                _isShowNameField.value = true;
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                        const SnackBar(
-                                                  content: Text(
-                                                      'Мы Вас не нашли в нашей системе. Просьба указать своё имя, день рождения и пол.'),
-                                                  duration:
-                                                      Duration(seconds: 3),
-                                                ));
+                                    onPressed: (!_isValid.value ||
+                                            isLoading.value)
+                                        ? null
+                                        : () async {
+                                            isLoading.value = true;
+                                            try {
+                                              if (_isSendingPhone.value) {
+                                                return;
                                               }
-                                              if (json['error'] ==
-                                                  'user_is_blocked') {
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(const SnackBar(
-                                                        content: Text(
-                                                            'Вы удаляли свой аккаунт. Просьба связаться с нами.')));
-                                              }
-                                            } else if (json['success'] !=
-                                                null) {
-                                              Codec<String, String>
-                                                  stringToBase64 =
-                                                  utf8.fuse(base64);
-                                              String decoded = stringToBase64
-                                                  .decode(json['success']);
+                                              formKey.currentState!.save();
+                                              if (formKey.currentState !=
+                                                      null &&
+                                                  formKey.currentState!
+                                                      .validate()) {
+                                                _isSendingPhone.value = true;
+                                                Map<String, String>
+                                                    requestHeaders = {
+                                                  'Content-type':
+                                                      'application/json',
+                                                  'Accept': 'application/json'
+                                                };
+                                                var url = Uri.https(
+                                                    'api.lesailes.uz',
+                                                    '/api/keldi');
+                                                var response = await http.get(
+                                                    url,
+                                                    headers: requestHeaders);
+                                                if (response.statusCode ==
+                                                    200) {
+                                                  var json =
+                                                      jsonDecode(response.body);
+                                                  Codec<String, String>
+                                                      stringToBase64 =
+                                                      utf8.fuse(base64);
+                                                  String decoded =
+                                                      stringToBase64.decode(
+                                                          json['result']);
 
-                                              otpToken.value = jsonDecode(
-                                                  decoded)['user_token'];
-                                              _isVerifyPage.value = true;
-                                              listenForCode();
-                                              // signature.value = await SmsAutoFill().getAppSignature;
+                                                  final buff = utf8
+                                                      .encode('X79PC6D4bKzW');
+                                                  final base64data =
+                                                      base64.encode(buff);
+                                                  final randomString =
+                                                      randomAlphaNumeric(6);
+                                                  final hexBuffer = utf8.encode(
+                                                      '$randomString$base64data');
+                                                  final hexString =
+                                                      HEX.encode(hexBuffer);
+
+                                                  Map<String, String>
+                                                      requestHeaders = {
+                                                    'Content-type':
+                                                        'application/json',
+                                                    'Accept':
+                                                        'application/json',
+                                                    'Authorization':
+                                                        'Bearer $hexString'
+                                                  };
+                                                  url = Uri.https(
+                                                      'api.lesailes.uz',
+                                                      '/api/ss_zz');
+                                                  var formData = {
+                                                    'phone': phoneNumber.value
+                                                  };
+                                                  if (_isShowNameField.value) {
+                                                    formData['name'] =
+                                                        nameFieldController
+                                                            .text;
+                                                  }
+                                                  var values = {
+                                                    ...formKey
+                                                        .currentState!.value
+                                                  };
+                                                  if (values['birth'] != null) {
+                                                    formData['birth'] = values[
+                                                        'birth'] = DateFormat(
+                                                            'yyyy-MM-dd')
+                                                        .format(
+                                                            values['birth']);
+                                                  }
+                                                  formData['gender'] =
+                                                      _gender.value!.toString();
+                                                  response = await http.post(
+                                                      url,
+                                                      headers: requestHeaders,
+                                                      body:
+                                                          jsonEncode(formData));
+                                                  if (response.statusCode ==
+                                                      200) {
+                                                    json = jsonDecode(
+                                                        response.body);
+                                                    if (json['error'] != null) {
+                                                      if (json['error'] ==
+                                                          'name_field_is_required') {
+                                                        _isShowNameField.value =
+                                                            true;
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                          content: Text(
+                                                              'Мы Вас не нашли в нашей системе. Просьба указать своё имя, день рождения и пол.'),
+                                                          duration: Duration(
+                                                              seconds: 3),
+                                                        ));
+                                                      }
+                                                      if (json['error'] ==
+                                                          'user_is_blocked') {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                                const SnackBar(
+                                                                    content: Text(
+                                                                        'Вы удаляли свой аккаунт. Просьба связаться с нами.')));
+                                                      }
+                                                    } else if (json[
+                                                            'success'] !=
+                                                        null) {
+                                                      Codec<String, String>
+                                                          stringToBase64 =
+                                                          utf8.fuse(base64);
+                                                      String decoded =
+                                                          stringToBase64.decode(
+                                                              json['success']);
+
+                                                      otpToken.value =
+                                                          jsonDecode(decoded)[
+                                                              'user_token'];
+                                                      _isVerifyPage.value =
+                                                          true;
+                                                      listenForCode();
+                                                      // signature.value = await SmsAutoFill().getAppSignature;
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                              _isSendingPhone.value = false;
+                                            } finally {
+                                              isLoading.value = false;
                                             }
-                                          }
-                                        }
-                                        _isSendingPhone.value = false;
-                                      }
-                                    },
+                                          },
                                     style: ButtonStyle(
                                       shape: MaterialStateProperty.all<
                                               RoundedRectangleBorder>(
@@ -643,15 +672,32 @@ class SignInPage extends HookWidget {
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                       )),
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              AppColors.mainColor),
+                                      backgroundColor: MaterialStateProperty
+                                          .resolveWith<Color>(
+                                        (Set<MaterialState> states) {
+                                          if (states.contains(
+                                              MaterialState.disabled)) {
+                                            return Colors.grey;
+                                          }
+                                          return AppColors.mainColor;
+                                        },
+                                      ),
                                     ),
-                                    child: Text(
-                                      tr("signIn.proceed"),
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 20),
-                                    ),
+                                    child: isLoading.value
+                                        ? const SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2,
+                                            ),
+                                          )
+                                        : Text(
+                                            tr("signIn.proceed"),
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20),
+                                          ),
                                   ),
                                 ))
                           ],

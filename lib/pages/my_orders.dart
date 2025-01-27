@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hashids2/hashids2.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:les_ailes/models/order.dart';
 import 'package:les_ailes/utils/colors.dart';
 import '../models/user.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 
 @RoutePage()
 class MyOrdersPage extends HookWidget {
@@ -45,6 +47,11 @@ class MyOrdersPage extends HookWidget {
     }, []);
     return Scaffold(
         appBar: AppBar(
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+            statusBarBrightness: Brightness.light,
+          ),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             onPressed: () => context.router.back(),
