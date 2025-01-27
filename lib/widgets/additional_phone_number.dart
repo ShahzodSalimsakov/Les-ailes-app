@@ -2,18 +2,16 @@ import 'dart:convert';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hive/hive.dart';
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:niku/niku.dart' as n;
 import 'package:http/http.dart' as http;
+import 'package:niku/niku.dart' as n;
 
 import '../models/additional_phone_number.dart';
 import '../models/user.dart';
 
 class AdditionalPhoneNumberWidget extends HookWidget {
-  final number = PhoneNumber(isoCode: 'UZ');
-
   @override
   Widget build(BuildContext context) {
     final controller = useTextEditingController(text: '');
@@ -21,6 +19,7 @@ class AdditionalPhoneNumberWidget extends HookWidget {
 
     final additionalPhones = useState<List<String>>([]);
     final selectedAdditionalPhone = useState<String?>(null);
+    final phoneNumber = useState<String>('');
 
     Future<void> getAdditionalPhones() async {
       Box userBox = Hive.box<User>('user');
@@ -48,7 +47,6 @@ class AdditionalPhoneNumberWidget extends HookWidget {
     }, [selectedAdditionalPhone.value]);
 
     return Container(
-        // color: Colors.white,
         width: double.infinity,
         padding: const EdgeInsets.only(
           top: 10,
@@ -65,48 +63,60 @@ class AdditionalPhoneNumberWidget extends HookWidget {
             height: 20,
           ),
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 40),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(40.0),
-                color: Colors.grey.shade200),
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: InternationalPhoneNumberInput(
-              textFieldController: controller,
-              scrollPadding: const EdgeInsets.only(bottom: 150),
-              maxLength: 12,
-              onInputChanged: (number) {
-                AdditionalPhoneNumber additionalPhone = AdditionalPhoneNumber();
-                additionalPhone.additionalPhoneNumber =
-                    number.phoneNumber ?? '';
-                Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
-                    .put('additionalPhoneNumber', additionalPhone);
-              },
-              onInputValidated: (bool value) {
-                _isValid.value = value;
-              },
-              countries: const ['UZ'],
-              selectorConfig: const SelectorConfig(
-                selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
-                showFlags: false,
-              ),
-              ignoreBlank: false,
-              autoValidateMode: AutovalidateMode.disabled,
-              selectorTextStyle:
-                  const TextStyle(color: Colors.black, fontSize: 24.0),
-              initialValue: number,
-              formatInput: true,
-              countrySelectorScrollControlled: false,
-              keyboardType: TextInputType.number,
-              inputBorder: InputBorder.none,
-              hintText: '',
-              errorMessage: 'Неверный номер',
-              spaceBetweenSelectorAndTextField: 0,
-              textStyle: const TextStyle(color: Colors.black, fontSize: 24.0),
-              // inputDecoration: InputDecoration(border: ),
-              onSaved: (PhoneNumber number) {},
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: const Text(
+                    "+998",
+                    style: TextStyle(fontSize: 16, height: 1.4),
+                  ),
+                ),
+                Container(
+                  width: 1,
+                  height: 24,
+                  color: Colors.grey,
+                ),
+                Expanded(
+                  child: TextFormField(
+                    controller: controller,
+                    keyboardType: TextInputType.phone,
+                    style: const TextStyle(fontSize: 16),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(9),
+                    ],
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      hintText: "90 123 45 67",
+                    ),
+                    onChanged: (value) {
+                      if (value.length == 9) {
+                        phoneNumber.value = "+998$value";
+                        _isValid.value = true;
+                        AdditionalPhoneNumber additionalPhone =
+                            AdditionalPhoneNumber();
+                        additionalPhone.additionalPhoneNumber =
+                            phoneNumber.value;
+                        Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
+                            .put('additionalPhoneNumber', additionalPhone);
+                      } else {
+                        _isValid.value = false;
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
-          // SizedBox(height: additionalPhones.value.isNotEmpty ? 10 : 0,),
           additionalPhones.value.isNotEmpty
               ? Container(
                   width: double.infinity,

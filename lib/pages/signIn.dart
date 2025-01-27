@@ -10,7 +10,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hex/hex.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:otp_autofill/otp_autofill.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sms_autofill/sms_autofill.dart';
@@ -26,7 +25,6 @@ class SignInPage extends HookWidget {
   final TextEditingController nameFieldController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final initialCountry = 'UZ';
-  final number = PhoneNumber(isoCode: 'UZ');
   late OTPTextEditController controller;
 
   SignInPage({Key? key}) : super(key: key);
@@ -41,7 +39,6 @@ class SignInPage extends HookWidget {
     final otpCode = useState<String>('');
     final otpToken = useState<String>('');
     final _isFinishedTimer = useState<bool>(false);
-    final signature = useState<String>('');
     final _gender = useState(1);
     final isLoading = useState(false);
 
@@ -234,31 +231,7 @@ class SignInPage extends HookWidget {
                                     activeColor: AppColors.mainColor,
                                     selectedColor: AppColors.mainColor,
                                   ),
-                                )
-                                // PinCodeTextField(
-                                //   controller: controller,
-                                //   enablePinAutofill: true,
-                                //   autoFocus: true,
-                                //   length: 4,
-                                //   onChanged: (String value) {},
-                                //   appContext: context,
-                                //   keyboardType: TextInputType.number,
-                                //   onCompleted: (String code) {
-                                //     otpCode.value = code;
-                                //     trySignIn();
-                                //   },
-                                //   pinTheme: PinTheme(
-                                //       borderRadius: BorderRadius.circular(20),
-                                //       fieldWidth: 60,
-                                //       fieldHeight: 70,
-                                //       shape: PinCodeFieldShape.box,
-                                //       inactiveColor: Colors.grey,
-                                //       activeColor: AppColors.mainColor,
-                                //       selectedColor: AppColors.mainColor,
-                                //       inactiveFillColor: Colors.grey,
-                                //       activeFillColor: Colors.grey),
-                                // )
-                                ),
+                                )),
                             const Spacer(flex: 1),
                             _isFinishedTimer.value
                                 ? InkWell(
@@ -666,17 +639,17 @@ class SignInPage extends HookWidget {
                                             }
                                           },
                                     style: ButtonStyle(
-                                      shape: MaterialStateProperty.all<
+                                      shape: WidgetStateProperty.all<
                                               RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(20.0),
                                       )),
-                                      backgroundColor: MaterialStateProperty
+                                      backgroundColor: WidgetStateProperty
                                           .resolveWith<Color>(
-                                        (Set<MaterialState> states) {
-                                          if (states.contains(
-                                              MaterialState.disabled)) {
+                                        (Set<WidgetState> states) {
+                                          if (states
+                                              .contains(WidgetState.disabled)) {
                                             return Colors.grey;
                                           }
                                           return AppColors.mainColor;
