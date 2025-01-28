@@ -10,6 +10,7 @@ import 'package:niku/niku.dart' as n;
 
 import '../models/additional_phone_number.dart';
 import '../models/user.dart';
+import '../utils/colors.dart';
 
 class AdditionalPhoneNumberWidget extends HookWidget {
   @override
@@ -47,107 +48,136 @@ class AdditionalPhoneNumberWidget extends HookWidget {
     }, [selectedAdditionalPhone.value]);
 
     return Container(
-        width: double.infinity,
-        padding: const EdgeInsets.only(
-          top: 10,
-          right: 5,
-          left: 5,
-          bottom: 0,
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(
-            tr("additionalPhoneNumber"),
-            style: TextStyle(fontSize: 18),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 40),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text(
+                  tr("additionalPhoneNumber"),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 20),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: const Text(
-                    "+998",
-                    style: TextStyle(fontSize: 16, height: 1.4),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(color: Colors.grey.shade300),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                ),
-                Container(
-                  width: 1,
-                  height: 24,
-                  color: Colors.grey,
-                ),
-                Expanded(
-                  child: TextFormField(
-                    controller: controller,
-                    keyboardType: TextInputType.phone,
-                    style: const TextStyle(fontSize: 16),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                      LengthLimitingTextInputFormatter(9),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: const Text(
+                          "+998",
+                          style: TextStyle(fontSize: 16, height: 1.4),
+                        ),
+                      ),
+                      Container(
+                        width: 1,
+                        height: 24,
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        child: TextFormField(
+                          controller: controller,
+                          keyboardType: TextInputType.phone,
+                          style: const TextStyle(fontSize: 16),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            LengthLimitingTextInputFormatter(9),
+                          ],
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                            hintText: "90 123 45 67",
+                          ),
+                          onChanged: (value) {
+                            if (value.length == 9) {
+                              phoneNumber.value = "+998$value";
+                              _isValid.value = true;
+                              AdditionalPhoneNumber additionalPhone =
+                                  AdditionalPhoneNumber();
+                              additionalPhone.additionalPhoneNumber =
+                                  phoneNumber.value;
+                              Hive.box<AdditionalPhoneNumber>(
+                                      'additionalPhoneNumber')
+                                  .put(
+                                      'additionalPhoneNumber', additionalPhone);
+                            } else {
+                              _isValid.value = false;
+                            }
+                          },
+                        ),
+                      ),
                     ],
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                      hintText: "90 123 45 67",
-                    ),
-                    onChanged: (value) {
-                      if (value.length == 9) {
-                        phoneNumber.value = "+998$value";
-                        _isValid.value = true;
-                        AdditionalPhoneNumber additionalPhone =
-                            AdditionalPhoneNumber();
-                        additionalPhone.additionalPhoneNumber =
-                            phoneNumber.value;
-                        Hive.box<AdditionalPhoneNumber>('additionalPhoneNumber')
-                            .put('additionalPhoneNumber', additionalPhone);
-                      } else {
-                        _isValid.value = false;
-                      }
-                    },
                   ),
                 ),
+                if (additionalPhones.value.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    height: 40,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: const EdgeInsets.only(right: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(color: Colors.grey.shade300),
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: n.NikuButton(n.NikuText(
+                            additionalPhones.value[index],
+                            style: n.NikuTextStyle(color: Colors.grey.shade500),
+                          ))
+                            ..bg = Colors.transparent
+                            ..p = 10
+                            ..onPressed = () {
+                              String myText = additionalPhones.value[index];
+                              if (myText.contains('+998')) {
+                                myText = myText.replaceAll('+998', '');
+                              } else if (myText.contains('998')) {
+                                myText = myText.replaceAll('998', '');
+                              }
+                              selectedAdditionalPhone.value = myText;
+                              controller.text = myText;
+                              phoneNumber.value = "+998$myText";
+                              _isValid.value = myText.length == 9;
+                              if (_isValid.value) {
+                                AdditionalPhoneNumber additionalPhone =
+                                    AdditionalPhoneNumber();
+                                additionalPhone.additionalPhoneNumber =
+                                    phoneNumber.value;
+                                Hive.box<AdditionalPhoneNumber>(
+                                        'additionalPhoneNumber')
+                                    .put('additionalPhoneNumber',
+                                        additionalPhone);
+                              }
+                            },
+                        );
+                      },
+                      itemCount: additionalPhones.value.length,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
-          additionalPhones.value.isNotEmpty
-              ? Container(
-                  width: double.infinity,
-                  height: 50,
-                  padding: const EdgeInsets.only(top: 10),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return n.NikuButton(n.NikuText(
-                        additionalPhones.value[index],
-                        style: n.NikuTextStyle(color: Colors.grey.shade500),
-                      ))
-                        ..bg = Colors.grey.shade200
-                        ..rounded = 15
-                        ..p = 10
-                        ..mx = 2
-                        ..onPressed = () {
-                          String myText = additionalPhones.value[index];
-                          if (myText.contains('+998')) {
-                            myText = myText.replaceAll('+998', '');
-                          }
-                          selectedAdditionalPhone.value = myText;
-                        };
-                    },
-                    itemCount: additionalPhones.value.length,
-                  ),
-                )
-              : const SizedBox(
-                  width: 0,
-                )
-        ]));
+        ],
+      ),
+    );
   }
 }
