@@ -19,17 +19,59 @@ class MessageHandlerPageState extends State<MessageHandlerPage> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   void checkNotificationRouter(RemoteMessage message) {
-    String? route = message.data['route'];
-    if (route != null) {
-      getIt<AppRouter>().pushNamed(route);
+    try {
+      // Validate message source
+      if (!_isValidMessageSource(message)) {
+        print('Warning: Message received from untrusted source');
+        return;
+      }
+
+      String? route = message.data['route'];
+      if (route != null) {
+        // Validate route format
+        if (!_isValidRouteFormat(route)) {
+          print('Warning: Invalid route format: $route');
+          return;
+        }
+
+        final List<String> allowedRoutes = [
+          '/home',
+          '/delivery',
+          '/pickup',
+          '/profile'
+        ];
+
+        if (allowedRoutes.contains(route)) {
+          // Additional validation before navigation
+          if (_isNavigationSafe(route)) {
+            getIt<AppRouter>().pushNamed(route);
+          } else {
+            print('Warning: Navigation blocked due to security check');
+          }
+        } else {
+          print('Warning: Invalid route received: $route');
+        }
+      }
+    } catch (e) {
+      print('Error in checkNotificationRouter: $e');
     }
-    // if (screen == "secondScreen") {
-    //   Navigator.of(context).pushNamed("secondScreen");
-    // } else if (screen == "thirdScreen") {
-    //   Navigator.of(context).pushNamed("thirdScreen");
-    // } else {
-    //   //do nothing
-    // }
+  }
+
+  bool _isValidMessageSource(RemoteMessage message) {
+    // Validate message source (can be expanded based on your requirements)
+    return message.from?.contains('firebase') ?? false;
+  }
+
+  bool _isValidRouteFormat(String route) {
+    // Basic route format validation
+    return route.startsWith('/') &&
+        !route.contains('..') &&
+        !route.contains('//');
+  }
+
+  bool _isNavigationSafe(String route) {
+    // Add additional security checks if needed
+    return true;
   }
 
   @override

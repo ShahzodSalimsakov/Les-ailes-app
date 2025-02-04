@@ -467,7 +467,7 @@ class OrderDetailPage extends HookWidget {
                                           width: 10,
                                         ),
                                         Text(
-                                          'Отследить заказ'.toUpperCase(),
+                                          tr('trackingOrder').toUpperCase(),
                                           style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.bold,

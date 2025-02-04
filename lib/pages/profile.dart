@@ -59,7 +59,7 @@ class _ProfilePageState extends State<ProfilePage> {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${currentUser.userToken}'
       };
-      var url = Uri.https('api.lesailes.uz', '/api/delete');
+      var url = Uri.https('api.lesailes.uz', '/api/logout');
 
       var response = await http.post(url, headers: requestHeaders);
       if (response.statusCode == 200) {
@@ -72,7 +72,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(tr('profile.errorDeleteProfile')),
-              backgroundColor: Colors.red,
+              backgroundColor: AppColors.mainColor,
             ),
           );
         }
@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(tr('profile.errorDeleteProfile')),
-            backgroundColor: Colors.red,
+            backgroundColor: AppColors.mainColor,
           ),
         );
       }

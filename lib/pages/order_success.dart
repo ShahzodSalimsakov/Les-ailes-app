@@ -72,8 +72,8 @@ class OrderSuccess extends HookWidget {
                         n.NikuTextStyle(fontSize: 50, color: AppColors.green),
                   ),
                   n.NikuText(
-                    DateFormat('d MMM, Hm')
-                        .format(DateTime.parse(order.createdAt!)),
+                    DateFormat('d MMMM HH:mm', 'ru')
+                        .format(DateTime.parse(order.createdAt!).toLocal()),
                     style: n.NikuTextStyle(fontSize: 16, color: Colors.grey),
                   ),
                   const SizedBox(
@@ -85,7 +85,7 @@ class OrderSuccess extends HookWidget {
                       tr('orderSuccess.statusLabel'),
                       style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
                     ))
-                      ..bg = AppColors.plum
+                      ..bg = AppColors.mainColor
                       ..rounded = 20
                       ..py = 20
                       ..mx = 34

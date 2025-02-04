@@ -218,5 +218,6 @@
   "notSelectedPickupTerminal": "Не выбран филиал самовывоза",
   "notSelectedDeliveryAddress": "Не указан адрес доставки",
   "notSelectedDeliveryTime": "Не указано время доставки",
-  "notSelectedPayType": "Не указан способ оплаты"
+  "notSelectedPayType": "Не указан способ оплаты",
+  "trackingOrder": "Отследить заказ"
 }

@@ -232,5 +232,6 @@
   "notSelectedDeliveryType": "Not selected delivery type",
   "notSelectedPickupTerminal": "Not selected pickup terminal",
   "notSelectedDeliveryAddress": "Not selected delivery address",
-  "loading": "Loading"
+  "loading": "Loading",
+  "trackingOrder": "Tracking order"
 }
