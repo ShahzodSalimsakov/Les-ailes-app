@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:les_ailes/models/pay_type.dart';
 import 'package:les_ailes/widgets/pay_type/pay_type_list.dart';
@@ -12,6 +11,8 @@ import 'package:niku/niku.dart' as n;
 import '../../models/payment_card_model.dart';
 
 class ChoosePayType extends HookWidget {
+  const ChoosePayType({super.key});
+
   Widget renderPayType(PayType payType, BuildContext context) {
     switch (payType.value) {
       case 'offline':

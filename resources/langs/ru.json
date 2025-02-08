@@ -58,10 +58,16 @@
     "addToOrder": "Добавьте к заказу",
     "willReturn": "Вернется",
     "fromOrder": "от заказа",
-    "addToCart": "Добавить в корзину"
+    "addToCart": "Добавить в корзину",
+    "outOfStock": "Нет в наличии",
+    "notSelectedDeliveryTime": "Не выбран время доставки",
+    "notSelectedPayType": "Не выбран способ оплаты",
+    "deliveryNotAvailable": "Доставка в данной области временно недоступна",
+    "loading": "Загрузка"
   },
   "profile": {
     "profile": "Профиль",
+
     "name": "Имя",
     "birthDay": "Дата рождения",
     "email": "Эл.почта",

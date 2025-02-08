@@ -67,9 +67,11 @@
     "notSelectedDeliveryTime": "Yetkazib berish vaqti tanlanmagan",
     "notSelectedPayType": "To'lov usuli tanlanmagan",
     "deliveryNotAvailable": "Ushbu hududda yetkazib berish vaqtincha mavjud emas",
-    "loading": "Yuklanmoqda"
+    "loading": "Yuklanmoqda",
+    "outOfStock": "Maxsulot mavjud emas"
   },
   "save": "Saqlash",
+
   "profile": {
     "profile": "Profil",
     "name": "Ism",

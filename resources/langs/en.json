@@ -71,7 +71,8 @@
     "notSelectedDeliveryTime": "Not selected delivery time",
     "notSelectedPayType": "Not selected payment method",
     "deliveryNotAvailable": "Delivery in this area is temporarily unavailable",
-    "loading": "Loading"
+    "loading": "Loading",
+    "outOfStock": "Out of stock"
   },
   "profile": {
     "profile": "Profile",

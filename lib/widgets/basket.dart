@@ -30,6 +30,7 @@ import '../models/delivery_type.dart';
 import '../models/order.dart';
 import '../models/pay_cash.dart';
 import '../models/pay_type.dart';
+import '../models/stock.dart';
 import '../models/terminals.dart';
 import '../models/user.dart';
 import '../utils/simplified_url.dart';
@@ -62,6 +63,29 @@ class BasketWidget extends HookWidget {
     Box<DeliveryType> box = Hive.box<DeliveryType>('deliveryType');
     DeliveryType? deliveryType = box.get('deliveryType');
     final loadingItems = useState<Set<int>>({});
+
+    // Check if basket has only out-of-stock items
+    bool hasOnlyOutOfStockItems = useMemoized(() {
+      if (basketData.value?.lines == null || basketData.value!.lines!.isEmpty) {
+        return false;
+      }
+
+      Box<Stock> stockBox = Hive.box<Stock>('stock');
+      Stock? stock = stockBox.get('stock');
+
+      if (stock == null || stock.prodIds.isEmpty) {
+        return false;
+      }
+
+      int outOfStockCount = 0;
+      for (var line in basketData.value!.lines!) {
+        if (stock.prodIds.contains(line.variant!.productId)) {
+          outOfStockCount++;
+        }
+      }
+
+      return outOfStockCount == basketData.value!.lines!.length;
+    }, [basketData.value]);
 
     Future<void> destroyLine(int lineId) async {
       Map<String, String> requestHeaders = {
@@ -175,35 +199,66 @@ class BasketWidget extends HookWidget {
           lineItem.child!.isNotEmpty &&
           lineItem.child![0].variant?.product?.id !=
               lineItem.variant?.product?.boxId) {
+        Box<Stock> stockBox = Hive.box<Stock>('stock');
+        Stock? stock = stockBox.get('stock');
+        bool isInStock = true;
+        if (stock != null && stock.prodIds.isNotEmpty) {
+          if (stock.prodIds.contains(lineItem.variant!.productId)) {
+            isInStock = false;
+          }
+        }
         return Container(
             margin: const EdgeInsets.only(right: 10),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(26), color: Colors.white),
             height: 104,
             width: 104,
-            // margin: EdgeInsets.all(15),
-            child: Image.network(
-              'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-              height: 104,
+            child: Opacity(
+              opacity: isInStock ? 1.0 : 0.5,
+              child: Image.network(
+                'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+                height: 104,
+              ),
             ));
       } else if (lineItem.variant?.product?.assets != null &&
           lineItem.variant!.product!.assets!.isNotEmpty) {
+        Box<Stock> stockBox = Hive.box<Stock>('stock');
+        Stock? stock = stockBox.get('stock');
+        bool isInStock = true;
+        if (stock != null && stock.prodIds.isNotEmpty) {
+          if (stock.prodIds.contains(lineItem.variant!.productId)) {
+            isInStock = false;
+          }
+        }
         return Container(
           margin: const EdgeInsets.only(right: 10),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(26), color: Colors.white),
-          child: Image.network(
-            'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-            width: 104,
-            height: 104,
-            // width: MediaQuery.of(context).size.width / 2.5,
+          child: Opacity(
+            opacity: isInStock ? 1.0 : 0.5,
+            child: Image.network(
+              'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+              width: 104,
+              height: 104,
+            ),
           ),
         );
       } else {
-        return SvgPicture.network(
-          'https://lesailes.uz/no_photo.svg',
-          width: 104,
-          height: 104,
+        Box<Stock> stockBox = Hive.box<Stock>('stock');
+        Stock? stock = stockBox.get('stock');
+        bool isInStock = true;
+        if (stock != null && stock.prodIds.isNotEmpty) {
+          if (stock.prodIds.contains(lineItem.variant!.productId)) {
+            isInStock = false;
+          }
+        }
+        return Opacity(
+          opacity: isInStock ? 1.0 : 0.5,
+          child: SvgPicture.network(
+            'https://lesailes.uz/no_photo.svg',
+            width: 104,
+            height: 104,
+          ),
         );
       }
     }
@@ -211,6 +266,16 @@ class BasketWidget extends HookWidget {
     Widget basketItems(Lines lines) {
       context.locale.toString();
       String? productName = '';
+      Box<Stock> stockBox = Hive.box<Stock>('stock');
+      Stock? stock = stockBox.get('stock');
+      bool isInStock = false;
+
+      if (stock != null && stock.prodIds.isNotEmpty) {
+        if (stock.prodIds.contains(lines.variant!.productId)) {
+          isInStock = true;
+        }
+      }
+
       if (lines.child != null && lines.child!.length > 1) {
         productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
         String childsName = lines.child!
@@ -240,10 +305,22 @@ class BasketWidget extends HookWidget {
                 children: [
                   Text(
                     productName ?? '',
-                    style: const TextStyle(fontSize: 16),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isInStock ? Colors.grey : Colors.black,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (isInStock)
+                    Text(
+                      tr('basket.outOfStock'),
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   const SizedBox(height: 4),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,9 +331,10 @@ class BasketWidget extends HookWidget {
                             symbol: '',
                             decimalDigits: 0,
                           ).format(lines.variant?.price ?? 0)} ${tr('sum')}',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
+                            color: isInStock ? Colors.grey : Colors.black,
                           ),
                         ),
                       ),
@@ -269,18 +347,31 @@ class BasketWidget extends HookWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              icon: const Icon(Icons.remove),
-                              onPressed: () => decreaseQuantity(lines),
+                              icon: Icon(
+                                Icons.remove,
+                                color: isInStock ? Colors.grey : Colors.black,
+                              ),
+                              onPressed: isInStock
+                                  ? null
+                                  : () => decreaseQuantity(lines),
                               padding: const EdgeInsets.all(8),
                               constraints: const BoxConstraints(),
                             ),
                             Text(
                               '${lines.quantity}',
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: isInStock ? Colors.grey : Colors.black,
+                              ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.add),
-                              onPressed: () => increaseQuantity(lines),
+                              icon: Icon(
+                                Icons.add,
+                                color: isInStock ? Colors.grey : Colors.black,
+                              ),
+                              onPressed: isInStock
+                                  ? null
+                                  : () => increaseQuantity(lines),
                               padding: const EdgeInsets.all(8),
                               constraints: const BoxConstraints(),
                             ),
@@ -300,12 +391,27 @@ class BasketWidget extends HookWidget {
     String totalPrice = useMemoized(() {
       var locale = context.locale.toString();
       String result = '0';
-      if (basketData.value != null) {
-        if (deliveryPrice.value > 0) {
-          result = (basketData.value!.total + deliveryPrice.value).toString();
-        } else {
-          result = basketData.value!.total.toString();
+      Box<Stock> stockBox = Hive.box<Stock>('stock');
+      Stock? stock = stockBox.get('stock');
+      double total = 0;
+
+      if (basketData.value != null && basketData.value!.lines != null) {
+        for (var line in basketData.value!.lines!) {
+          bool isInStock = true;
+          if (stock != null && stock.prodIds.isNotEmpty) {
+            if (stock.prodIds.contains(line.variant!.productId)) {
+              isInStock = false;
+            }
+          }
+          if (isInStock) {
+            total += (line.variant?.price ?? 0) * line.quantity;
+          }
         }
+
+        if (deliveryPrice.value > 0) {
+          total += deliveryPrice.value;
+        }
+        result = total.toString();
       }
 
       final formatCurrency = NumberFormat.currency(
@@ -415,6 +521,23 @@ class BasketWidget extends HookWidget {
         }
       }
     }
+
+    // Add listener for delivery type changes
+    useEffect(() {
+      void listener() {
+        if (isMounted.value) {
+          DeliveryType? newDeliveryType = box.get('deliveryType');
+          if (newDeliveryType != null) {
+            getBasket();
+          }
+        }
+      }
+
+      box.listenable().addListener(listener);
+      return () {
+        box.listenable().removeListener(listener);
+      };
+    }, []);
 
     Future<void> fetchRecomendedItems() async {
       if (basket != null && isMounted.value) {
@@ -1500,258 +1623,297 @@ class BasketWidget extends HookWidget {
                           style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.w500),
                         ))
-                    ..bg = AppColors.mainColor
+                    ..bg = hasOnlyOutOfStockItems
+                        ? Colors.grey
+                        : AppColors.mainColor
                     ..color = Colors.white
                     ..mx = 16
                     ..mt = 10
                     ..mb = 28
                     ..py = 15
                     ..rounded = 20
-                    ..onPressed = () async {
-                      _isOrderLoading.value = true;
-                      final hashids = HashIds(
-                        salt: 'order',
-                        minHashLength: 15,
-                        alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
-                      );
-                      Box<DeliveryType> box =
-                          Hive.box<DeliveryType>('deliveryType');
-                      DeliveryType? deliveryType = box.get('deliveryType');
-                      DeliveryLocationData? deliveryLocationData =
-                          Hive.box<DeliveryLocationData>('deliveryLocationData')
-                              .get('deliveryLocationData');
-                      Terminals? currentTerminal =
-                          Hive.box<Terminals>('currentTerminal')
-                              .get('currentTerminal');
-                      DeliverLaterTime? deliverLaterTime =
-                          Hive.box<DeliverLaterTime>('deliveryLaterTime')
-                              .get('deliveryLaterTime');
-                      DeliveryTime? deliveryTime =
-                          Hive.box<DeliveryTime>('deliveryTime')
-                              .get('deliveryTime');
-                      PayType? payType =
-                          Hive.box<PayType>('payType').get('payType');
-                      PayCash? payCash =
-                          Hive.box<PayCash>('payCash').get('payCash');
-                      DeliveryNotes? deliveryNotes =
-                          Hive.box<DeliveryNotes>('deliveryNotes')
-                              .get('deliveryNotes');
-                      AdditionalPhoneNumber? additionalPhoneNumber =
-                          Hive.box<AdditionalPhoneNumber>(
-                                  'additionalPhoneNumber')
-                              .get('additionalPhoneNumber');
+                    ..onPressed = hasOnlyOutOfStockItems
+                        ? null
+                        : () async {
+                            _isOrderLoading.value = true;
+                            final hashids = HashIds(
+                              salt: 'order',
+                              minHashLength: 15,
+                              alphabet: 'abcdefghijklmnopqrstuvwxyz1234567890',
+                            );
+                            Box<DeliveryType> box =
+                                Hive.box<DeliveryType>('deliveryType');
+                            DeliveryType? deliveryType =
+                                box.get('deliveryType');
+                            DeliveryLocationData? deliveryLocationData =
+                                Hive.box<DeliveryLocationData>(
+                                        'deliveryLocationData')
+                                    .get('deliveryLocationData');
+                            Terminals? currentTerminal =
+                                Hive.box<Terminals>('currentTerminal')
+                                    .get('currentTerminal');
+                            DeliverLaterTime? deliverLaterTime =
+                                Hive.box<DeliverLaterTime>('deliveryLaterTime')
+                                    .get('deliveryLaterTime');
+                            DeliveryTime? deliveryTime =
+                                Hive.box<DeliveryTime>('deliveryTime')
+                                    .get('deliveryTime');
+                            PayType? payType =
+                                Hive.box<PayType>('payType').get('payType');
+                            PayCash? payCash =
+                                Hive.box<PayCash>('payCash').get('payCash');
+                            DeliveryNotes? deliveryNotes =
+                                Hive.box<DeliveryNotes>('deliveryNotes')
+                                    .get('deliveryNotes');
+                            AdditionalPhoneNumber? additionalPhoneNumber =
+                                Hive.box<AdditionalPhoneNumber>(
+                                        'additionalPhoneNumber')
+                                    .get('additionalPhoneNumber');
 
-                      PaymentCardModel? paymentCardModel =
-                          Hive.box<PaymentCardModel>('paymentCardModel')
-                              .get('paymentCardModel');
-                      // Check deliveryType is chosen
-                      if (deliveryType == null) {
-                        _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(tr('notSelectedDeliveryType'))));
-                        return;
-                      }
+                            PaymentCardModel? paymentCardModel =
+                                Hive.box<PaymentCardModel>('paymentCardModel')
+                                    .get('paymentCardModel');
+                            // Check deliveryType is chosen
+                            if (deliveryType == null) {
+                              _isOrderLoading.value = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text(tr('notSelectedDeliveryType'))));
+                              return;
+                            }
 
-                      //Check pickup terminal
-                      if (deliveryType.value == DeliveryTypeEnum.pickup) {
-                        if (currentTerminal == null) {
-                          _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(tr('notSelectedPickupTerminal'))));
-                          return;
-                        }
-                      }
+                            //Check pickup terminal
+                            if (deliveryType.value == DeliveryTypeEnum.pickup) {
+                              if (currentTerminal == null) {
+                                _isOrderLoading.value = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            tr('notSelectedPickupTerminal'))));
+                                return;
+                              }
+                            }
 
-                      // Check delivery address
-                      if (deliveryType.value == DeliveryTypeEnum.deliver) {
-                        if (deliveryLocationData == null) {
-                          _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(tr('notSelectedDeliveryAddress'))));
-                          return;
-                        } else if (deliveryLocationData.address == null) {
-                          _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(tr('notSelectedDeliveryAddress'))));
-                          return;
-                        }
-                      }
+                            // Check delivery address
+                            if (deliveryType.value ==
+                                DeliveryTypeEnum.deliver) {
+                              if (deliveryLocationData == null) {
+                                _isOrderLoading.value = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            tr('notSelectedDeliveryAddress'))));
+                                return;
+                              } else if (deliveryLocationData.address == null) {
+                                _isOrderLoading.value = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            tr('notSelectedDeliveryAddress'))));
+                                return;
+                              }
+                            }
 
-                      // Check delivery time selected
+                            // Check delivery time selected
 
-                      if (deliveryTime == null) {
-                        _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(tr('notSelectedDeliveryTime'))));
-                        return;
-                      } else if (deliveryTime.value == DeliveryTimeEnum.later) {
-                        if (deliverLaterTime == null) {
-                          _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(tr('notSelectedDeliveryTime'))));
-                          return;
-                        } else if (deliverLaterTime.value.length == 0) {
-                          _isOrderLoading.value = false;
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              content: Text(tr('notSelectedDeliveryTime'))));
-                          return;
-                        }
-                      }
+                            if (deliveryTime == null) {
+                              _isOrderLoading.value = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content:
+                                          Text(tr('notSelectedDeliveryTime'))));
+                              return;
+                            } else if (deliveryTime.value ==
+                                DeliveryTimeEnum.later) {
+                              if (deliverLaterTime == null) {
+                                _isOrderLoading.value = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            tr('notSelectedDeliveryTime'))));
+                                return;
+                              } else if (deliverLaterTime.value.length == 0) {
+                                _isOrderLoading.value = false;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            tr('notSelectedDeliveryTime'))));
+                                return;
+                              }
+                            }
 
-                      if (payType == null) {
-                        _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(tr('notSelectedPayType'))));
-                        return;
-                      }
+                            if (payType == null) {
+                              _isOrderLoading.value = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(tr('notSelectedPayType'))));
+                              return;
+                            }
 
-                      Basket? basket = Hive.box<Basket>('basket').get('basket');
-                      Box userBox = Hive.box<User>('user');
-                      User? user = userBox.get('user');
+                            Basket? basket =
+                                Hive.box<Basket>('basket').get('basket');
+                            Box userBox = Hive.box<User>('user');
+                            User? user = userBox.get('user');
 
-                      Map<String, String> requestHeaders = {
-                        'Content-type': 'application/json',
-                        'Accept': 'application/json'
-                      };
+                            Map<String, String> requestHeaders = {
+                              'Content-type': 'application/json',
+                              'Accept': 'application/json'
+                            };
 
-                      if (user != null) {
-                        requestHeaders['Authorization'] =
-                            'Bearer ${user.userToken}';
-                      }
+                            if (user != null) {
+                              requestHeaders['Authorization'] =
+                                  'Bearer ${user.userToken}';
+                            }
 
-                      var url = Uri.https('api.lesailes.uz', '/api/orders');
-                      Map<String, dynamic> formData = {
-                        'basket_id': basket!.encodedId,
-                        'formData': <String, dynamic>{
-                          'address': '',
-                          'flat': '',
-                          'house': '',
-                          'entrance': '',
-                          'door_code': '',
-                          'deliveryType': '',
-                          'sourceType': "app"
-                        }
-                      };
-                      if (deliveryType.value == DeliveryTypeEnum.deliver) {
-                        formData['formData']['address'] =
-                            deliveryLocationData!.address;
-                        formData['formData']['flat'] =
-                            deliveryLocationData.flat ?? '';
-                        formData['formData']['house'] =
-                            deliveryLocationData.house ?? '';
-                        formData['formData']['entrance'] =
-                            deliveryLocationData.entrance ?? '';
-                        formData['formData']['door_code'] =
-                            deliveryLocationData.doorCode ?? '';
-                        formData['formData']['deliveryType'] = 'deliver';
-                        formData['formData']['location'] = [
-                          deliveryLocationData.lat,
-                          deliveryLocationData.lon
-                        ];
-                      } else {
-                        formData['formData']['deliveryType'] = 'pickup';
-                      }
+                            var url =
+                                Uri.https('api.lesailes.uz', '/api/orders');
+                            Map<String, dynamic> formData = {
+                              'basket_id': basket!.encodedId,
+                              'formData': <String, dynamic>{
+                                'address': '',
+                                'flat': '',
+                                'house': '',
+                                'entrance': '',
+                                'door_code': '',
+                                'deliveryType': '',
+                                'sourceType': "app"
+                              }
+                            };
+                            if (deliveryType.value ==
+                                DeliveryTypeEnum.deliver) {
+                              formData['formData']['address'] =
+                                  deliveryLocationData!.address;
+                              formData['formData']['flat'] =
+                                  deliveryLocationData.flat ?? '';
+                              formData['formData']['house'] =
+                                  deliveryLocationData.house ?? '';
+                              formData['formData']['entrance'] =
+                                  deliveryLocationData.entrance ?? '';
+                              formData['formData']['door_code'] =
+                                  deliveryLocationData.doorCode ?? '';
+                              formData['formData']['deliveryType'] = 'deliver';
+                              formData['formData']['location'] = [
+                                deliveryLocationData.lat,
+                                deliveryLocationData.lon
+                              ];
+                            } else {
+                              formData['formData']['deliveryType'] = 'pickup';
+                            }
 
-                      formData['formData']['terminal_id'] =
-                          currentTerminal!.id.toString();
-                      formData['formData']['name'] = user!.name;
-                      formData['formData']['phone'] = user!.phone;
-                      formData['formData']['email'] = '';
-                      formData['formData']['change'] = '';
-                      formData['formData']['notes'] = '';
-                      formData['formData']['delivery_day'] = '';
-                      formData['formData']['delivery_time'] = '';
-                      formData['formData']['delivery_schedule'] = 'now';
-                      formData['formData']['sms_sub'] = false;
-                      formData['formData']['email_sub'] = false;
-                      formData['formData']['additionalPhone'] =
-                          additionalPhoneNumber?.additionalPhoneNumber ?? '';
-                      if (deliveryTime.value == DeliveryTimeEnum.later) {
-                        formData['formData']['delivery_schedule'] = 'later';
-                        formData['formData']['delivery_time'] =
-                            deliveryTime.value;
-                      }
+                            formData['formData']['terminal_id'] =
+                                currentTerminal!.id.toString();
+                            formData['formData']['name'] = user!.name;
+                            formData['formData']['phone'] = user!.phone;
+                            formData['formData']['email'] = '';
+                            formData['formData']['change'] = '';
+                            formData['formData']['notes'] = '';
+                            formData['formData']['delivery_day'] = '';
+                            formData['formData']['delivery_time'] = '';
+                            formData['formData']['delivery_schedule'] = 'now';
+                            formData['formData']['sms_sub'] = false;
+                            formData['formData']['email_sub'] = false;
+                            formData['formData']['additionalPhone'] =
+                                additionalPhoneNumber?.additionalPhoneNumber ??
+                                    '';
+                            if (deliveryTime.value == DeliveryTimeEnum.later) {
+                              formData['formData']['delivery_schedule'] =
+                                  'later';
+                              formData['formData']['delivery_time'] =
+                                  deliveryTime.value;
+                            }
 
-                      if (payCash != null) {
-                        formData['formData']['change'] = payCash.value;
-                      }
+                            if (payCash != null) {
+                              formData['formData']['change'] = payCash.value;
+                            }
 
-                      if (deliveryNotes != null) {
-                        formData['formData']['notes'] =
-                            deliveryNotes!.deliveryNotes;
-                      }
+                            if (deliveryNotes != null) {
+                              formData['formData']['notes'] =
+                                  deliveryNotes!.deliveryNotes;
+                            }
 
-                      if (payType != null) {
-                        formData['formData']['pay_type'] = payType.value;
-                      } else {
-                        formData['formData']['pay_type'] = 'offline';
-                      }
+                            if (payType != null) {
+                              formData['formData']['pay_type'] = payType.value;
+                            } else {
+                              formData['formData']['pay_type'] = 'offline';
+                            }
 
-                      if (formData['formData']['pay_type'] == 'card' &&
-                          paymentCardModel != null) {
-                        formData['formData']['cardId'] = paymentCardModel.id;
-                      }
+                            if (formData['formData']['pay_type'] == 'card' &&
+                                paymentCardModel != null) {
+                              formData['formData']['cardId'] =
+                                  paymentCardModel.id;
+                            }
 
-                      var response = await http.post(url,
-                          headers: requestHeaders, body: jsonEncode(formData));
-                      if (response.statusCode == 200 ||
-                          response.statusCode == 201) {
-                        var json = jsonDecode(response.body);
+                            var response = await http.post(url,
+                                headers: requestHeaders,
+                                body: jsonEncode(formData));
+                            if (response.statusCode == 200 ||
+                                response.statusCode == 201) {
+                              var json = jsonDecode(response.body);
 
-                        Map<String, String> requestHeaders = {
-                          'Content-type': 'application/json',
-                          'Accept': 'application/json'
-                        };
+                              Map<String, String> requestHeaders = {
+                                'Content-type': 'application/json',
+                                'Accept': 'application/json'
+                              };
 
-                        requestHeaders['Authorization'] =
-                            'Bearer ${user.userToken}';
+                              requestHeaders['Authorization'] =
+                                  'Bearer ${user.userToken}';
 
-                        url = Uri.https('api.lesailes.uz', '/api/orders',
-                            {'id': json['order']['id']});
+                              url = Uri.https('api.lesailes.uz', '/api/orders',
+                                  {'id': json['order']['id']});
 
-                        response = await http.get(url, headers: requestHeaders);
-                        if (response.statusCode == 200 ||
-                            response.statusCode == 201) {
-                          json = jsonDecode(response.body);
-                          Order order = Order.fromJson(json);
-                          await Hive.box<Basket>('basket').delete('basket');
-                          await Hive.box<DeliveryType>('deliveryType')
-                              .delete('deliveryType');
-                          await Hive.box<DeliveryLocationData>(
-                                  'deliveryLocationData')
-                              .delete('deliveryLocationData');
-                          await Hive.box<Terminals>('currentTerminal')
-                              .delete('currentTerminal');
-                          await Hive.box<DeliverLaterTime>('deliveryLaterTime')
-                              .delete('deliveryLaterTime');
-                          await Hive.box<DeliveryTime>('deliveryTime')
-                              .delete('deliveryTime');
-                          await Hive.box<PayType>('payType').delete('payType');
-                          await Hive.box<PayCash>('payCash').delete('payCash');
-                          await Hive.box<DeliveryNotes>('deliveryNotes')
-                              .delete('deliveryNotes');
+                              response =
+                                  await http.get(url, headers: requestHeaders);
+                              if (response.statusCode == 200 ||
+                                  response.statusCode == 201) {
+                                json = jsonDecode(response.body);
+                                Order order = Order.fromJson(json);
+                                await Hive.box<Basket>('basket')
+                                    .delete('basket');
+                                await Hive.box<DeliveryType>('deliveryType')
+                                    .delete('deliveryType');
+                                await Hive.box<DeliveryLocationData>(
+                                        'deliveryLocationData')
+                                    .delete('deliveryLocationData');
+                                await Hive.box<Terminals>('currentTerminal')
+                                    .delete('currentTerminal');
+                                await Hive.box<DeliverLaterTime>(
+                                        'deliveryLaterTime')
+                                    .delete('deliveryLaterTime');
+                                await Hive.box<DeliveryTime>('deliveryTime')
+                                    .delete('deliveryTime');
+                                await Hive.box<PayType>('payType')
+                                    .delete('payType');
+                                await Hive.box<PayCash>('payCash')
+                                    .delete('payCash');
+                                await Hive.box<DeliveryNotes>('deliveryNotes')
+                                    .delete('deliveryNotes');
+                                await Hive.box<Stock>('stock').delete('stock');
 
-                          Box<BasketItemQuantity> basketItemQuantityBox =
-                              Hive.box<BasketItemQuantity>(
-                                  'basketItemQuantity');
-                          await basketItemQuantityBox.clear();
-                          Navigator.of(context).pop();
-                          showBarModalBottomSheet(
-                              expand: false,
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) => OrderSuccess(order: order));
+                                Box<BasketItemQuantity> basketItemQuantityBox =
+                                    Hive.box<BasketItemQuantity>(
+                                        'basketItemQuantity');
+                                await basketItemQuantityBox.clear();
+                                Navigator.of(context).pop();
+                                showBarModalBottomSheet(
+                                    expand: false,
+                                    context: context,
+                                    backgroundColor: Colors.transparent,
+                                    builder: (context) =>
+                                        OrderSuccess(order: order));
 
-                          _isOrderLoading.value = false;
-                        }
-                      } else {
-                        var errResponse = jsonDecode(response.body);
-                        _isOrderLoading.value = false;
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(errResponse['error']['message'])));
-                        return;
-                      }
-                    },
+                                _isOrderLoading.value = false;
+                              }
+                            } else {
+                              var errResponse = jsonDecode(response.body);
+                              _isOrderLoading.value = false;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                      content: Text(
+                                          errResponse['error']['message'])));
+                              return;
+                            }
+                          },
                 ))
           ],
         ),

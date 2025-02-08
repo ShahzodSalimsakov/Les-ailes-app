@@ -7,13 +7,16 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:les_ailes/models/delivery_location_data.dart';
+import 'package:les_ailes/models/pay_type.dart';
+import 'package:les_ailes/models/stock.dart';
+import 'package:les_ailes/models/terminals.dart';
 import 'package:les_ailes/utils/colors.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../models/delivery_type.dart';
 
 class ChooseCity extends HookWidget {
-  const ChooseCity({Key? key}) : super(key: key);
+  const ChooseCity({super.key});
 
   Widget cityModal(BuildContext context, List<City> cities) {
     City? currentCity = Hive.box<City>('currentCity').get('currentCity');
@@ -85,6 +88,13 @@ class ChooseCity extends HookWidget {
                         Box<DeliveryType> box =
                             Hive.box<DeliveryType>('deliveryType');
                         box.delete('deliveryType');
+                        Box<Terminals> terminalsBox =
+                            Hive.box<Terminals>('currentTerminal');
+                        terminalsBox.delete('currentTerminal');
+                        Box<PayType> payTypeBox = Hive.box<PayType>('payType');
+                        payTypeBox.delete('payType');
+                        Box<Stock> stockBox = Hive.box<Stock>('stock');
+                        stockBox.delete('stock');
                         Navigator.of(context).pop();
                       },
                     );
