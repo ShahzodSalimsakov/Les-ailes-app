@@ -10,6 +10,7 @@ import 'package:hashids2/hashids2.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
+import 'package:les_ailes/widgets/bonusProductsList.dart';
 import 'package:les_ailes/widgets/productCardModal.dart';
 import 'package:niku/niku.dart' as n;
 
@@ -261,6 +262,42 @@ class ProductCard extends HookWidget {
           newBasketItemQuantity.lineId = line.id;
           newBasketItemQuantity.quantity = 1;
           await basketItemQuantityBox.put(product!.id, newBasketItemQuantity);
+
+          if (line.isDoubleParent == 1) {
+            var bounusUrl = Uri.https(
+                'api.lesailes.uz', '/api/products/bonus', {
+              'basket_id': basket.encodedId,
+              'parent_product_id': product!.id.toString()
+            });
+            var bonusResponse =
+                await http.get(bounusUrl, headers: requestHeaders);
+            if (bonusResponse.statusCode == 200 ||
+                bonusResponse.statusCode == 201) {
+              var bonusJson = jsonDecode(bonusResponse.body);
+              List<Items> bonusItems = bonusJson['data']
+                  .map<Items>((m) => new Items.fromJson(m))
+                  .toList();
+              print(bonusItems);
+              showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0),
+                      topRight: Radius.circular(24.0),
+                    ),
+                  ),
+                  builder: (BuildContext builder) {
+                    return Container(
+                      height: MediaQuery.of(context).size.height * 0.85,
+                      child: BonusProductsList(
+                        bonusItems: bonusItems,
+                        parentProductId: product!.id,
+                      ),
+                    );
+                  });
+            }
+          }
         }
       } else {
         Map<String, String> requestHeaders = {

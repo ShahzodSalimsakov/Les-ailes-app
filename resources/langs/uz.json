@@ -231,5 +231,16 @@
   "notSelectedDeliveryTime": "Yetkazib berish vaqti tanlang",
   "notSelectedPayType": "To'lov usulini tanlang",
   "deliveryNotAvailable": "Bu manzilga yetkazib berish xizmati hozirda yopiq",
-  "trackingOrder": "Buyurtmani kuzatish"
+  "trackingOrder": "Buyurtmani kuzatish",
+  "bonusList": {
+    "choose_bonus_item": "Bonus mahsulotni tanlang",
+    "select_complimentary_item": "Buyurtmangizga qo'shish uchun bepul mahsulotni tanlang",
+    "free": "Bepul",
+    "select_bonus_item": "Bonus mahsulotni tanlang",
+    "add_to_basket": "Savatga qo'shish",
+    "added_to_basket": "savatga qo'shildi",
+    "basket_not_found": "Savat topilmadi",
+    "failed_to_add": "Mahsulotni qo'shib bo'lmadi",
+    "error": "Xato"
+  }
 }

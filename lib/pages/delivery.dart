@@ -32,6 +32,8 @@ class _DeliveryPageState extends State<DeliveryPage> {
       const MapAnimation(type: MapAnimationType.smooth, duration: 1.5);
   bool zoomGesturesEnabled = true;
 
+  final ValueNotifier<double> iconScale = ValueNotifier<double>(3.0);
+
   final ValueNotifier<List<MapObject>> mapObjects =
       ValueNotifier<List<MapObject>>([]);
   final ValueNotifier<bool> isLookingLocation = ValueNotifier<bool>(false);
@@ -44,6 +46,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
     mapObjects.dispose();
     isLookingLocation.dispose();
     currentPoint.dispose();
+    iconScale.dispose();
     super.dispose();
   }
 
@@ -112,7 +115,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
             image:
                 BitmapDescriptor.fromAssetImage('images/location_picker.png'),
             rotationType: RotationType.noRotation,
-            scale: 3,
+            scale: iconScale.value,
             anchor: Offset.fromDirection(1.1, 1))));
 
     if (!mounted) return;
@@ -127,6 +130,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 longitude: _locationData.longitude!),
             zoom: 17)),
         animation: animation);
+
+    // Update icon scale based on zoom level
+    _updateIconScaleForZoom(17);
 
     if (!mounted) return;
     isLookingLocation.value = false;
@@ -144,7 +150,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
             image:
                 BitmapDescriptor.fromAssetImage('images/location_picker.png'),
             rotationType: RotationType.noRotation,
-            scale: 3,
+            scale: iconScale.value,
             anchor: Offset.fromDirection(1.1, 1))));
 
     if (!mounted) return;
@@ -154,6 +160,47 @@ class _DeliveryPageState extends State<DeliveryPage> {
     await controller.moveCamera(
         CameraUpdate.newCameraPosition(CameraPosition(target: point, zoom: 17)),
         animation: animation);
+
+    // Update icon scale based on zoom level
+    _updateIconScaleForZoom(17);
+  }
+
+  // Add a method to update the icon scale based on zoom level
+  void _updateIconScaleForZoom(double zoom) {
+    // Calculate appropriate scale based on zoom level using our helper method
+    double newScale = _calculateScaleForZoom(zoom);
+
+    // Update the scale value
+    iconScale.value = newScale;
+
+    // Update the map marker with the new scale
+    if (currentPoint.value != null) {
+      var _placemark = PlacemarkMapObject(
+          mapId: placemarkId,
+          point: currentPoint.value!,
+          opacity: 0.7,
+          direction: 90,
+          icon: PlacemarkIcon.single(PlacemarkIconStyle(
+              image:
+                  BitmapDescriptor.fromAssetImage('images/location_picker.png'),
+              rotationType: RotationType.noRotation,
+              scale: newScale,
+              anchor: Offset.fromDirection(1.1, 1))));
+
+      updateMapObjects([_placemark]);
+    }
+  }
+
+  double _calculateScaleForZoom(double zoom) {
+    if (zoom <= 10) {
+      return 1.5; // Small scale for zoomed out view
+    } else if (zoom <= 14) {
+      return 2.0; // Medium scale for medium zoom
+    } else if (zoom <= 16) {
+      return 2.5; // Larger scale for closer zoom
+    } else {
+      return 3.0; // Full scale for closest zoom
+    }
   }
 
   @override
@@ -184,6 +231,11 @@ class _DeliveryPageState extends State<DeliveryPage> {
                 return YandexMap(
                   mapObjects: value,
                   zoomGesturesEnabled: zoomGesturesEnabled,
+                  onCameraPositionChanged: (cameraPosition, reason, finished) {
+                    if (finished) {
+                      _updateIconScaleForZoom(cameraPosition.zoom);
+                    }
+                  },
                   onMapCreated:
                       (YandexMapController yandexMapController) async {
                     controller = yandexMapController;
@@ -199,6 +251,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             zoom: 12)),
                         animation: animation);
 
+                    // Update icon scale for initial zoom
+                    _updateIconScaleForZoom(12);
+
                     if (widget.geoData != null) {
                       if (!mounted) return;
                       var _placemark = PlacemarkMapObject(
@@ -212,7 +267,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                               image: BitmapDescriptor.fromAssetImage(
                                   'images/location_picker.png'),
                               rotationType: RotationType.noRotation,
-                              scale: 3,
+                              scale: iconScale.value,
                               anchor: Offset.fromDirection(1.1, 1))));
 
                       updateMapObjects([_placemark]);
@@ -231,6 +286,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                       widget.geoData!.coordinates.long)),
                               zoom: 17)),
                           animation: animation);
+
+                      // Update icon scale for new zoom
+                      _updateIconScaleForZoom(17);
                     } else {
                       Location location = Location();
 
@@ -269,7 +327,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                 image: BitmapDescriptor.fromAssetImage(
                                     'images/location_picker.png'),
                                 rotationType: RotationType.noRotation,
-                                scale: 3,
+                                scale: iconScale.value,
                                 anchor: Offset.fromDirection(1.1, 1))));
 
                         updateMapObjects([_placemark]);
@@ -284,6 +342,9 @@ class _DeliveryPageState extends State<DeliveryPage> {
                                     longitude: _locationData.longitude!),
                                 zoom: 17)),
                             animation: animation);
+
+                        // Update icon scale for new zoom
+                        _updateIconScaleForZoom(17);
                       }
                     }
                     if (!mounted) return;
@@ -291,6 +352,14 @@ class _DeliveryPageState extends State<DeliveryPage> {
                   },
                   onMapTap: (point) async {
                     if (!mounted) return;
+
+                    // Get current zoom level to maintain it
+                    final cameraPosition = await controller.getCameraPosition();
+                    final currentZoom = cameraPosition.zoom;
+
+                    // Update icon scale based on current zoom
+                    iconScale.value = _calculateScaleForZoom(currentZoom);
+
                     var _placemark = PlacemarkMapObject(
                         mapId: placemarkId,
                         point: point,
@@ -300,7 +369,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
                             image: BitmapDescriptor.fromAssetImage(
                                 'images/location_picker.png'),
                             rotationType: RotationType.noRotation,
-                            scale: 3,
+                            scale: iconScale.value,
                             anchor: Offset.fromDirection(1.1, 1))));
 
                     updateMapObjects([_placemark]);
@@ -308,7 +377,7 @@ class _DeliveryPageState extends State<DeliveryPage> {
 
                     await controller.moveCamera(
                         CameraUpdate.newCameraPosition(
-                            CameraPosition(target: point, zoom: 17)),
+                            CameraPosition(target: point, zoom: currentZoom)),
                         animation: animation);
                   },
                 );

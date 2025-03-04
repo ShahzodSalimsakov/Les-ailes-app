@@ -31,7 +31,7 @@ class DeliveryBottomSheet extends HookWidget {
     final currentTerminal = useState<Terminals?>(null);
     final isMounted = useRef(true);
     final isLoading = useState(false);
-    final addressLoadingNotifier = useState(ValueNotifier<bool>(false));
+    final addressLoadingNotifier = useState<bool>(false);
     final notFoundText = useState<String>('nearest_terminal_not_found');
     final Box<DeliveryLocationData> deliveryLocationBox =
         Hive.box<DeliveryLocationData>('deliveryLocationData');
@@ -126,7 +126,7 @@ class DeliveryBottomSheet extends HookWidget {
             n.NikuButton(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                if (isLoading.value || addressLoadingNotifier.value.value) ...[
+                if (isLoading.value || addressLoadingNotifier.value) ...[
                   SizedBox(
                     width: MediaQuery.of(context).size.width * 0.7,
                     child: Row(
@@ -172,10 +172,28 @@ class DeliveryBottomSheet extends HookWidget {
                     expand: false,
                     context: context,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => AddressSearchModal(
-                          onSetLocation: onSetLocation,
-                          isAddressLoading: addressLoadingNotifier.value,
-                        ));
+                    builder: (context) {
+                      final loadingNotifier = ValueNotifier<bool>(false);
+
+                      loadingNotifier.addListener(() {
+                        if (isMounted.value) {
+                          addressLoadingNotifier.value = loadingNotifier.value;
+                        }
+                      });
+
+                      void Function(Point)? wrappedOnSetLocation;
+                      if (onSetLocation != null) {
+                        wrappedOnSetLocation = (Point point) {
+                          addressLoadingNotifier.value = true;
+                          onSetLocation!(point);
+                        };
+                      }
+
+                      return AddressSearchModal(
+                        onSetLocation: wrappedOnSetLocation,
+                        isAddressLoading: loadingNotifier,
+                      );
+                    });
               },
             Container(
               width: double.infinity,
@@ -186,14 +204,14 @@ class DeliveryBottomSheet extends HookWidget {
                 style: n.NikuTextStyle(color: Colors.white, fontSize: 20),
               ))
                 ..bg = isLoading.value ||
-                        addressLoadingNotifier.value.value ||
+                        addressLoadingNotifier.value ||
                         currentTerminal.value == null
                     ? Colors.grey.shade200
                     : AppColors.mainColor
                 ..rounded = 20
                 ..onPressed = () {
                   if (isLoading.value ||
-                      addressLoadingNotifier.value.value ||
+                      addressLoadingNotifier.value ||
                       currentTerminal.value == null) {
                     return;
                   }

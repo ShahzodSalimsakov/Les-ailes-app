@@ -145,6 +145,17 @@ class ProductCardModal extends HookWidget {
       );
     }
 
+    Future<void> _showBonusProducts(
+        BuildContext context, String basketId, int productId) async {
+      var url = SimplifiedUri.uri('https://api.lesailes.uz/api/products/bonus',
+          {'basket_id': basketId, 'parent_product_id': productId});
+      var response = await http.get(url);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        var json = jsonDecode(response.body);
+        print(json);
+      }
+    }
+
     Future<void> addToBasket(int productId, int index) async {
       if (loadingStates.value[productId] == true || !isMounted.value) return;
 
@@ -180,6 +191,7 @@ class ProductCardModal extends HookWidget {
           if (response.statusCode == 200 || response.statusCode == 201) {
             await _updateBasket(response);
             _showSuccessMessage(context);
+            _showBonusProducts(context, basket.encodedId, productId);
           } else {
             _showErrorMessage(context);
           }
@@ -197,6 +209,10 @@ class ProductCardModal extends HookWidget {
           if (response.statusCode == 200 || response.statusCode == 201) {
             await _updateBasket(response);
             _showSuccessMessage(context);
+
+            var json = jsonDecode(response.body);
+            BasketData basketData = BasketData.fromJson(json['data']);
+            _showBonusProducts(context, basketData.encodedId ?? '', productId);
           } else {
             _showErrorMessage(context);
           }

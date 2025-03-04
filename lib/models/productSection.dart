@@ -145,7 +145,7 @@ class Items {
   late int groupPricing;
   Null draftedAt;
   Null draftParentId;
-  late String customName;
+  late String? customName;
   late int? productId;
   late String? customNameUz;
   late String? customNameEn;
@@ -168,7 +168,7 @@ class Items {
     required this.groupPricing,
     this.draftedAt,
     this.draftParentId,
-    required this.customName,
+    this.customName,
     this.productId,
     this.customNameUz,
     this.customNameEn,

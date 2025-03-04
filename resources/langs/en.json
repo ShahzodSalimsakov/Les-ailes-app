@@ -234,5 +234,16 @@
   "notSelectedPickupTerminal": "Not selected pickup terminal",
   "notSelectedDeliveryAddress": "Not selected delivery address",
   "loading": "Loading",
-  "trackingOrder": "Tracking order"
+  "trackingOrder": "Tracking order",
+  "bonusList": {
+    "choose_bonus_item": "Choose Your Bonus Item",
+    "select_complimentary_item": "Select one complimentary item to add to your order",
+    "free": "Free",
+    "select_bonus_item": "Select a Bonus Item",
+    "add_to_basket": "Add to Basket",
+    "added_to_basket": "Added {0} to basket",
+    "basket_not_found": "Basket not found",
+    "failed_to_add": "Failed to add item",
+    "error": "Error"
+  }
 }

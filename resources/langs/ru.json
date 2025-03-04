@@ -225,5 +225,16 @@
   "notSelectedDeliveryAddress": "Не указан адрес доставки",
   "notSelectedDeliveryTime": "Не указано время доставки",
   "notSelectedPayType": "Не указан способ оплаты",
-  "trackingOrder": "Отследить заказ"
+  "trackingOrder": "Отслеживание заказа",
+  "bonusList": {
+    "choose_bonus_item": "Выберите бонусный товар",
+    "select_complimentary_item": "Выберите один бесплатный товар к вашему заказу",
+    "free": "Бесплатно",
+    "select_bonus_item": "Выберите бонусный товар",
+    "add_to_basket": "Добавить в корзину",
+    "added_to_basket": "Товар добавлен в корзину",
+    "basket_not_found": "Корзина не найдена",
+    "failed_to_add": "Не удалось добавить товар",
+    "error": "Ошибка"
+  }
 }

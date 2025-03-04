@@ -35,20 +35,51 @@ class AddressSearchModal extends HookWidget {
       DeliveryLocationData location, BuildContext context) async {
     final navigatorContext = context;
     try {
+      // Set loading state to true immediately
       isAddressLoading.value = true;
+
+      // Add a small delay to ensure the loading state is visible
+      await Future.delayed(const Duration(milliseconds: 300));
+
       if (onSetLocation != null &&
           location.lat != null &&
           location.lon != null) {
-        onSetLocation!(Point(
-          latitude: location.lat!,
-          longitude: location.lon!,
-        ));
+        try {
+          // Create a Point object with the location coordinates
+          final point = Point(
+            latitude: location.lat!,
+            longitude: location.lon!,
+          );
+
+          // Call the onSetLocation callback with a timeout
+          await Future.microtask(() => onSetLocation!(point))
+              .timeout(const Duration(seconds: 2), onTimeout: () {
+            print('Location setting timed out, but continuing');
+          });
+        } catch (e) {
+          print('Error setting location: $e');
+        }
       }
+
+      // Add a small delay before resetting loading state to ensure animation is visible
+      await Future.delayed(const Duration(milliseconds: 300));
+
+      // Ensure loading state is reset before navigation
+      isAddressLoading.value = false;
+
+      // Navigate back
       if (navigatorContext.mounted) {
         Navigator.of(navigatorContext).pop();
       }
-    } finally {
+    } catch (e) {
+      print('Error in onSavedAddressClick: $e');
+      // Ensure loading state is reset in case of error
       isAddressLoading.value = false;
+
+      // Try to navigate back even if there was an error
+      if (navigatorContext.mounted) {
+        Navigator.of(navigatorContext).pop();
+      }
     }
   }
 
@@ -87,10 +118,10 @@ class AddressSearchModal extends HookWidget {
         'Accept': 'application/json'
       };
       String prefix = '${currentCity!.name}, ';
-      query = '${query}${prefix}';
-      var url =
-          Uri.https('api.lesailes.uz', 'api/geocode/query', {'query': query});
-      queryText.value = query;
+      String formattedQuery = '$prefix$query';
+      var url = Uri.https(
+          'api.lesailes.uz', 'api/geocode/query', {'query': formattedQuery});
+      queryText.value = formattedQuery;
       var response = await http.get(url, headers: requestHeaders);
       if (response.statusCode == 200) {
         var json = jsonDecode(response.body);
@@ -178,6 +209,7 @@ class AddressSearchModal extends HookWidget {
             itemBuilder: (context, index) {
               return ListTile(
                 onTap: () {
+                  final currentContext = context;
                   onSavedAddressClick(
                       DeliveryLocationData(
                         house: '',
@@ -191,10 +223,7 @@ class AddressSearchModal extends HookWidget {
                             suggestedData.value[index].coordinates.long),
                         address: suggestedData.value[index].description,
                       ),
-                      context);
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
+                      currentContext);
                 },
                 title: Text(suggestedData.value[index].title),
                 subtitle: Text(suggestedData.value[index].description),
