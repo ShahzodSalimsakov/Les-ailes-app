@@ -207,19 +207,132 @@ class BasketWidget extends HookWidget {
             isInStock = false;
           }
         }
+
+        // Create a container with both main product and child product images
         return Container(
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(26), color: Colors.white),
-            height: 104,
-            width: 104,
-            child: Opacity(
-              opacity: isInStock ? 1.0 : 0.5,
-              child: Image.network(
-                'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-                height: 104,
-              ),
-            ));
+          margin: const EdgeInsets.only(right: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(26),
+            color: Colors.white,
+          ),
+          height: 104,
+          width: 104,
+          child: Opacity(
+            opacity: isInStock ? 1.0 : 0.5,
+            child: Stack(
+              children: [
+                // Left side - Main product image
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  width: 70,
+                  height: 104,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child: lineItem.variant?.product?.assets != null &&
+                            lineItem.variant!.product!.assets!.isNotEmpty
+                        ? Image.network(
+                            'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+                            fit: BoxFit.cover,
+                          )
+                        : SvgPicture.network(
+                            'https://lesailes.uz/no_photo.svg',
+                            fit: BoxFit.cover,
+                          ),
+                  ),
+                ),
+                // Right side - Child product image
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  width: 70,
+                  height: 104,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(26),
+                    child:
+                        lineItem.child![0].variant?.product?.assets != null &&
+                                lineItem.child![0].variant!.product!.assets!
+                                    .isNotEmpty
+                            ? Image.network(
+                                'https://api.lesailes.uz/storage/${lineItem.child![0].variant!.product!.assets![0].location}/${lineItem.child![0].variant!.product!.assets![0].filename}',
+                                fit: BoxFit.cover,
+                              )
+                            : SvgPicture.network(
+                                'https://lesailes.uz/no_photo.svg',
+                                fit: BoxFit.cover,
+                              ),
+                  ),
+                ),
+                // Main product title
+                Positioned(
+                  left: 5,
+                  bottom: 5,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      lineItem.variant?.product?.attributeData?.name?.chopar
+                                  ?.ru !=
+                              null
+                          ? lineItem.variant!.product!.attributeData!.name!
+                                      .chopar!.ru!.length >
+                                  8
+                              ? lineItem.variant!.product!.attributeData!.name!
+                                  .chopar!.ru!
+                                  .substring(0, 8)
+                              : lineItem.variant!.product!.attributeData!.name!
+                                  .chopar!.ru!
+                          : '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                // Child product title
+                Positioned(
+                  right: 5,
+                  bottom: 5,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      lineItem.child![0].variant?.product?.attributeData?.name
+                                  ?.chopar?.ru !=
+                              null
+                          ? lineItem.child![0].variant!.product!.attributeData!
+                                      .name!.chopar!.ru!.length >
+                                  8
+                              ? lineItem.child![0].variant!.product!
+                                  .attributeData!.name!.chopar!.ru!
+                                  .substring(0, 8)
+                              : lineItem.child![0].variant!.product!
+                                  .attributeData!.name!.chopar!.ru!
+                          : '',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       } else if (lineItem.variant?.product?.assets != null &&
           lineItem.variant!.product!.assets!.isNotEmpty) {
         Box<Stock> stockBox = Hive.box<Stock>('stock');
@@ -276,21 +389,36 @@ class BasketWidget extends HookWidget {
         }
       }
 
+      // Handle product name based on child products
       if (lines.child != null && lines.child!.length > 1) {
+        // Main product name
         productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
+
+        // Get child product names that are different from the main product
         String childsName = lines.child!
             .where((Child child) =>
                 lines.variant!.product!.boxId != child.variant!.product!.id)
             .map((Child child) =>
-                child.variant!.product!.attributeData!.name!.chopar!.ru)
-            .join(' + ')
-            .toString();
+                child.variant!.product!.attributeData!.name!.chopar!.ru ?? '')
+            .join(' + ');
+
         if (childsName.isNotEmpty) {
           productName = '$productName + $childsName';
         }
+      } else if (lines.child != null && lines.child!.length == 1) {
+        // For exactly one child product
+        productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
+
+        if (lines.child![0].variant?.product?.attributeData?.name?.chopar?.ru !=
+            null) {
+          productName =
+              '$productName + ${lines.child![0].variant!.product!.attributeData!.name!.chopar!.ru}';
+        }
       } else {
+        // No child products
         productName = lines.variant!.product!.attributeData!.name!.chopar!.ru;
       }
+
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 15),
         child: Row(
@@ -304,14 +432,23 @@ class BasketWidget extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    productName ?? '',
+                    isInStock ? tr('basket.outOfStock') : (productName ?? ''),
                     style: TextStyle(
                       fontSize: 16,
+                      fontWeight: FontWeight.bold,
                       color: isInStock ? Colors.grey : Colors.black,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
+                  if (lines.child != null && lines.child!.length > 1)
+                    Text(
+                      tr('bonusList.free'),
+                      style: TextStyle(
+                        color: AppColors.mainColor,
+                        fontSize: 14,
+                      ),
+                    ),
                   if (isInStock)
                     Text(
                       tr('basket.outOfStock'),
@@ -343,40 +480,63 @@ class BasketWidget extends HookWidget {
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.remove,
-                                color: isInStock ? Colors.grey : Colors.black,
+                        child: lines.variant?.price == 0 ||
+                                lines.bonusId != null
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 8),
+                                decoration: BoxDecoration(
+                                  color: AppColors.mainColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  tr('bonusList.free'),
+                                  style: TextStyle(
+                                    color: AppColors.mainColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            : Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.remove,
+                                      color: isInStock
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
+                                    onPressed: isInStock
+                                        ? null
+                                        : () => decreaseQuantity(lines),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                  Text(
+                                    '${lines.quantity}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: isInStock
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.add,
+                                      color: isInStock
+                                          ? Colors.grey
+                                          : Colors.black,
+                                    ),
+                                    onPressed: isInStock
+                                        ? null
+                                        : () => increaseQuantity(lines),
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                  ),
+                                ],
                               ),
-                              onPressed: isInStock
-                                  ? null
-                                  : () => decreaseQuantity(lines),
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            ),
-                            Text(
-                              '${lines.quantity}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: isInStock ? Colors.grey : Colors.black,
-                              ),
-                            ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.add,
-                                color: isInStock ? Colors.grey : Colors.black,
-                              ),
-                              onPressed: isInStock
-                                  ? null
-                                  : () => increaseQuantity(lines),
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            ),
-                          ],
-                        ),
                       ),
                     ],
                   ),

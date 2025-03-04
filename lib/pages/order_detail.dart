@@ -15,6 +15,7 @@ import '../models/order.dart';
 import '../models/registered_review.dart';
 import '../models/user.dart';
 import '../utils/colors.dart';
+import 'package:intl/intl.dart';
 
 @RoutePage()
 class OrderDetailPage extends HookWidget {
@@ -24,65 +25,251 @@ class OrderDetailPage extends HookWidget {
       : super(key: key);
 
   Widget renderProductImage(BuildContext context, OrderLines lineItem) {
+    var locale = context.locale.toString();
+    final formatter = NumberFormat.currency(
+      locale: 'ru_RU',
+      symbol: locale == 'uz'
+          ? "so'm"
+          : locale == 'en'
+              ? 'sum'
+              : 'сум',
+      decimalDigits: 0,
+    );
+
+    // Get product names
+    String mainProductName =
+        lineItem.variant?.product?.attributeData?.name?.chopar?.ru ?? '';
+    String childProductName = '';
+    bool isChildBonus = false;
+
     if (lineItem.child != null &&
         lineItem.child!.isNotEmpty &&
         lineItem.child![0].variant?.product?.id !=
             lineItem.variant?.product?.boxId) {
-      return SizedBox(
-        height: 90.0,
-        width: 90,
-        // margin: EdgeInsets.all(15),
-        child: Row(
-          children: [
-            Expanded(
-                child: Stack(
-              clipBehavior: Clip.hardEdge,
-              children: [
-                Positioned(
-                    left: 0,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
-                      child: Image.network(
-                        'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-                        height: 90,
-                        width: 90,
-                      ),
-                    ))
-              ],
-            )),
-            Expanded(
-                child: Stack(
-              children: [
-                Positioned(
-                    right: 0,
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width - 30,
-                      child: Image.network(
-                        'https://api.lesailes.uz/storage/${lineItem.child![0].variant?.product?.assets![0].location}/${lineItem.child![0].variant?.product?.assets![0].filename}',
-                        height: 90,
-                        width: 90,
-                      ),
-                    ))
-              ],
-            ))
-          ],
-        ),
-      );
-    } else if (lineItem.variant?.product?.assets != null &&
-        lineItem.variant!.product!.assets!.isNotEmpty) {
-      return Image.network(
-        'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
-        width: 90.0,
-        height: 90.0,
-        // width: MediaQuery.of(context).size.width / 2.5,
-      );
-    } else {
-      return SvgPicture.network(
-        'https://lesailes.uz/no_photo.svg',
-        width: 90.0,
-        height: 90.0,
-      );
+      childProductName = lineItem
+              .child![0].variant?.product?.attributeData?.name?.chopar?.ru ??
+          '';
+      // Check if child product is a bonus (price is 0)
+      isChildBonus = double.parse(lineItem.child![0].total) == 0;
     }
+
+    // Combine product names if there's a child product
+    String displayName = childProductName.isNotEmpty
+        ? '$mainProductName + $childProductName'
+        : mainProductName;
+
+    // Calculate total price (quantity * price)
+    double totalPrice = double.parse(lineItem.total) * lineItem.quantity;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Product name and price
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  displayName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Text(
+                formatter.format(totalPrice),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          // Product image and quantity controls
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              // Product image with quantity overlay
+              Stack(
+                children: [
+                  Container(
+                    width: 80,
+                    height: 60,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: lineItem.variant?.product?.assets != null &&
+                            lineItem.variant!.product!.assets!.isNotEmpty
+                        ? Image.network(
+                            'https://api.lesailes.uz/storage/${lineItem.variant?.product?.assets![0].location}/${lineItem.variant?.product?.assets![0].filename}',
+                            fit: BoxFit.contain,
+                          )
+                        : SvgPicture.network(
+                            'https://lesailes.uz/no_photo.svg',
+                            fit: BoxFit.contain,
+                          ),
+                  ),
+                  // Quantity overlay
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.7),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        '${lineItem.quantity}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              // Child product image if exists
+              if (childProductName.isNotEmpty)
+                Stack(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 60,
+                      margin: const EdgeInsets.only(left: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child:
+                          lineItem.child![0].variant?.product?.assets != null &&
+                                  lineItem.child![0].variant!.product!.assets!
+                                      .isNotEmpty
+                              ? Image.network(
+                                  'https://api.lesailes.uz/storage/${lineItem.child![0].variant!.product!.assets![0].location}/${lineItem.child![0].variant!.product!.assets![0].filename}',
+                                  fit: BoxFit.contain,
+                                  width: 80,
+                                  height: 60,
+                                )
+                              : SvgPicture.network(
+                                  'https://lesailes.uz/no_photo.svg',
+                                  fit: BoxFit.contain,
+                                  width: 80,
+                                  height: 60,
+                                ),
+                    ),
+                    // Bonus label if child product is free
+                    if (isChildBonus)
+                      Positioned(
+                        right: 0,
+                        top: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            locale == 'uz'
+                                ? 'bonus'
+                                : locale == 'en'
+                                    ? 'bonus'
+                                    : 'бонус',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    // Quantity overlay for child product (if not a bonus)
+                    if (!isChildBonus)
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            '${lineItem.quantity}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+
+              const Spacer(),
+
+              // Remove the quantity controls since we now show it on the image
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          // Product labels
+          Row(
+            children: [
+              // Main product label
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF3A3A3A),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Text(
+                  mainProductName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              // Child product label if exists
+              if (childProductName.isNotEmpty)
+                Container(
+                  margin: const EdgeInsets.only(left: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF3A3A3A),
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: Text(
+                    childProductName,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -516,68 +703,9 @@ class OrderDetailPage extends HookWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                          lineItem
-                                                  .variant
-                                                  ?.product
-                                                  ?.attributeData
-                                                  ?.name
-                                                  ?.chopar
-                                                  ?.ru ??
-                                              '',
-                                          style: const TextStyle(fontSize: 18)),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                              formatCurrency.format(
-                                                  double.parse(order
-                                                      .value!
-                                                      .basket!
-                                                      .lines![index]
-                                                      .total)),
-                                              style: const TextStyle(
-                                                  fontSize: 18)),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            double.parse(order.value!.basket!
-                                                        .lines![index].total) >
-                                                    0
-                                                ? '${lineItem.quantity}X'
-                                                : '',
-                                            style: const TextStyle(
-                                                color: AppColors.green),
-                                          ),
-                                          Text(
-                                            double.parse(order.value!.basket!
-                                                        .lines![index].total) >
-                                                    0
-                                                ? (double.parse(order
-                                                            .value!
-                                                            .basket!
-                                                            .lines![index]
-                                                            .total) *
-                                                        lineItem.quantity)
-                                                    .toStringAsFixed(0)
-                                                : '',
-                                            style: const TextStyle(
-                                                color: AppColors.green),
-                                          )
-                                        ],
-                                      )
+                                      renderProductImage(context, lineItem),
                                     ],
                                   ),
-                                  leading:
-                                      renderProductImage(context, lineItem),
-                                  // trailing: Text(
-                                  //     '${double.parse(order.value!.basket!.lines![index].total) > 0 ? lineItem.quantity.toString() + 'X' : ''} ${formatCurrency.format(double.parse(order.value!.basket!.lines![index].total))}'),
                                 );
                               },
                               separatorBuilder: (context, index) {
@@ -592,7 +720,21 @@ class OrderDetailPage extends HookWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                  '${order.value!.basket?.lines?.length ?? 0} ${tr("goods-amount")} : ',
+                                  '${order.value!.basket?.lines?.fold<int>(0, (sum, line) {
+                                        // Count the main product
+                                        int count = line.quantity;
+
+                                        // Count all child products, including bonuses
+                                        if (line.child != null &&
+                                            line.child!.isNotEmpty) {
+                                          for (var childItem in line.child!) {
+                                            // Count all child products regardless of price
+                                            count += line.quantity;
+                                          }
+                                        }
+
+                                        return sum + count;
+                                      }) ?? 0} ${tr("goods-amount")} : ',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 20,
